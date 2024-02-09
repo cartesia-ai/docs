@@ -1,3 +1,7 @@
+---
+coverY: 0
+---
+
 # Welcome!
 
 Welcome to the Cartesia documentation! This is a hub for all of our public APIs. Select an API on the left to get started.
