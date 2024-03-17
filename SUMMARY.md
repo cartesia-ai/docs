@@ -4,4 +4,7 @@
 
 ## 🎧 Audio API
 
-* [Intro](audio-api/intro.md)
+* [Getting started](audio-api/getting-started.md)
+* [Available models](audio-api/available-models.md)
+* [List voices](audio-api/list-voices.md)
+* [Stream audio](audio-api/stream-audio.md)
