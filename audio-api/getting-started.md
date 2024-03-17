@@ -1,6 +1,6 @@
 ---
 description: >-
-  The Cartesia Audio API providers real-time text-to-speech and instant voice
+  The Cartesia Audio API provides real-time text-to-speech and instant voice
   cloning.
 ---
 
@@ -20,3 +20,4 @@ curl -i -X POST "https://api.cartesia.ai/v0/audio/stream" -H "Content-Type: appl
 ```
 {% endcode %}
 
+This calls the [stream-audio.md](stream-audio.md "mention") endpoint and outputs a JSON containing 32-bit float PCM audio in the `data` key.
