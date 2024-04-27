@@ -21,3 +21,9 @@ curl -i -X POST "https://api.cartesia.ai/v0/audio/stream" -H "Content-Type: appl
 {% endcode %}
 
 This calls the [stream-audio.md](stream-audio.md "mention") endpoint and outputs a JSON containing 32-bit float PCM audio in the `data` key.
+
+## Python client
+
+You can find a Python client for the Cartesia API on PyPI:
+
+{% embed url="https://pypi.org/project/cartesia/" %}
