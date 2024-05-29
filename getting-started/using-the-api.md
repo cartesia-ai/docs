@@ -4,6 +4,10 @@
 This section will go more in-depth into the usage of our Audio API. If you are looking to test our models, please take a look at our playground at [play.cartesia.ai](https://play.cartesia.ai). The playground offers all of our public features: you can generate speech, explore the voice library and clone your voice!
 {% endhint %}
 
+{% hint style="success" %}
+**The API is in beta and is subject to change.** To ensure that you don't run into migration issues, we _strongly_ recommend using our client libraries.
+{% endhint %}
+
 ## Quick start
 
 To get started with the API, the first thing you’ll need is an API key. You can get one by logging into the playground and heading to "Console" at [play.cartesia.ai/console](https://play.cartesia.ai/console).
