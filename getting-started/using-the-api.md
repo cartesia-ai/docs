@@ -47,7 +47,7 @@ We use HTTPS to tunnel both REST and WebSocket requests. HTTPS establishes trans
 
 ## Privacy
 
-Please check our [Privacy Policy](https://cartesia.ai/privacy-policy) for more details about our data policy.
+Please check our [Privacy Policy](https://www.cartesia.ai) for more details about our data policy.
 
 ## Authentication
 
@@ -68,9 +68,7 @@ As of writing, it is the only accepted version.
 
 Here is the table of response codes that can be obtained from a request to our REST API.&#x20;
 
-<table><thead><tr><th width="180">Error</th><th width="137">Response code</th><th width="133">Descriptipon</th><th>Suggestions</th></tr></thead><tbody><tr><td>Successful request</td><td>200</td><td>Successful request</td><td></td></tr><tr><td>Missing required parameter</td><td>400</td><td>Bad request</td><td><ul><li>When querying our text-tos-speech model, make sure that the request contains the fields <code>transcript</code> and <code>voice</code>.</li></ul></td></tr><tr><td>Invalid API key</td><td>401</td><td>Unauthorized</td><td><ul><li>Make sure to pass the field <code>X-API-Key</code> into the HTTP POST headers. See <a data-mention href="using-the-api.md#authentication">#authentication</a> for details.</li></ul></td></tr><tr><td>Invalid version</td><td>404</td><td>Page not found</td><td><ul><li>When querying <code>text-to-speech</code> Make sure that the URL uses the right API version.</li><li>If using the <code>text_embed</code> layer that the <code>voice_id</code> exists.</li></ul></td></tr><tr><td>Invalid method </td><td>405</td><td></td><td><ul><li>Make sure to use only <code>GET</code> or <code>POST</code> requests</li></ul></td></tr><tr><td>Rate Limit</td><td></td><td></td><td></td></tr><tr><td>Internal Server Error</td><td>5xx</td><td></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="180">Error</th><th width="137">Response code</th><th width="133">Descriptipon</th><th>Suggestions</th></tr></thead><tbody><tr><td>Successful request</td><td>200</td><td>Successful request</td><td></td></tr><tr><td>Missing required parameter</td><td>400</td><td>Bad request</td><td><ul><li>When querying our text-tos-speech model, make sure that the request contains the fields <code>transcript</code> and <code>voice</code>.</li></ul></td></tr><tr><td>Invalid API key</td><td>401</td><td>Unauthorized</td><td><ul><li>Make sure to pass the field <code>X-API-Key</code> into the HTTP POST headers. See <a data-mention href="using-the-api.md#authentication">#authentication</a> for details.</li></ul></td></tr><tr><td>Invalid version</td><td>404</td><td>Page not found</td><td><ul><li>When querying <code>text-to-speech</code> Make sure that the URL uses the right API version.</li><li>If using the <code>text_embed</code> layer that the <code>voice_id</code> exists.</li></ul></td></tr><tr><td>Invalid method </td><td>405</td><td></td><td><ul><li>Make sure to use only <code>GET</code> or <code>POST</code> requests</li></ul></td></tr><tr><td>Internal Server Error</td><td>5xx</td><td></td><td></td></tr></tbody></table>
 
-## Rate Limits
 
-TODO
 
