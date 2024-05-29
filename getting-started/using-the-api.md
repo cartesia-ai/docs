@@ -28,7 +28,7 @@ The voice embedding used in this example can be found in the Voices tab of the p
 
 We provide access to a REST and WebSocket API and through a Python client. We plan to add support for a JavaScript client in the future.
 
-## # REST and WebSocket APIs
+## REST and WebSocket APIs
 
 All API requests use the following base URL: [https://api.cartesia.ai](https://api.cartesia.ai).
 
@@ -54,7 +54,7 @@ Please check our [Privacy Policy](https://www.cartesia.ai) for more details abou
 Authentication is handled using API keys. You can create a new API key from [play.cartesia.ai/console](https://play.cartesia.ai/console).
 
 * For HTTP requests, authentication is handled by adding the field `X-API-Key: <your_api_key>` into the HTTP headers.
-* For WebSocket connections, authentication is handled by passing in the field `?apiKey=<your_api_key>` when creating the WebSocket connection.&#x20;
+* For WebSocket connections, authentication is handled by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection.&#x20;
 
 ## Version
 

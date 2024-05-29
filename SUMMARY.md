@@ -5,7 +5,7 @@
 * [Welcome!](README.md)
 * [Getting help](getting-started/getting-help.md)
 * [Using the API](getting-started/using-the-api.md)
-* [Python Client](getting-started/python-client.md)
+* [Python](getting-started/python.md)
 
 ## API Reference
 

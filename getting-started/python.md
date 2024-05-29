@@ -1,4 +1,4 @@
-# Python Client
+# Python
 
 We provide a Python client for the Cartesia API on PyPI:
 
@@ -190,6 +190,8 @@ async def main():
 
 await main()
 ```
+
+## Plain Python without client
 
 ## Voice Cloning
 
