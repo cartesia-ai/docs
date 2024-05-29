@@ -1,0 +1,294 @@
+openapi: 3.1.0
+info:
+  title: CartesiaAPI
+  version: 1.0.0
+servers: 
+  - url: "https://api.cartesia.ai"
+paths:
+  "/v0/audio/sse":
+    post:
+      summary: Run text-to-audio generation with streaming
+      operationId: stream_v0_audio_stream_post
+      description: Runs text-to-speech generation and streams the output audio to
+        the client.
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              "$ref": "#/components/schemas/StreamParams"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              "$ref": "#/components/schemas/StreamOutput"
+            required: true
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/HTTPValidationError"
+            required: true
+      security:
+      - APIKeyHeader: []
+  "/v0/voices/{voice_id}/embedding":
+    get:
+      summary: Retrieve the embedding associated to a voice
+      description: |-
+        Returns the vector embedding of a voice given by its id.
+
+        Raises:
+            HTTPException: If the voice id does not exist.
+      operationId: voices_embedding
+      parameters:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/VoiceId"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  type: number
+                default: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                type: array
+                title: Voice embedding
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - APIKeyHeader: []
+  "/v0/voices":
+    get:
+      summary: List Voices
+      description: Returns a list of all available voices.
+      operationId: list_voices_v0_voices_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/VoiceList"
+      security:
+      - APIKeyHeader: []
+  "/v0/voices/clone/clip":
+    post:
+      summary: Clone Voice From Clip
+      description: |-
+        Clone a voice from an audio clip uploaded as a file. The clip is uploaded using a multipart form.
+
+        Returns a voice embedding.
+      operationId: clone_voice_from_clip_v0_voices_clone_clip_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema: 
+              "$ref": "#/components/schemas/CloneVoiceClip"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - APIKeyHeader: []
+  "/v0/voices/clone/url":
+    post:
+      summary: Clone Voice From Link
+      description: |-
+        Clone a voice from an online link. Currently only supports YouTube.
+
+        Returns a voice embedding.
+      operationId: clone_voice_from_link_v0_voices_clone_url_post
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Link
+        name: link
+        in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - APIKeyHeader: []
+  "/":
+    get:
+      summary: Status
+      description: Return a status message useful for health checks.
+      operationId: status_status_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    CloneVoiceClip:
+      properties:
+        clip:
+          type: string
+          format: binary
+          title: Clip
+      type: object
+      required:
+      - clip
+      title: CloneVoiceClip
+    VoiceId:
+      properties:
+        voice_id:
+          type: string
+          title: Voice Id
+          default: Barbershop Man
+      type: object
+      required:
+      - voice_id
+      title: VoiceId
+    HTTPValidationError:
+      properties:
+        detail:
+          items: 
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    StreamOutput:
+      properties:
+        data:
+          type: string
+          title: data
+        step_time:
+          type: number
+          title: step_time
+        sampling_rate:
+          type: number
+          title: sampling_rate
+        done:
+          type: bool
+          title: done
+        length:
+          type: number
+          title: length
+      type: object
+      required:
+        - data
+        - step_time
+        - sampling_rate
+        - done
+        - length
+      title: StreamOutput
+    VoiceList:
+      properties:
+        items:
+          properties:
+            id:
+              type: string
+            user_id:
+              type:
+                anyOf:
+                  - null
+                  - type: string
+            name:
+              type: string
+            description:
+              type: string
+            created_at:
+              type: string
+            embedding:
+              items:
+                type: number
+              default: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+              type: array
+          type: object
+      type: array
+      title: VoiceList
+    StreamParams:
+      properties:
+        transcript:
+          type: string
+          title: Transcript
+        model_id:
+          type: string
+          title: Model Id
+        description:
+          type: string
+          title: Description
+          default: ''
+        duration:
+          type: integer
+          title: Duration
+          default: 180
+        chunk_time:
+          type: number
+          title: Chunk Time
+          default: 0.1
+        lookahead:
+          type: integer
+          title: Lookahead
+          default: 8
+        voice:
+          items:
+            type: number
+          type: array
+          default: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+          title: Voice
+      type: object
+      required:
+      - transcript
+      - voice
+      title: StreamParams
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: float
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      

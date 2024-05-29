@@ -1,0 +1,364 @@
+openapi: 3.0.0
+info:
+  title: CartesiaAPI
+  version: 1.0.0
+servers: 
+  - url: "https://api.cartesia.ai"
+paths:
+  "/v0/audio/sse":
+    post:
+      summary: Run text-to-audio generation with streaming
+      operationId: stream_audio
+      description: Runs text-to-speech generation and streams the output audio to
+        the client.
+      requestBody:
+        content:
+          text/event-stream:
+            schema: 
+              "$ref": "#/components/schemas/StreamParams"
+          application/json:
+            schema: 
+              "$ref": "#/components/schemas/StreamParams"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/event-stream:
+              schema:
+                "$ref": "#/components/schemas/StreamOutput"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/StreamOutput"
+        '400':
+          description: Bad Request
+          content:
+            text/event-stream:
+              schema: 
+                "$ref": "#/components/schemas/HTTPBadRequestError"
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/HTTPBadRequestError"
+        '422':
+          description: Validation Error
+          content:
+            text/event-stream:
+              schema: 
+                "$ref": "#/components/schemas/HTTPValidationError"
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - APIKeyHeader: []
+  "/v0/voices/{voiceId}/embedding":
+    post:
+      summary: Retrieve the embedding associated to a voice
+      description: |-
+        Returns the vector embedding of a voice given by its id.
+
+        Raises:
+            HTTPException: If the voice id does not exist.
+      operationId: voice_embedding
+      parameters:
+      - in: path
+        name: voiceId
+        required: true
+        schema:
+          "$ref": "#/components/schemas/VoiceEmbeddingParams"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/VoiceEmbedding"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - APIKeyHeader: []
+  "/v0/voices":
+    get:
+      summary: List Voices
+      description: Returns a list of all available voices.
+      operationId: list_voices
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/ListVoiceOutput"
+      security:
+      - APIKeyHeader: []
+  "/v0/voices/clone/clip":
+    post:
+      summary: Clone Voice From Clip
+      description: |-
+        Clone a voice from an audio clip uploaded as a file. The clip is uploaded using a multipart form.
+
+        Returns a voice embedding.
+      operationId: clone_voice_from_clip
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema: 
+              "$ref": "#/components/schemas/CloneVoiceClipParams"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/CloneVoiceClipOutput"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - APIKeyHeader: []
+  "/v0/voices/clone/url":
+    post:
+      summary: Clone Voice From URL
+      description: |-
+        Clone a voice from an online URL. Currently only supports YouTube.
+
+        Returns a voice embedding.
+      operationId: clone_voice_from_url
+      parameters:
+      - required: true
+        schema:
+          "$ref": "#/components/schemas/CloneVoiceClipParams"
+        name: link
+        in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CloneVoiceURLOutput"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - APIKeyHeader: []
+  "/":
+    get:
+      summary: Get server status and 
+      description: Return a status message useful for health checks.
+      operationId: status_status_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: 
+                "$ref": "#/components/schemas/StatusOutput"
+      security:
+      - APIKeyHeader: []
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items: 
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HTTPBadRequestError:
+      properties:
+        detail:
+          items: 
+            "$ref": "#/components/schemas/BadRequestError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPBadRequestError
+    Timestamp:
+      type: string
+      title: Timestamp
+    ModelId:
+      type: string
+      default: 'upbeat-moon'
+      title: Model Id
+    Description:
+      type: string
+      title: Description
+      default: ''
+    Transcript:
+      type: string
+      title: Transcript
+      default: "To be or not to be, that is the question. To be or not to be, that is the question. To be or not to be, that is the question."
+    Duration:
+      type: integer
+      title: Duration
+      default: 180
+    ChunkTime:
+      type: number
+      title: ChunkTime
+      default: 0.1
+    LookAhead:
+      type: integer
+      title: Lookahead
+      default: 8
+    OutputFormat:
+      type: string
+      title: OutputFormat
+      default: "fp32_44100"
+    VoiceEmbedding:
+      items:
+        type: number
+      type: array
+      default: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      title: VoiceEmbedding
+    VoiceId:
+      type: string
+      title: VoiceId
+      default: Barbershop Man
+    URL:
+      type: string
+      title: URL
+
+
+    VoiceEmbeddingParams:
+      properties:
+        voice_id:
+          "$ref": "#/components/schemas/VoiceId"
+      type: object
+      required:
+      - voice_id
+      title: VoiceEmbeddingParams
+    StreamOutput:
+      properties:
+        data: 
+          type: string
+          title: data
+        step_time:
+          type: integer
+          title: step_time
+        sampling_rate:
+          type: integer
+          title: sampling_rate
+        done:
+          type: boolean
+          title: done
+        length:
+          type: integer
+          title: length
+      type: object
+      required:
+      - data
+      - step_time
+      - sampling_rate
+      - done
+      - length
+      title: StreamOutput
+    ListVoiceOutput:
+      items:
+        properties:
+          id:
+            type: string
+          user_id:
+            type: string
+            nullable: true
+          name:
+            type: string
+          description:
+            "$ref": "#/components/schemas/Description"
+          created_at:
+            "$ref": "#/components/schemas/Timestamp"
+          embedding:
+            "$ref": "#/components/schemas/VoiceEmbedding"
+        type: object
+      type: array
+      title: ListVoiceOutput
+    StreamParams:
+      properties:
+        transcript:
+          "$ref": "#/components/schemas/Transcript"
+        model_id:
+          "$ref": "#/components/schemas/ModelId"
+        description:
+          "$ref": "#/components/schemas/Description"
+        duration:
+          "$ref": "#/components/schemas/Duration"
+        chunk_time:
+          "$ref": "#/components/schemas/ChunkTime"
+        lookahead:
+          "$ref": "#/components/schemas/LookAhead"
+        voice:
+          "$ref": "#/components/schemas/VoiceEmbedding"
+        output_format:
+          "$ref": "#/components/schemas/OutputFormat"
+      type: object
+      required:
+      - transcript
+      - voice
+      title: StreamParams
+    CloneVoiceClipParams:
+      type: string
+      title: CloneVoiceClipParams
+    CloneVoiceURLOutput:
+      type: string
+      title: CloneVoiceURLOutput
+    CloneVoiceClipOutput:
+      type: string
+      title: CloneVoiceClipOutput
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: number
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    BadRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid input parameters"
+    StatusOutput:
+      properties:
+        ok:
+          type: string
+          title: ok
+          default: 'ok'
+        version:
+          type: string
+          title: version
+          default: '0'
+      type: object
+      required:
+      - status
+      title: StatusOutput
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Key
