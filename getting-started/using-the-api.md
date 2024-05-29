@@ -5,7 +5,7 @@ This section will go more in-depth into the usage of our Audio API. If you are l
 {% endhint %}
 
 {% hint style="success" %}
-**The API is in beta and is subject to change.** To ensure that you don't run into migration issues, we _strongly_ recommend using our client libraries.
+**The API is currently v0 and is subject to change.** To ensure simple upgrades, we strongly recommend taking advantage of our client libraries.
 {% endhint %}
 
 ## Quick start
