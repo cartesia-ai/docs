@@ -188,7 +188,10 @@ async def main():
     async with client:
         await asyncio.gather(generate_audio_async(voice, transcript, **gen_cfg), play_audio_async(**play_cfg))
 
-await main()
+# From jupyter notebook
+# await main()
+# From terminal
+asyncio.run(main())
 ```
 
 ## Plain Python without client
