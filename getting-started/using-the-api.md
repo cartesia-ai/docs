@@ -20,7 +20,7 @@ curl -i -N -X POST "https://api.cartesia.ai/v0/audio/sse" -H "X-API-Key: YOUR_AP
 ```
 {% endcode %}
 
-This command calls the [text-to-speech.md](../api-reference/text-to-speech.md "mention") endpoint which runs the text-to-speech generation and transmits the output in chunks.  Each chunk is a JSON string containing a chunk of audio data and its associated metadata
+This command calls the [text-to-speech.md](../api-reference/text-to-speech.md "mention") endpoint which runs the text-to-speech generation and transmits the output in chunks.  Each chunk is a JSON string containing a chunk of audio data and its associated metadata.
 
 {% hint style="info" %}
 Check the [text-to-speech.md](../api-reference/text-to-speech.md "mention") documentation for an exhaustive enumeration of the fields returned by the API.
@@ -31,6 +31,16 @@ The voice embedding used in this example can be found in the Voices tab of the p
 {% endhint %}
 
 We provide access to a REST and WebSocket API and through a Python client. We plan to add support for a JavaScript client in the future.
+
+### Voice embeddings
+
+Our API currently expects voices to be sent as voice embeddings.&#x20;
+
+A voice embedding is a vector of 192 floating-point numbers between -1 and 1 which captures vocal features like speed, emotion, accent, ...
+
+We use embeddings to enable voice interpolation which we call **voice mixing**. You can play with voice mixing in the playground at [play.cartesia.ai](https://play.cartesia.ai).&#x20;
+
+We will soon add the ability to query our model using voice IDs.
 
 ## REST and WebSocket APIs
 
