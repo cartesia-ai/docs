@@ -5,7 +5,6 @@
 * [Welcome!](README.md)
 * [Getting help](getting-started/getting-help.md)
 * [Using the API](getting-started/using-the-api.md)
-* [Python](getting-started/python.md)
 
 ## API Reference
 
@@ -18,3 +17,8 @@
 
 * [Best practices](user-guides/best-practices.md)
 * [Models](user-guides/models.md)
+
+## Client Libraries
+
+* [Python](client-libraries/python.md)
+* [JavaScript/TypeScript](client-libraries/javascript-typescript.md)
