@@ -20,7 +20,7 @@ You can copy/paste some of these uncommon symbols from the original [charts here
 
 <figure><img src="../.gitbook/assets/sonic_ipa_guide.png" alt=""><figcaption><p>Examples can be helpful when transcribing phones for a new word</p></figcaption></figure>
 
-## Stresses and vowel length markers.
+## Stresses and vowel length markers
 
 Our model requires stress markers for first (`ˈ`) and second (`ˌ`) stressed syllables, which go directly before the vowel. We also use annotations for vowel length (`ː`). The model can also operate without them, but you will have better robustness and control when using them.&#x20;
 
