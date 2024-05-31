@@ -22,7 +22,7 @@ You can copy/paste some of these uncommon symbols from the original [charts here
 
 ## # Stresses and vowel length markers.
 
-Our model was trained with stress markers for first (`ˈ`) and second (`ˌ`) stressed syllables. We also use annotations for vowel length (`ː`). The model can also operate without them, but you will have better robustness and control when using them.&#x20;
+Our model requires stress markers for first (`ˈ`) and second (`ˌ`) stressed syllables, which go directly before the vowel. We also use annotations for vowel length (`ː`). The model can also operate without them, but you will have better robustness and control when using them.&#x20;
 
 ## Usage example
 
