@@ -6,17 +6,18 @@
 * [Getting help](getting-started/getting-help.md)
 * [Using the API](getting-started/using-the-api.md)
 
+## Concepts
+
+* [Embeddings and Voice Mixing](concepts/embeddings-and-voice-mixing.md)
+* [Available Models](concepts/available-models.md)
+* [Improving Speech Quality](concepts/improving-speech-quality.md)
+
 ## API Reference
 
-* [Text-to-speech](api-reference/text-to-speech.md)
-* [Voice library](api-reference/voice-library.md)
-* [Voice cloning](api-reference/voice-cloning.md)
-* [Account](api-reference/account.md)
-
-## User guides
-
-* [Best practices](user-guides/best-practices.md)
-* [Models](user-guides/models.md)
+* [Text-to-Speech](api-reference/text-to-speech.md)
+* [Voice Library](api-reference/voice-library.md)
+* [Voice Cloning](api-reference/voice-cloning.md)
+* [API Metadata](api-reference/api-metadata.md)
 
 ## Client Libraries
 

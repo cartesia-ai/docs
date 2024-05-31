@@ -1,14 +1,10 @@
 # Using the API
 
-{% hint style="info" %}
-This section will go more in-depth into the usage of our Audio API. If you are looking to test our models, please take a look at our playground at [play.cartesia.ai](https://play.cartesia.ai). The playground offers all of our public features: you can generate speech, explore the voice library and clone your voice!
-{% endhint %}
-
 {% hint style="success" %}
 **The API is currently v0 and is subject to change.** To ensure simple upgrades, we strongly recommend taking advantage of our client libraries.
 {% endhint %}
 
-## Quick start
+## Quickstart
 
 To get started with the API, the first thing you’ll need is an API key. You can get one by logging into the playground and heading to "Console" at [play.cartesia.ai/console](https://play.cartesia.ai/console).
 
@@ -23,66 +19,33 @@ curl -i -N -X POST "https://api.cartesia.ai/v0/audio/sse" -H "X-API-Key: YOUR_AP
 This command calls the [text-to-speech.md](../api-reference/text-to-speech.md "mention") endpoint which runs the text-to-speech generation and transmits the output in chunks.  Each chunk is a JSON string containing a chunk of audio data and its associated metadata.
 
 {% hint style="info" %}
-Check the [text-to-speech.md](../api-reference/text-to-speech.md "mention") documentation for an exhaustive enumeration of the fields returned by the API.
+See [text-to-speech.md](../api-reference/text-to-speech.md "mention") for an exhaustive enumeration of the fields returned by the API.
 {% endhint %}
 
 {% hint style="info" %}
 The voice embedding used in this example can be found in the Voices tab of the playground at [https://play.cartesia.ai/voices/79f8b5fb-2cc8-479a-80df-29f7a7cf1a3e](https://play.cartesia.ai/voices/79f8b5fb-2cc8-479a-80df-29f7a7cf1a3e)
 {% endhint %}
 
-We provide access to a REST and WebSocket API and through a Python client. We plan to add support for a JavaScript client in the future.
+## API Conventions
 
-### Voice embeddings
+All API requests use the following base URL: `https://api.cartesia.ai/<VERSION>`. The current API version is `v0`.
 
-Our API currently expects voices to be sent as voice embeddings.&#x20;
+{% hint style="danger" %}
+All endpoints use HTTPS. HTTP is not supported. API keys that call the API over HTTP may be subject to deletion.
+{% endhint %}
 
-A voice embedding is a vector of 192 floating-point numbers between -1 and 1 which captures vocal features like speed, emotion, accent, ...
-
-We use embeddings to enable voice interpolation which we call **voice mixing**. You can play with voice mixing in the playground at [play.cartesia.ai](https://play.cartesia.ai).&#x20;
-
-We will soon add the ability to query our model using voice IDs.
-
-## REST and WebSocket APIs
-
-All API requests use the following base URL: [https://api.cartesia.ai](https://api.cartesia.ai).
-
-We support two APIs:
-
-* a stateless REST API (e.g. HTTP GET/POST requests)
-* a stateful WebSocket API&#x20;
-
-WebSockets enable server-side real-time updates by allowing full-duplex communication, and transmit data more efficiently which is important for low latency audio streaming.
-
-For requests which do not require low latency / high throughput, the REST API is sufficient and recommended.
-
-## Security
-
-We use HTTPS to tunnel both REST and WebSocket requests. HTTPS establishes transmission over an encrypted TLS connection thereby ensuring better data integrity and privacy over plain HTTP.
-
-## Privacy
-
-Please check our [Privacy Policy](https://www.cartesia.ai) for more details about our data policy.
-
-## Authentication
+### Authentication
 
 Authentication is handled using API keys. You can create a new API key from [play.cartesia.ai/console](https://play.cartesia.ai/console).
 
 * For HTTP requests, authentication is handled by adding the field `X-API-Key: <your_api_key>` into the HTTP headers.
 * For WebSocket connections, authentication is handled by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection.&#x20;
 
-## Version
+### Response codes
 
-The API version is added to the base URL like so: `https://api.cartesia.ai/<version_tag>`
+Our API uses standard HTTP response codes; refer to [httpstatuses.io](https://httpstatuses.io).
 
-The current version tag of the API is `v0`.
+### Passing data
 
-As of writing, it is the only accepted version.
-
-## Response codes
-
-Here is the table of response codes that can be obtained from a request to our REST API.&#x20;
-
-<table><thead><tr><th width="180">Error</th><th width="137">Response code</th><th width="133">Descriptipon</th><th>Suggestions</th></tr></thead><tbody><tr><td>Successful request</td><td>200</td><td>Successful request</td><td></td></tr><tr><td>Missing required parameter</td><td>400</td><td>Bad request</td><td><ul><li>When querying our text-to-speech model, make sure that the request contains the fields <code>transcript</code> and <code>voice</code>.</li></ul></td></tr><tr><td>Invalid API key</td><td>401</td><td>Unauthorized</td><td><ul><li>Make sure to pass the field <code>X-API-Key</code> into the HTTP POST header or the <code>?api_key</code> param (if you're using a WebSocket). See <a data-mention href="using-the-api.md#authentication">#authentication</a> for details.</li></ul></td></tr><tr><td>Invalid version</td><td>404</td><td>Page not found</td><td><ul><li>Make sure to prepend <code>/v0</code> to your queries</li><li>If using the <code>text_embed</code> layer that the <code>voice_id</code> exists.</li></ul></td></tr><tr><td>Invalid method </td><td>405</td><td></td><td><ul><li>The API currently only uses <code>GET</code> and <code>POST</code> requests.</li></ul></td></tr><tr><td>Internal Server Error</td><td>5xx</td><td></td><td></td></tr></tbody></table>
-
-
+All GET requests use query parameters to pass data. All POST requests use a JSON body or `multipart/form-data`.
 
