@@ -7,9 +7,13 @@ description: >-
 
 # Custom Pronunciation Guide
 
+{% hint style="info" %}
+Our model supports the insertion of phonemes. This is an experimental feature.
+{% endhint %}
+
 ## How to insert phones:
 
-When using Sonic (whether through playground, API, or client library) you can simply add phones directly in the transcript - just wrap them in `<<>>` and separate each phoneme with a pipe `|`.
+When using Sonic (whether through the playground, API, or client library) you can directly add phones in the transcript - just wrap them in `<<>>` and separate each phoneme with a pipe `|`.
 
 ## Sonic-flavored IPA
 

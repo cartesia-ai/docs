@@ -17,14 +17,6 @@ Here are a few guidelines to achieve the best performance:
 * Add punctuation at the end of each transcript whenever possible.
 * Enter dates in MM/DD/YYYY form, such as 04/20/2023.
 
-### Phonemes (Alpha)
-
-Our model supports the insertion of phonemes. This is an experimental feature.
-
-Phonemes should be surrounded by angle brackets (`<< >>`) and entered in IPA format, with `|` separating the phones. For example: `I want to try to <<lid>> them but they don't want to be <<l|ɛ|d>>.`
-
-You can reference [dictionary.com](http://dictionary.com/) to look up phonemes for common words or use an [IPA phone chart](https://en.wikipedia.org/wiki/International\_Phonetic\_Alphabet\_chart) to craft your own.
-
 ## Voice cloning
 
 1. **Choose an appropriate transcript to read aloud.** You want the transcript you read aloud to align as closely as possible with the voice you want to generate. For example, don't read a colorless transcript in a monotone voice unless you're aiming for a monotonous clone. Instead, prepare a transcript that is suited to your use case and has the right energy.
