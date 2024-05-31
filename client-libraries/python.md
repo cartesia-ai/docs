@@ -194,8 +194,6 @@ async def main():
 asyncio.run(main())
 ```
 
-## Plain Python without client
-
 ## Voice Cloning
 
 {% hint style="warning" %}
