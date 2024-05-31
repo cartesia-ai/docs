@@ -6,8 +6,8 @@ description: Audio generation endpoint
 
 ## Server-Sent Events
 
-{% swagger src="../.gitbook/assets/openapi.yaml" path="/v0/audio/sse" method="post" %}
-[openapi.yaml](../.gitbook/assets/openapi.yaml)
+{% swagger src="../.gitbook/assets/cartesiaapi (1).yaml" path="/v0/audio/sse" method="post" %}
+[cartesiaapi (1).yaml](<../.gitbook/assets/cartesiaapi (1).yaml>)
 {% endswagger %}
 
 ## WebSocket
@@ -38,9 +38,9 @@ Send a JSON-encoded message on the WebSocket of the following shape:
 
 After you send a message body on the WebSocket, the API will respond with a series of chunks of the following shape:
 
-| Name                      | Type    | Description                                                                                |
-| ------------------------- | ------- | ------------------------------------------------------------------------------------------ |
-| `data` (see fields below) | string  | Base 64-encoded raw 32-bit PCM audio (float32's from -1 to 1). Sampling rate is 44.1 kHz.  |
-| `done`                    | boolean | Whether the stream is complete; the message with `done === true` will not contain any data |
-| `context_id`              | string  | ID for the request this chunk corresponds to.                                              |
+| Name         | Type    | Description                                                                                |
+| ------------ | ------- | ------------------------------------------------------------------------------------------ |
+| `data`       | string  | Base 64-encoded raw 32-bit PCM audio (float32's from -1 to 1). Sampling rate is 44.1 kHz.  |
+| `done`       | boolean | Whether the stream is complete; the message with `done === true` will not contain any data |
+| `context_id` | string  | ID for the request this chunk corresponds to.                                              |
 
