@@ -19,6 +19,10 @@
 * [Voice Cloning](api-reference/voice-cloning.md)
 * [API Metadata](api-reference/api-metadata.md)
 
+## User guides
+
+* [Custom Pronunciation Guide](user-guides/custom-pronunciation-guide.md)
+
 ## Client Libraries
 
 * [Python](client-libraries/python.md)
