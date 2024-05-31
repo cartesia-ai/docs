@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: CartesiaAPI
   version: 0.2.0
-servers:
+servers: 
   - url: "https://api.cartesia.ai"
 paths:
   "/v0/audio/sse":
@@ -12,13 +12,15 @@ paths:
       description: |-
         Runs text-to-speech generation and streams the output audio to
         the client.
-
         Raises:
           HTTPException: If voice or transcript is missing.
       requestBody:
         content:
+          text/event-stream:
+            schema: 
+              "$ref": "#/components/schemas/StreamParams"
           application/json:
-            schema:
+            schema: 
               "$ref": "#/components/schemas/StreamParams"
         required: true
       responses:
@@ -35,16 +37,16 @@ paths:
           description: Bad Request
           content:
             text/plain:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/HTTPBadRequestError"
         '422':
           description: Validation Error
           content:
             text/event-stream:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/HTTPValidationError"
             application/json:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/HTTPValidationError"
       security:
       - APIKeyHeader: []
@@ -74,13 +76,13 @@ paths:
           description: Not Found
           content:
             text/plain:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/HTTPNotFoundError"
         '422':
           description: Validation Error
           content:
             application/json:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/HTTPValidationError"
       security:
       - APIKeyHeader: []
@@ -95,7 +97,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/ListVoiceOutput"
       security:
       - APIKeyHeader: []
@@ -111,30 +113,30 @@ paths:
         required: true
         content:
           multipart/form-data:
-            schema:
+            schema: 
               type: object
               properties:
                 clip:
                   "$ref": "#/components/schemas/AudioFile"
-                  default:
+                  default: 
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/VoiceEmbeddingOutput"
         '400':
           description: Bad Request
           content:
             text/plain:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/HTTPBadRequestError"
         '422':
           description: Validation Error
           content:
             application/json:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/HTTPValidationError"
       security:
       - APIKeyHeader: []
@@ -163,13 +165,13 @@ paths:
           description: Bad Request
           content:
             text/plain:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/HTTPBadRequestError"
         '422':
           description: Validation Error
           content:
             application/json:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/HTTPValidationError"
       security:
       - APIKeyHeader: []
@@ -183,17 +185,16 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema:
+              schema: 
                 "$ref": "#/components/schemas/StatusOutput"
       security:
       - APIKeyHeader: []
-
 components:
   schemas:
     HTTPValidationError:
       properties:
         detail:
-          items:
+          items: 
             "$ref": "#/components/schemas/ValidationError"
           type: array
           title: Detail
@@ -218,6 +219,10 @@ components:
       type: string
       title: ModelId
       default: 'upbeat-moon'
+    Description:
+      type: string
+      title: Description
+      default: ''
     VoiceDescription:
       type: string
       title: VoiceDescription
@@ -230,6 +235,14 @@ components:
       type: integer
       title: Duration
       default: 180
+    ChunkTime:
+      type: number
+      title: ChunkTime
+      default: 0.1
+    LookAhead:
+      type: integer
+      title: Lookahead
+      default: 8
     OutputFormat:
       type: string
       title: OutputFormat
@@ -267,14 +280,31 @@ components:
 
     StreamOutput:
       properties:
-        data:
+        data: 
           type: string
           format: byte
           title: data
+        step_time:
+          type: integer
+          title: step_time
+        sampling_rate:
+          type: integer
+          default: 44100
+          title: sampling_rate
+        done:
+          type: boolean
+          default: false
+          title: done
+        length:
+          type: integer
+          title: length
       type: object
       required:
       - data
+      - step_time
+      - sampling_rate
       - done
+      - length
       title: StreamOutput
 
     ListVoiceOutput:
@@ -314,8 +344,14 @@ components:
           "$ref": "#/components/schemas/Transcript"
         model_id:
           "$ref": "#/components/schemas/ModelId"
+        description:
+          "$ref": "#/components/schemas/Description"
         duration:
           "$ref": "#/components/schemas/Duration"
+        chunk_time:
+          "$ref": "#/components/schemas/ChunkTime"
+        lookahead:
+          "$ref": "#/components/schemas/LookAhead"
         voice:
           "$ref": "#/components/schemas/VoiceEmbedding"
         output_format:

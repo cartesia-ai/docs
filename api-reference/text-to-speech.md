@@ -2,12 +2,12 @@
 description: Audio generation endpoint
 ---
 
-# Text-to-speech
+# Text-to-Speech
 
 ## Server-Sent Events
 
-{% swagger src="../.gitbook/assets/cartesiaapi (2).yaml" path="/v0/audio/sse" method="post" %}
-[cartesiaapi (2).yaml](<../.gitbook/assets/cartesiaapi (2).yaml>)
+{% swagger src="../.gitbook/assets/openapi.yaml" path="/v0/audio/sse" method="post" %}
+[openapi.yaml](../.gitbook/assets/openapi.yaml)
 {% endswagger %}
 
 ## WebSocket
@@ -31,7 +31,6 @@ Send a JSON-encoded message on the WebSocket of the following shape:
 | `data` (see fields below) | object                  | Request data                                                                                                  |
 | `data.model_id`           | string                  | ID of the model to generate with, e.g. `upbeat-moon` for Sonic Turbo English                                  |
 | `data.transcript`         | string                  | Transcript to speak                                                                                           |
-| `data.chunk_time`         | number                  | Duration of each chunk in the output                                                                          |
 | `data.voice`              | number\[] of length 192 | Embedding for the voice you want to generate with. You can use any vector of length 192 for testing purposes. |
 | `context_id`              | string                  | unique ID for this request. You can generate this however you like, but it should be unique for each request  |
 
@@ -39,11 +38,9 @@ Send a JSON-encoded message on the WebSocket of the following shape:
 
 After you send a message body on the WebSocket, the API will respond with a series of chunks of the following shape:
 
-| Name                      | Type    | Description                                                                                      |
-| ------------------------- | ------- | ------------------------------------------------------------------------------------------------ |
-| `data` (see fields below) | string  | Base 64-encoded raw 32-bit PCM audio (float32's from -1 to 1).                                   |
-| `step_time`               | number  | How long the model took to generate the chunk in milliseconds for logging and profiling purposes |
-| `sampling_rate`           | number  | The sampling rate of the chunk                                                                   |
-| `done`                    | boolean | Whether the stream is complete; the message with `done === true` will not contain any data       |
-| `context_id`              | string  | ID for the request this chunk corresponds to.                                                    |
+| Name                      | Type    | Description                                                                                |
+| ------------------------- | ------- | ------------------------------------------------------------------------------------------ |
+| `data` (see fields below) | string  | Base 64-encoded raw 32-bit PCM audio (float32's from -1 to 1). Sampling rate is 44.1 kHz.  |
+| `done`                    | boolean | Whether the stream is complete; the message with `done === true` will not contain any data |
+| `context_id`              | string  | ID for the request this chunk corresponds to.                                              |
 
