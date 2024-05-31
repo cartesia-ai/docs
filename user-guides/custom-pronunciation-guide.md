@@ -8,7 +8,7 @@ description: >-
 
 ## How to insert phones:
 
-When using Sonic (whether through the playground, API, or client library) you can directly add Sonic-flavored IPA phones in the transcript. Just wrap them in `<<>>` and separate each phoneme with a pipe `|`.
+When using Sonic (whether through the playground, API, or client library) you can directly add Sonic-flavored IPA phones in the transcript. Just wrap them in `<<>>` and append each phoneme with a pipe `|`.
 
 ## Sonic-flavored IPA
 
