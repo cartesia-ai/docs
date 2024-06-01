@@ -1,6 +1,12 @@
 # Welcome!
 
-> If you're just looking to play with our models, check out the [playground](https://play.cartesia.ai)!
+{% hint style="info" %}
+If you're just looking to play with our models, check out the [playground](https://play.cartesia.ai)!
+{% endhint %}
+
+{% hint style="info" %}
+Join our Discord community for help and to share demos: [https://discord.com/invite/gAbbHgdyQM](https://discord.com/invite/gAbbHgdyQM).
+{% endhint %}
 
 Welcome to the Cartesia documentation! Cartesia's mission is to build real time multimodal intelligence for every device. Our current offering includes an API that serves our flagship generative voice model, Sonic.
 
