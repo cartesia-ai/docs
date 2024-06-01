@@ -28,5 +28,5 @@ Our model requires stress markers for first (`ˈ`) and second (`ˌ`) stressed sy
 
 Original input: `"transcript": "Can I get jalapeño on that?"`
 
-Transformed input: `"transcript": "Can I get <<h|ɑː|l|ˈə|p|eɪ|n|y|ˌoʊ|>> on that?`
+Transformed input: `"transcript": "Can I <<g|ˈɛ|t|>> <<h|ɑː|l|ˈə|p|eɪ|n|y|ˌoʊ|>> on that?"`
 
