@@ -11,10 +11,12 @@ A neat feature that embeddings enable is _voice mixing_. You can interpolate two
 We suggest using linear interpolation to interpolate between embeddings. To interpolate between embeddings $$A$$ and $$B$$ to obtain $$C$$, use the following formula:
 
 $$
-C = (1-\alpha A) + \alpha B
+C = (1-\alpha )A + \alpha B
 $$
 
-$$\alpha$$, or alpha, is the “interpolation coefficient”—an alpha of 1 means $$C = B$$ and an alpha of 0 means $$C = A$$.
+
+
+$$\alpha$$, or alpha, is the “interpolation coefficient”—an alpha of 1 means $$C = B$$ and an alpha of 0 means $$C = A$$. For example, with $$\alpha=0.5$$, $$C=0.5A+0.5B.$$
 
 {% hint style="info" %}
 The perception of a mixed voice does not change linearly with the interpolation coefficient. For instance, to get a 50/50 perceived mix, you may need to lean towards one of the voices. To get the best performance, do a little exploration.
