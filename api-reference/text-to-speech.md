@@ -5,7 +5,7 @@ description: Audio generation endpoint
 # Text-to-Speech
 
 {% hint style="info" %}
-If you try the API in gitbooks, you will need to manually specify the API key in the X-API-Key header field. The authentication pane does not currently work due to a GitBook bug. We're following up on that with them.
+If you try the API in Gitbook, you will need to manually specify the API key in the X-API-Key header field. The authentication pane does not currently work due to a GitBook bug. We're following up on that with them.
 {% endhint %}
 
 ## Server-Sent Events
