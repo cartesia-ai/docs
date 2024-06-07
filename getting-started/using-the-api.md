@@ -28,24 +28,36 @@ The voice embedding used in this example can be found in the Voices tab of the p
 
 ## API Conventions
 
-All API requests use the following base URL: `https://api.cartesia.ai/<VERSION>`. The current API version is `v0`.
-
 {% hint style="danger" %}
-All endpoints use HTTPS. HTTP is not supported. API keys that call the API over HTTP may be subject to deletion.
+All endpoints use HTTPS. HTTP is not supported. API keys that call the API over HTTP may be subject to automatic rotation.
 {% endhint %}
 
-### Authentication
+All API requests use the following base URL: `https://api.cartesia.ai/<MAJOR-VERSION>`. The current major version is `v0`.
+
+We use date-based versioning to provide backwards compatibility within major versions:
+
+### Send a `Cartesia-Version` header
+
+{% hint style="info" %}
+Our API is coming out of beta, and we will be rolling out date-based API versioning starting the week of June 10.
+{% endhint %}
+
+If you're using Cartesia in production, each request you send our API should have a `Cartesia-Version` header containing the date (`YYYY-MM-DD`) when you tested your integration.
+
+This will help us provide you with timely deprecation notices and enable us to provide automatic backwards compatibility where possible.
+
+### Use API keys to authenticate
 
 Authentication is handled using API keys. You can create a new API key from [play.cartesia.ai/console](https://play.cartesia.ai/console).
 
 * For HTTP requests, authentication is handled by adding the field `X-API-Key: <your_api_key>` into the HTTP headers.
 * For WebSocket connections, authentication is handled by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection.&#x20;
 
-### Response codes
+### Check response codes
 
 Our API uses standard HTTP response codes; refer to [httpstatuses.io](https://httpstatuses.io).
 
-### Passing data
+### Pass data according to the method
 
 All GET requests use query parameters to pass data. All POST requests use a JSON body or `multipart/form-data`.
 
