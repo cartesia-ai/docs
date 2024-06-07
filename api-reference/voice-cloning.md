@@ -8,14 +8,10 @@ description: Capture a voice from an audio clip
 If you try the API in GitBook, you will need to manually specify the API key in the X-API-Key header field. The authentication pane does not currently work due to a GitBook bug. We're following up on that with them.
 {% endhint %}
 
-### Voice cloning from audio clip
-
-{% swagger src="../.gitbook/assets/cartesiaapi (1).yaml" path="/v0/voices/clone/clip" method="post" %}
-[cartesiaapi (1).yaml](<../.gitbook/assets/cartesiaapi (1).yaml>)
+{% swagger src="../.gitbook/assets/openapi (1).yml" path="/voices/clone/clip" method="post" %}
+[openapi (1).yml](<../.gitbook/assets/openapi (1).yml>)
 {% endswagger %}
 
-### Voice cloning from URL
-
-{% swagger src="../.gitbook/assets/cartesiaapi (1).yaml" path="/v0/voices/clone/url" method="post" %}
-[cartesiaapi (1).yaml](<../.gitbook/assets/cartesiaapi (1).yaml>)
+{% swagger src="../.gitbook/assets/openapi (1).yml" path="/voices/clone/url" method="post" %}
+[openapi (1).yml](<../.gitbook/assets/openapi (1).yml>)
 {% endswagger %}

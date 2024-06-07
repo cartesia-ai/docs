@@ -5,12 +5,11 @@
 * [Welcome!](README.md)
 * [Getting help](getting-started/getting-help.md)
 * [Using the API](getting-started/using-the-api.md)
+* [Available Models](getting-started/available-models.md)
 
 ## Concepts
 
 * [Embeddings and Voice Mixing](concepts/embeddings-and-voice-mixing.md)
-* [Available Models](concepts/available-models.md)
-* [Improving Speech Quality](concepts/improving-speech-quality.md)
 
 ## API Reference
 
@@ -22,6 +21,7 @@
 ## User guides
 
 * [Custom Pronunciation Guide](user-guides/custom-pronunciation-guide.md)
+* [Improving Speech Quality](user-guides/improving-speech-quality.md)
 
 ## Client Libraries
 

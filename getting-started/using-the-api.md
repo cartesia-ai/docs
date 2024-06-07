@@ -1,9 +1,5 @@
 # Using the API
 
-{% hint style="success" %}
-**The API is currently v0 and is subject to change.** To ensure simple upgrades, we strongly recommend taking advantage of our client libraries.
-{% endhint %}
-
 ## Quickstart
 
 To get started with the API, the first thing you’ll need is an API key. You can get one by logging into the playground and heading to "Console" at [play.cartesia.ai/console](https://play.cartesia.ai/console).
@@ -32,9 +28,7 @@ The voice embedding used in this example can be found in the Voices tab of the p
 All endpoints use HTTPS. HTTP is not supported. API keys that call the API over HTTP may be subject to automatic rotation.
 {% endhint %}
 
-All API requests use the following base URL: `https://api.cartesia.ai/<MAJOR-VERSION>`. The current major version is `v0`.
-
-We use date-based versioning to provide backwards compatibility within major versions:
+All API requests use the following base URL: `https://api.cartesia.ai`. (For WebSockets the corresponding protocol is `wss://`.)
 
 ### Send a `Cartesia-Version` header
 
@@ -46,12 +40,21 @@ If you're using Cartesia in production, each request you send our API should hav
 
 This will help us provide you with timely deprecation notices and enable us to provide automatic backwards compatibility where possible.
 
+For a given `Cartesia-Version`, we will preserve existing input and output fields, but we may make non-breaking changes, such as:
+
+1. Add optional request fields.
+2. Add additional response fields.
+3. Change conditions for specific error types
+4. Add variants to enum-like output values.
+
+Our versioning scheme is based on the Anthropic API.
+
 ### Use API keys to authenticate
 
 Authentication is handled using API keys. You can create a new API key from [play.cartesia.ai/console](https://play.cartesia.ai/console).
 
 * For HTTP requests, authentication is handled by adding the field `X-API-Key: <your_api_key>` into the HTTP headers.
-* For WebSocket connections, authentication is handled by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection.&#x20;
+* For WebSocket connections, authentication is handled by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection.
 
 ### Check response codes
 

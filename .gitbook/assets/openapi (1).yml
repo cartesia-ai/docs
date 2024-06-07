@@ -1,0 +1,405 @@
+openapi: 3.0.0
+
+info:
+  title: Cartesia REST API
+  version: 2024-06-10
+
+servers:
+  - url: "https://api.cartesia.ai/v0"
+
+security:
+  - APIKeyHeader: []
+
+paths:
+  "/tts/sse":
+    post:
+      summary: Stream Speech (Server-Sent Events)
+      requestBody:
+        $ref: "#/components/requestBodies/TTSRequest"
+      responses:
+        "200":
+          description: A stream of audio data.
+          content:
+            text/event-stream:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/JSONChunkResponse"
+                  - $ref: "#/components/schemas/JSONDoneResponse"
+                  - $ref: "#/components/schemas/JSONErrorResponse"
+                discriminator:
+                  propertyName: status_code
+        default:
+          $ref: "#/components/responses/Error"
+
+  "/voices/{id}/embedding":
+    get:
+      summary: Get Voice Embedding
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            "$ref": "#/components/schemas/VoiceId"
+      responses:
+        "200":
+          $ref: "#/components/responses/VoiceEmbeddingResponse"
+        default:
+          $ref: "#/components/responses/Error"
+
+  "/voices":
+    get:
+      summary: List Voices
+      description: |-
+        List all voices available to the user, that is, public voices and the user's own voices.
+      responses:
+        "200":
+          description: List of voices.
+          content:
+            application/json:
+              schema:
+                title: Voice List
+                type: array
+                items:
+                  $ref: "#/components/schemas/Voice"
+    post:
+      summary: Create Voice
+      description: |-
+        Create a new voice with a given name, description, and embedding.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+                - embedding
+              properties:
+                name:
+                  "$ref": "#/components/schemas/VoiceName"
+                description:
+                  "$ref": "#/components/schemas/VoiceDescription"
+                embedding:
+                  "$ref": "#/components/schemas/VoiceEmbedding"
+      responses:
+        "201":
+          description: The created voice.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Voice"
+        default:
+          $ref: "#/components/responses/Error"
+
+  "/voices/{id}":
+    get:
+      summary: Get Voice
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            "$ref": "#/components/schemas/VoiceId"
+      responses:
+        "200":
+          description: The voice.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Voice"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      summary: Delete Voice
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            "$ref": "#/components/schemas/VoiceId"
+      responses:
+        "204":
+          description: Voice deleted.
+        default:
+          $ref: "#/components/responses/Error"
+
+  "/voices/clone/clip":
+    post:
+      summary: Clone Voice (Clip)
+      description: |-
+        Clones a voice from an audio clip uploaded as a file. The clip is uploaded using multipart/form-data with a `clip` field containing the audio file.
+      operationId: clone_voice_from_clip
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                clip:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          $ref: "#/components/responses/VoiceEmbeddingResponse"
+        default:
+          $ref: "#/components/responses/Error"
+
+  "/voices/clone/url":
+    post:
+      summary: Clone Voice (URL)
+      description: |-
+        Clone a voice from an online URL. Currently only supports YouTube.
+      parameters:
+        - required: true
+          schema:
+            type: string
+            title: Link
+            description: The URL of the video to clone the voice from.
+            example: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          name: link
+          in: query
+      responses:
+        "200":
+          $ref: "#/components/responses/VoiceEmbeddingResponse"
+        default:
+          $ref: "#/components/responses/Error"
+
+  "/":
+    get:
+      summary: API Status and Version
+      description: Returns the server's version and a status message which can be useful for sanity checking.
+      responses:
+        "200":
+          description: Everything OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    title: version
+                  status:
+                    type: boolean
+                    title: ok
+        default:
+          $ref: "#/components/responses/Error"
+
+components:
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  requestBodies:
+    TTSRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            title: TTS Request
+            type: object
+            required:
+              - model_id
+              - transcript
+              - voice
+              - output_format
+            properties:
+              model_id:
+                title: Model ID
+                type: string
+                example: upbeat-moon
+              transcript:
+                title: Transcript
+                type: string
+                example: "Hello, world! I'm generating audio on Cartesia."
+              duration:
+                title: Duration
+                description: The maximum duration of the audio in seconds.
+                type: integer
+              voice:
+                title: Voice
+                description: The voice to use for the speech. Can be either an ID or an embedding, specified by the `mode` field.
+                oneOf:
+                  - type: object
+                    properties:
+                      mode:
+                        type: string
+                        enum: [id]
+                      id:
+                        "$ref": "#/components/schemas/VoiceId"
+                  - type: object
+                    properties:
+                      mode:
+                        type: string
+                        enum: [embedding]
+                      embedding:
+                        "$ref": "#/components/schemas/VoiceEmbedding"
+                discriminator:
+                  propertyName: mode
+              output_format:
+                title: Output Format
+                type: object
+                required: [container, encoding, sample_rate]
+                properties:
+                  container:
+                    type: string
+                    enum: ["raw"]
+                  encoding:
+                    type: string
+                    enum: ["pcm_s16le", "pcm_f32le", "pcm_mulaw", "pcm_alaw"]
+                  sample_rate:
+                    type: integer
+                    enum: [8000, 16000, 22050, 24000, 44100]
+
+  responses:
+    Error:
+      description: An error response.
+      content:
+        text/plain:
+          schema:
+            title: Error Description
+            type: string
+            example: error in voice
+
+    VoiceEmbeddingResponse:
+      description: The voice embedding.
+      content:
+        application/json:
+          schema:
+            title: Voice Embedding
+            properties:
+              embedding:
+                "$ref": "#/components/schemas/VoiceEmbedding"
+            type: object
+            required:
+              - embedding
+
+  schemas:
+    Timestamp:
+      title: Timestamp
+      type: string
+
+    Voice:
+      type: object
+      properties:
+        id:
+          "$ref": "#/components/schemas/VoiceId"
+        user_id:
+          type: string
+        is_public:
+          type: boolean
+        name:
+          "$ref": "#/components/schemas/VoiceName"
+        description:
+          "$ref": "#/components/schemas/VoiceDescription"
+        created_at:
+          "$ref": "#/components/schemas/Timestamp"
+        embedding:
+          "$ref": "#/components/schemas/VoiceEmbedding"
+      required:
+        - id
+        - user_id
+        - is_public
+        - name
+        - description
+        - created_at
+        - embedding
+
+    VoiceDescription:
+      title: Voice Description
+      type: string
+      example: "A deep, rich, male voice with an Indian accent."
+
+    VoiceEmbedding:
+      title: Voice Embedding
+      items:
+        type: number
+      type: array
+
+    VoiceId:
+      title: Voice ID
+      type: string
+      example: "a0e99841-438c-4a64-b679-ae501e7d6091"
+
+    VoiceName:
+      title: VoiceName
+      type: string
+      example: "Barbershop Man"
+
+    Clip:
+      title: Clip
+      type: string
+      format: binary
+
+    JSONBaseResponse:
+      title: JSON Base Response
+      type: object
+      properties:
+        status_code: &statusCode
+          title: Status Code
+          type: integer
+          description: HTTP status code to allow for error handling. This is for errors encountered while streaming the response.
+        done: &done
+          title: Done
+          type: boolean
+          description: Whether the model has finished generating audio.
+
+    JSONChunkResponse:
+      title: JSON Chunk Response
+      type: object
+      allOf:
+        - "$ref": "#/components/schemas/JSONBaseResponse"
+        - type: object
+          properties:
+            status_code:
+              <<: *statusCode
+              enum: [206]
+            done:
+              <<: *done
+              enum: [false]
+            data:
+              title: Data
+              type: string
+              format: byte
+              description: Binary audio data encoded as base64. The underlying bytes will be in the requested output format.
+            step_time:
+              title: Step Time
+              type: integer
+              description: The time in milliseconds that the model took to generate this chunk of audio.
+
+    JSONDoneResponse:
+      title: JSON Done Response
+      type: object
+      allOf:
+        - "$ref": "#/components/schemas/JSONBaseResponse"
+        - type: object
+          properties:
+            status_code:
+              <<: *statusCode
+              enum: [200]
+            done:
+              <<: *done
+              enum: [true]
+
+    JSONErrorResponse:
+      title: JSON Error Response
+      type: object
+      allOf:
+        - "$ref": "#/components/schemas/JSONBaseResponse"
+        - type: object
+          properties:
+            status_code:
+              <<: *statusCode
+              minimum: 400
+              maximum: 599
+            done:
+              <<: *done
+              enum: [true]
+            error:
+              title: Error
+              type: string
+              description: A human-readable error message.
