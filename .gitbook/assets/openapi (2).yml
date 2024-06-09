@@ -5,12 +5,30 @@ info:
   version: 2024-06-10
 
 servers:
-  - url: "https://api.cartesia.ai/v0"
+  - url: "https://api.cartesia.ai"
 
 security:
   - APIKeyHeader: []
 
 paths:
+  "/tts/bytes":
+    post:
+      summary: Stream Speech (Bytes)
+      description: |-
+        Generate audio from a transcript using a given voice and model. The audio is streamed out as raw bytes.
+      requestBody:
+        $ref: "#/components/requestBodies/TTSRequest"
+      responses:
+        "200":
+          description: A stream of audio data.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+                description: Binary audio data. The underlying bytes will be in the requested output format.
+        default:
+          $ref: "#/components/responses/Error"
   "/tts/sse":
     post:
       summary: Stream Speech (Server-Sent Events)
@@ -200,6 +218,7 @@ components:
       content:
         application/json:
           schema:
+            title: TTS Request
             type: object
             required:
               - model_id
@@ -210,14 +229,18 @@ components:
               model_id:
                 title: Model ID
                 type: string
+                example: upbeat-moon
               transcript:
                 title: Transcript
                 type: string
+                example: "Hello, world! I'm generating audio on Cartesia."
               duration:
                 title: Duration
+                description: The maximum duration of the audio in seconds.
                 type: integer
               voice:
                 title: Voice
+                description: The voice to use for the speech. Can be either an ID or an embedding, specified by the `mode` field.
                 oneOf:
                   - type: object
                     properties:

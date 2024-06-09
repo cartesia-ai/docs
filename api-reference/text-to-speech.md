@@ -8,10 +8,16 @@ description: Audio generation endpoint
 If you try the API in GitBook, you will need to manually specify the API key in the X-API-Key header field. The authentication pane does not currently work due to a GitBook bug. We're following up on that with them.
 {% endhint %}
 
+## Bytes
+
+{% swagger src="../.gitbook/assets/openapi (2).yml" path="/tts/bytes" method="post" %}
+[openapi (2).yml](<../.gitbook/assets/openapi (2).yml>)
+{% endswagger %}
+
 ## Server-Sent Events
 
-{% swagger src="../.gitbook/assets/openapi (1).yml" path="/tts/sse" method="post" %}
-[openapi (1).yml](<../.gitbook/assets/openapi (1).yml>)
+{% swagger src="../.gitbook/assets/openapi.yml" path="/tts/sse" method="post" %}
+[openapi.yml](../.gitbook/assets/openapi.yml)
 {% endswagger %}
 
 ## WebSocket

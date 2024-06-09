@@ -200,6 +200,7 @@ components:
       content:
         application/json:
           schema:
+            title: TTS Request
             type: object
             required:
               - model_id
@@ -210,14 +211,18 @@ components:
               model_id:
                 title: Model ID
                 type: string
+                example: upbeat-moon
               transcript:
                 title: Transcript
                 type: string
+                example: "Hello, world! I'm generating audio on Cartesia."
               duration:
                 title: Duration
+                description: The maximum duration of the audio in seconds.
                 type: integer
               voice:
                 title: Voice
+                description: The voice to use for the speech. Can be either an ID or an embedding, specified by the `mode` field.
                 oneOf:
                   - type: object
                     properties:

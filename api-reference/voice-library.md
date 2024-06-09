@@ -8,22 +8,18 @@ description: Query available voices
 If you try the API in GitBook, you will need to manually specify the API key in the X-API-Key header field. The authentication pane does not currently work due to a GitBook bug. We're following up on that with them.
 {% endhint %}
 
-{% swagger src="../.gitbook/assets/openapi (1).yml" path="/voices/{id}/embedding" method="get" %}
-[openapi (1).yml](<../.gitbook/assets/openapi (1).yml>)
+{% swagger src="../.gitbook/assets/openapi.yml" path="/voices" method="get" %}
+[openapi.yml](../.gitbook/assets/openapi.yml)
 {% endswagger %}
 
-{% swagger src="../.gitbook/assets/openapi (1).yml" path="/voices" method="get" %}
-[openapi (1).yml](<../.gitbook/assets/openapi (1).yml>)
+{% swagger src="../.gitbook/assets/openapi.yml" path="/voices" method="post" %}
+[openapi.yml](../.gitbook/assets/openapi.yml)
 {% endswagger %}
 
-{% swagger src="../.gitbook/assets/openapi (1).yml" path="/voices" method="post" %}
-[openapi (1).yml](<../.gitbook/assets/openapi (1).yml>)
+{% swagger src="../.gitbook/assets/openapi.yml" path="/voices/{id}" method="get" %}
+[openapi.yml](../.gitbook/assets/openapi.yml)
 {% endswagger %}
 
-{% swagger src="../.gitbook/assets/openapi (1).yml" path="/voices/{id}" method="get" %}
-[openapi (1).yml](<../.gitbook/assets/openapi (1).yml>)
-{% endswagger %}
-
-{% swagger src="../.gitbook/assets/openapi (1).yml" path="/voices/{id}" method="delete" %}
-[openapi (1).yml](<../.gitbook/assets/openapi (1).yml>)
+{% swagger src="../.gitbook/assets/openapi.yml" path="/voices/{id}" method="delete" %}
+[openapi.yml](../.gitbook/assets/openapi.yml)
 {% endswagger %}
