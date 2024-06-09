@@ -27,3 +27,7 @@
 
 * [Python](client-libraries/python.md)
 * [JavaScript/TypeScript](client-libraries/javascript-typescript.md)
+
+## Migration Guides
+
+* [Migrating to the Stable API](migration-guides/migrating-to-the-stable-api.md)
