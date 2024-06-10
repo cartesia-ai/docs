@@ -14,8 +14,12 @@ Soon! We have multilingual models in the pipeline, and we're excited to share th
 
 <details>
 
-<summary>Where can I find your privacy policy and terms of service?</summary>
+<summary>Where can I find your terms of service, privacy policy, and acceptable use policy?</summary>
 
-We will be releasing both documents within the week.
+You can find them at the following links, which are located in the footer of our homepage:
+
+* [Terms of Service](https://cartesia.ai/legal/terms.html)
+* [Privacy Policy](https://cartesia.ai/legal/terms.html)
+* [Acceptable Use](https://cartesia.ai/legal/acceptable-use.html)
 
 </details>
