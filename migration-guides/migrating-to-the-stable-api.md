@@ -71,9 +71,11 @@ Here's what the new request format looks like, with required fields marked:
 }
 ```
 
-Note that many previously optional fields (`model_id`, `output_format`) are now required.
+Note that:
 
-**Chunk time and lookahead are no longer accepted as parameters.** If specified, they will be ignored.
+1. **Many previously optional fields are now required.** Such as `model_id`, `output_format`.
+2. **Output format is now passed as an object.**
+3. **Chunk time and lookahead are no longer accepted as parameters.** If specified, they will be ignored.
 
 ### Response Format
 
