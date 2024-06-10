@@ -28,7 +28,7 @@ All API requests use the following base URL: `https://api.cartesia.ai`. (For Web
 
 ### Send a `Cartesia-Version` header
 
-If you're using Cartesia in production, each request you send our API should have a `Cartesia-Version` header containing the date (`YYYY-MM-DD`) when you tested your integration.
+Each request you send our API should have a `Cartesia-Version` header containing the date (`YYYY-MM-DD`) when you tested your integration.
 
 This will help us provide you with timely deprecation notices and enable us to provide automatic backwards compatibility where possible.
 

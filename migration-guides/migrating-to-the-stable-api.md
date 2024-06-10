@@ -13,13 +13,13 @@ If you run into migration issues, please message our Discord (or shared Slack ch
 
 ## API-wide changes
 
+{% hint style="warning" %}
+**You must now pass the Cartesia-Version header with every request.** (For WebSockets, you may pass  the`cartesia_version` query parameter.)
+{% endhint %}
+
 Remove the `/v0` prefix and instead supply a `Cartesia-Version` header containing the version (a date in YYYY-MM-DD format) you developed or tested your integration against. As of this documentation, the latest version is `2024-06-10`.
 
 For WebSockets, you can alternatively specify the `cartesia_version` query parameter, which will take precedence.
-
-{% hint style="warning" %}
-By default, the `Cartesia-Version` header is set to the latest API version. If you do not specify it, you run the risk of a change causing your code to break.
-{% endhint %}
 
 ## Voices
 
