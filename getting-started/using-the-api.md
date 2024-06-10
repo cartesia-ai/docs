@@ -35,9 +35,9 @@ All endpoints use HTTPS. HTTP is not supported. API keys that call the API over 
 
 All API requests use the following base URL: `https://api.cartesia.ai`. (For WebSockets the corresponding protocol is `wss://`.)
 
-### Send a `Cartesia-Version` header
+### Always send a `Cartesia-Version` header
 
-Each request you send our API should have a `Cartesia-Version` header containing the date (`YYYY-MM-DD`) when you tested your integration.
+Each request you send our API should have a `Cartesia-Version` header containing the date (`YYYY-MM-DD`) when you tested your integration. For WebSockets, you can alternately use the `?cartesia_version` query parameter, which will take precedence.
 
 This will help us provide you with timely deprecation notices and enable us to provide automatic backwards compatibility where possible.
 
