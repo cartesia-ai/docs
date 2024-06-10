@@ -13,9 +13,13 @@ curl -N -X POST "https://api.cartesia.ai/tts/bytes" \
         -H "X-API-Key: YOUR_API_KEY" \
         -H "Content-Type: application/json" \
         -d '{"transcript": "Welcome to Cartesia Sonic!", "model_id": "upbeat-moon", "voice": {"mode":"id", "id": "a0e99841-438c-4a64-b679-ae501e7d6091"}, "output_format":{"container":"raw", "encoding":"pcm_f32le", "sample_rate":44100}}' \
-        | ffmpeg -f f32le -i pipe: output.wav
+        | ffmpeg -f f32le -i pipe: sonic.wav
 ```
 {% endcode %}
+
+You may need to install FFMPEG.
+
+You can play the resulting `sonic.wav` file with `afplay sonic.wav` (on macOS) or `ffplay sonic.wav` (on any system with FFMPEG installed).
 
 This command calls the [text-to-speech.md](../api-reference/text-to-speech.md "mention") endpoint which runs the text-to-speech generation and transmits the output in raw bytes.
 
