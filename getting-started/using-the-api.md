@@ -8,18 +8,14 @@ To generate your first words, run this command in your terminal, replacing `YOUR
 
 {% code overflow="wrap" %}
 ```bash
-curl -i -N -X POST "https://api.cartesia.ai/v0/audio/sse" -H "X-API-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"transcript": "Hello World! My name is Cartesia.", "model_id": "upbeat-moon", "voice": {"mode":"id", "id": "79f8b5fb-2cc8-479a-80df-29f7a7cf1a3e"}, "output_format":{"container":"raw", "encoding":"pcm_f32le", "sample_rate":44100}}'
+curl -N -X POST "https://api.cartesia.ai/tts/bytes" -H "X-API-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"transcript": "Welcome to Cartesia Sonic!", "model_id": "upbeat-moon", "voice": {"mode":"id", "id": "a0e99841-438c-4a64-b679-ae501e7d6091"}, "output_format":{"container":"raw", "encoding":"pcm_f32le", "sample_rate":44100}}' | ffmpeg -f f32le -i pipe: output.wav
 ```
 {% endcode %}
 
-This command calls the [text-to-speech.md](../api-reference/text-to-speech.md "mention") endpoint which runs the text-to-speech generation and transmits the output in chunks.  Each chunk is a JSON string containing a chunk of audio data and its associated metadata.
+This command calls the [text-to-speech.md](../api-reference/text-to-speech.md "mention") endpoint which runs the text-to-speech generation and transmits the output in raw bytes.
 
 {% hint style="info" %}
-See [text-to-speech.md](../api-reference/text-to-speech.md "mention") for an exhaustive enumeration of the fields returned by the API.
-{% endhint %}
-
-{% hint style="info" %}
-The voice used in this example can be found in the Voices tab of the playground at [https://play.cartesia.ai/voices/79f8b5fb-2cc8-479a-80df-29f7a7cf1a3e](https://play.cartesia.ai/voices/79f8b5fb-2cc8-479a-80df-29f7a7cf1a3e)
+The voice used in this example can be found [on the playground](https://play.cartesia.ai/voices/a0e99841-438c-4a64-b679-ae501e7d6091).
 {% endhint %}
 
 ## API Conventions

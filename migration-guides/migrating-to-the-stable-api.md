@@ -27,7 +27,7 @@ The `/voices/{id}/embedding` endpoint has been removed in favor of just `/voices
 
 ## Text-to-Speech
 
-Text-to-speech endpoints have all moved from `/tts` to `/audio`, so if you were hitting `/v0/audio/websocket`, you should now hit `/tts/websocket`. (Correspondingly, for Server-Sent Events, hit `/tts/sse`.)
+Text-to-speech endpoints have all moved from `/audio` to `/tts`, so if you were hitting `/v0/audio/websocket`, you should now hit `/tts/websocket`. (Correspondingly, for Server-Sent Events, hit `/tts/sse`.)
 
 ### Request Format
 
