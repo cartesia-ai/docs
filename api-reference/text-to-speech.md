@@ -25,18 +25,19 @@ Passing an ID currently has twice the latency as passing an embedding directly. 
 {% hint style="info" %}
 You can try out WebSockets using `wscat`. If you have Node installed, just run:
 
-`npx wscat -c "wss://api.cartesia.ai/v0/tts/websocket?api_key=<YOUR_API_KEY>"`
+`npx wscat -c "wss://api.cartesia.ai/tts/websocket?api_key=<YOUR_API_KEY>&cartesia_version=<CARTESIA_VERSION>"`
 {% endhint %}
 
-<mark style="color:green;">`GET`</mark> `/v0/tts/websocket?api_key=<YOUR_API_KEY>`
+<mark style="color:green;">`GET`</mark> `/tts/websocket?api_key=<YOUR_API_KEY>&cartesia_version=<API_VERSION>`
 
 Initiate a bidirectional WebSocket connection.
 
 **Query Parameters**
 
-| Name      | Value            |
-| --------- | ---------------- |
-| `api_key` | `<YOUR_API_KEY>` |
+| Name               | Value                |
+| ------------------ | -------------------- |
+| `api_key`          | `<YOUR_API_KEY>`     |
+| `cartesia_version` | `<CARTESIA_VERSION>` |
 
 **WebSocket Request**
 
