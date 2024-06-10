@@ -8,7 +8,12 @@ To generate your first words, run this command in your terminal, replacing `YOUR
 
 {% code overflow="wrap" %}
 ```bash
-curl -N -X POST "https://api.cartesia.ai/tts/bytes" -H "Cartesia-Version: 2024-06-10" -H "X-API-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"transcript": "Welcome to Cartesia Sonic!", "model_id": "upbeat-moon", "voice": {"mode":"id", "id": "a0e99841-438c-4a64-b679-ae501e7d6091"}, "output_format":{"container":"raw", "encoding":"pcm_f32le", "sample_rate":44100}}' | ffmpeg -f f32le -i pipe: output.wav
+curl -N -X POST "https://api.cartesia.ai/tts/bytes" \
+        -H "Cartesia-Version: 2024-06-10" \
+        -H "X-API-Key: YOUR_API_KEY" \
+        -H "Content-Type: application/json" \
+        -d '{"transcript": "Welcome to Cartesia Sonic!", "model_id": "upbeat-moon", "voice": {"mode":"id", "id": "a0e99841-438c-4a64-b679-ae501e7d6091"}, "output_format":{"container":"raw", "encoding":"pcm_f32le", "sample_rate":44100}}' \
+        | ffmpeg -f f32le -i pipe: output.wav
 ```
 {% endcode %}
 
