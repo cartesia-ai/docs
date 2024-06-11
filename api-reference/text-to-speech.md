@@ -10,8 +10,8 @@ Passing an ID currently has twice the latency as passing an embedding directly. 
 
 ## Bytes
 
-{% swagger src="../.gitbook/assets/openapi (2).yml" path="/tts/bytes" method="post" %}
-[openapi (2).yml](<../.gitbook/assets/openapi (2).yml>)
+{% swagger src="../.gitbook/assets/openapi (3).yml" path="/tts/bytes" method="post" %}
+[openapi (3).yml](<../.gitbook/assets/openapi (3).yml>)
 {% endswagger %}
 
 ## Server-Sent Events
@@ -45,5 +45,4 @@ Send a JSON-encoded message on the WebSocket. The schema of said message should 
 
 **Responses**
 
-After you send a message body on the WebSocket, the API will respond with a series of  JSON chunks with the same schema as the data in Server-Sent Events responses.
-
+After you send a message body on the WebSocket, the API will respond with a series of JSON chunks with the same schema as the data in Server-Sent Events responses.
