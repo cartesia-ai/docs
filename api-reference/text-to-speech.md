@@ -10,14 +10,14 @@ Passing an ID currently has twice the latency as passing an embedding directly. 
 
 ## Bytes
 
-{% swagger src="../.gitbook/assets/openapi (3).yml" path="/tts/bytes" method="post" %}
-[openapi (3).yml](<../.gitbook/assets/openapi (3).yml>)
+{% swagger src="../.gitbook/assets/openapi.yml" path="/tts/bytes" method="post" %}
+[openapi.yml](<../.gitbook/assets/openapi.yml>)
 {% endswagger %}
 
 ## Server-Sent Events
 
-{% swagger src="../.gitbook/assets/openapi (3).yml" path="/tts/sse" method="post" %}
-[openapi (3).yml](<../.gitbook/assets/openapi (3).yml>)
+{% swagger src="../.gitbook/assets/openapi.yml" path="/tts/sse" method="post" %}
+[openapi.yml](<../.gitbook/assets/openapi.yml>)
 {% endswagger %}
 
 ## WebSocket
