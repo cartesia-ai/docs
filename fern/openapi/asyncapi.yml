@@ -33,7 +33,7 @@ channels:
     subscribe:
       message:
         oneOf:
-          - $ref: "#/components/messages/VoiceEmbeddingResponse"
+          - $ref: "#/components/messages/WebSocketResponse"
           - $ref: "#/components/messages/Error"
     x-fern-examples:
       - query-parameters:
@@ -45,7 +45,7 @@ channels:
             value: 
               context_id: "happy-monkeys-fly"
               model_id: "sonic-english"
-              transcript: "Hello, world! I'\''m generating audio on Cartesia."
+              transcript: "Hello, world! I'm generating audio on Cartesia."
               duration: 180
               voice:
                 mode: "id"
@@ -56,7 +56,7 @@ channels:
                 sample_rate: 8000
               language: "en"
               add_timestamps: false
-          - messageId: VoiceEmbeddingResponse
+          - messageId: WebSocketResponse
             type: subscribe
             value:
               status_code: 206
@@ -75,10 +75,10 @@ components:
       name: SessionSettings
       payload:
         "$ref": "#/components/schemas/StreamInputRequest"
-    VoiceEmbeddingResponse:
+    WebSocketResponse:
       name: UserInput
       payload:
-        "$ref": "#/components/schemas/VoiceEmbeddingResponse"
+        "$ref": "#/components/schemas/WebSocketResponse"
     Error:
       name: Error
       payload:
@@ -164,16 +164,21 @@ components:
       type: string
       example: error in voice
 
-    VoiceEmbeddingResponse:
-      name: Voice Embedding
+    WebSocketResponse:
       properties:
-        embedding:
-          type: array
-          items: 
-            type: number
+        type: 
+          type: string
+        done: 
+          type: boolean
+        status-code: 
+          type: number
+        step_time: 
+          type: number
+        context_id: 
+          type: string
+        data: 
+          type: string
       type: object
-      required:
-        - embedding
     
     Voice:
       type: object
