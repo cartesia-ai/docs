@@ -35,6 +35,36 @@ channels:
         oneOf:
           - $ref: "#/components/messages/VoiceEmbeddingResponse"
           - $ref: "#/components/messages/Error"
+    x-fern-examples:
+      - query-parameters:
+          api_key: "your-api-key"
+          cartesia_version: "2024-06-10"
+        messages:
+          - messageId: TTSRequest
+            type: publish
+            value: 
+              context_id: "happy-monkeys-fly"
+              model_id: "sonic-english"
+              transcript: "Hello, world! I'\''m generating audio on Cartesia."
+              duration: 180
+              voice:
+                mode: "id"
+                id: "a0e99841-438c-4a64-b679-ae501e7d6091"
+              output_format:
+                container: "raw"
+                encoding: "pcm_s16le"
+                sample_rate: 8000
+              language: "en"
+              add_timestamps: false
+          - messageId: VoiceEmbeddingResponse
+            type: subscribe
+            value:
+              status_code: 206
+              done: false
+              type: "chunk"
+              data: "aSDinaTvuI8gbWludGxpZnk="
+              step_time: 123
+              context_id: "happy-monkeys-fly"
 components:
   messages:
     TTSRequest:
@@ -57,6 +87,10 @@ components:
     TTSRequest:
       type: object
       additionalProperties: false
+      required: 
+        - context_id
+        - model_id
+        - transcript
       properties: 
         context_id: 
           type: string
