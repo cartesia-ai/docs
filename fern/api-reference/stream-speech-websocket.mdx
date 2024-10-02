@@ -55,6 +55,27 @@ You may also cancel outgoing requests through the websocket. This will only halt
 }
 ```
 
+### Cancelling Requests
+You may also cancel outgoing requests through the websocket.
+
+To cancel a request, send a JSON message with the following structure:
+
+```json WebSocket Request
+{
+  "context_id": "happy-monkeys-fly",
+  "cancel": true
+}
+```
+
+When you send a cancel request:
+
+1. It will only halt requests that have not begun generating a response yet.
+2. Any currently generating request will continue sending responses until completion.
+
+<Note>
+The `context_id` in the cancel request should match the `context_id` of the request you want to cancel.
+</Note>
+
 ## WebSocket Responses
 
 After you send a message body on the WebSocket, the API will respond with a series of JSON chunks with the same schema as the data in Server-Sent Events responses.
