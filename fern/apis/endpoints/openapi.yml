@@ -56,6 +56,75 @@ paths:
                   propertyName: status_code
         default:
           $ref: "#/components/responses/Error"
+  "/voice-conversion/sse":
+    post:
+      summary: Voice Conversion (Server-Sent Events)
+      description: |-
+        Converts an audio clip to a new voice. The audio is streamed out as Server-Sent Events.
+        To specify the target voice, exactly one of `voice_id` or `voice_embedding` must be given.
+      x-fern-streaming: true
+      parameters:
+        - $ref: "#/components/parameters/Cartesia-Version"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - clip
+                - model_id
+                - output_format[sample_rate]
+                # We should require one of voice_id and voice_embedding. This will be easier with OpenAPI 4: https://github.com/OAI/sig-moonwalk/discussions/100
+              properties:
+                clip:
+                  type: string
+                  format: binary
+                  description: The audio clip to convert to a new voice. Must be at most 4 MB in size.
+                context_id:
+                  type: string
+                  description: A unique identifier for the requests belonging to this context. Context id must consist of only alphanumeric characters, hyphens, and underscores.
+                  example: "happy-monkeys-fly"
+                model_id:
+                  title: Model ID
+                  type: string
+                  description: The ID of the model to use for the conversion. For voice conversion, this must be `voice-conversion`.
+                  example: voice-conversion
+                output_format[sample_rate]:
+                  title: Sample Rate
+                  type: integer
+                  description: The sample rate of the output.
+                  example: 44100
+                output_format[encoding]:
+                  title: Encoding
+                  description: The encoding of the output. This is optional, and defaults to `pcm_f32le` unless specified.
+                  type: string
+                  enum: ["pcm_s16le", "pcm_f32le", "pcm_mulaw", "pcm_alaw"]
+                voice_id:
+                  type: string
+                  description: The ID of the voice to convert to. 
+                  example: a0e99841-438c-4a64-b679-ae501e7d6091
+                voice_embedding:
+                  type: string
+                  description: |- 
+                    A string containing an array of numbers representing the voice embedding. The array must be exactly 192 numbers long.
+                    
+                    Warning: Unlike other endpoints, for voice conversion you must pass in voice embeddings as a _string_, not an array object.
+      responses:
+        "200":
+          description: A stream of audio data.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/JSONChunkResponse"
+                  - $ref: "#/components/schemas/JSONDoneResponse"
+                  - $ref: "#/components/schemas/JSONErrorResponse"
+                discriminator:
+                  propertyName: status_code
+        default:
+          $ref: "#/components/responses/Error"
+
+
 
   "/voices":
     get:
