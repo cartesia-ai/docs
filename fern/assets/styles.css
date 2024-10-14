@@ -1,3 +1,7 @@
+html {
+	font-feature-settings: "cv01", "cv02", "cv03", "cv04", "cv11", "ss08";
+}
+
 .fern-web-socket-trigger {
 	transition-duration: 0.01s !important;
 }
@@ -22,7 +26,6 @@
 .fern-prose h2,
 .fern-prose h3 {
 	font-weight: 600;
-	font-feature-settings: "cv01", "cv02", "cv03", "cv04", "cv11", "ss08";
 }
 
 .fern-card .t-default {
