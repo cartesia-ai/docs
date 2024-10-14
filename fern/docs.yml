@@ -82,9 +82,11 @@ navigation:
             path: client-libraries/python.mdx
   - tab: reference
     layout:
-      - page: API Conventions
-        icon: fa-ruler
-        path: api-reference/api-conventions.mdx
+      - section: Use the API
+        contents:
+          - page: API Conventions
+            icon: fa-ruler
+            path: api-reference/api-conventions.mdx
       - api: API Reference
         api-name: voices
         paginated: true
