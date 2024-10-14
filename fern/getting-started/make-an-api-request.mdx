@@ -13,10 +13,17 @@ slug: getting-started/make-an-api-request
 FFmpeg isn't required to use the Cartesia API, but it's useful for saving, playing, and converting audio files, so we will use it in the examples below. You can install it using your platform's package manager:
 
 ```sh
-brew install ffmpeg  # macOS
-sudo apt install ffmpeg  # Debian/Ubuntu
-dnf install ffmpeg  # Fedora
-sudo pacman -S ffmpeg  # Arch Linux
+# macOS
+brew install ffmpeg
+
+# Debian/Ubuntu
+sudo apt install ffmpeg
+
+# Fedora
+dnf install ffmpeg
+
+# Arch Linux
+sudo pacman -S ffmpeg
 ```
 
 ## Generate your first words
@@ -33,6 +40,10 @@ curl -N -X POST "https://api.cartesia.ai/tts/bytes" \
         -H "Content-Type: application/json" \
         -d '{"transcript": "Welcome to Cartesia Sonic!", "model_id": "sonic-english", "voice": {"mode":"id", "id": "a0e99841-438c-4a64-b679-ae501e7d6091"}, "output_format":{"container":"wav", "encoding":"pcm_f32le", "sample_rate":44100}}'
 ```
+
+<Warning>
+Make sure to replace `YOUR_API_KEY` with your real API key, or the command won’t output anything!
+</Warning>
 
 You can play the resulting `sonic.wav` file with `afplay sonic.wav` (on macOS) or `ffplay sonic.wav` (on any system with FFmpeg installed). You can also just double click it in your file explorer.
 
@@ -119,7 +130,27 @@ CARTESIA_API_KEY=<your_api_key> uv run cartesia.py
 
 <Tab title="JavaScript/TypeScript">
 
+<Steps>
+### Install the SDK
+
+```sh
+# NPM
+npm install @cartesia/cartesia-js fluent-ffmpeg
+
+# Yarn
+yarn add @cartesia/cartesia-js fluent-ffmpeg
+
+# Bun
+bun add @cartesia/cartesia-js fluent-ffmpeg
+
+# PNPM
+pnpm add @cartesia/cartesia-js fluent-ffmpeg
+```
+
+### Make the API call
+
 ```js
+// hello.js
 import Cartesia from "@cartesia/cartesia-js";
 import fs from "fs";
 import ffmpeg from "fluent-ffmpeg";
@@ -167,13 +198,13 @@ const buf = new Float32Array(source.durationToSampleCount(1));
 const file = fs.createWriteStream("sonic.pcm");
 
 while (true) {
-    const read = await source.read(buf);
+	const read = await source.read(buf);
 	// If we've reached the end of the source, then read < buffer.length.
 	// In that case, we don't want to play the entire buffer, as that
 	// will cause repeated audio.
 	const playableAudio = buf.subarray(0, read);
 
-    file.write(Buffer.from(playableAudio.buffer));
+	file.write(Buffer.from(playableAudio.buffer));
 
 	if (read < buf.length) {
 		// No more audio to read.
@@ -191,6 +222,15 @@ ffmpeg.input("sonic.pcm").inputFormat("f32le").output("sonic.wav").run();
 spawn("ffplay", ["-autoexit", "-f", "wav", "sonic.wav"]);
 ```
 
+### Run the script
+
+```sh
+CARTESIA_API_KEY=<your_api_key> node hello.js
+```
+
+The Cartesia API client also supports other runtimes, like Bun and Deno.
+
+</Steps>
 </Tab>
 
 </Tabs>
