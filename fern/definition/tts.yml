@@ -1,12 +1,87 @@
 imports:
   voices: ./voices.yml
   embedding: ./embedding.yml
+
+service:
+  base-path: /tts
+  auth: true
+  endpoints:
+    bytes:
+      path: /bytes
+      method: POST
+      display-name: Text to Speech (Bytes)
+      request: TTSRequest
+    sse:
+      path: /sse
+      method: POST
+      display-name: Text to Speech (SSE)
+      request: TTSRequest
+
 types:
   TTSRequest:
     properties:
       model_id: string
       transcript: string
       voice: TTSRequestVoiceSpecifier
+      language: SupportedLanguage
+      output_format: OutputFormat
+      duration:
+        type: double
+        docs: |
+          The maximum duration of the audio in seconds. You do not usually need to specify this.
+
+          If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+
+  SupportedLanguage:
+    docs: |
+      The language of the transcript.
+
+      Options: English (en), French (fr), German (de), Spanish (es), Portuguese (pt), Chinese (zh), Japanese (ja), Hindi (hi), Italian (it), Korean (ko), Dutch (nl), Polish (pl), Russian (ru), Swedish (sv), Turkish (tr).
+
+    enum:
+      - en
+      - fr
+      - de
+      - es
+      - pt
+      - zh
+      - ja
+      - hi
+      - it
+      - ko
+      - nl
+      - pl
+      - ru
+      - sv
+      - tr
+
+  OutputFormat:
+    discriminant: container
+    union:
+      raw: RawOutputFormat
+      wav: WAVOutputFormat
+      mp3: MP3OutputFormat
+
+  RawOutputFormat:
+    properties:
+      encoding: RawEncoding
+      sample_rate: integer
+
+  RawEncoding:
+    enum:
+      - pcm_f32le
+      - pcm_s16le
+      - pcm_mulaw
+      - pcm_alaw
+
+  WAVOutputFormat:
+    extends: RawOutputFormat
+
+  MP3OutputFormat:
+    properties:
+      sample_rate: integer
+      bit_rate: integer
+
   TTSRequestVoiceSpecifier:
     discriminant: mode
     union:
@@ -90,18 +165,3 @@ types:
         name: CURIOSITY_HIGH
       - value: curiosity:highest
         name: CURIOSITY_HIGHEST
-
-service:
-  base-path: /tts
-  auth: true
-  endpoints:
-    bytes:
-      path: /bytes
-      method: POST
-      display-name: Text to Speech (Bytes)
-      request: TTSRequest
-    sse:
-      path: /sse
-      method: POST
-      display-name: Text to Speech (SSE)
-      request: TTSRequest
