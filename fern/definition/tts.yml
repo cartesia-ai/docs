@@ -17,6 +17,42 @@ service:
       display-name: Text to Speech (SSE)
       request: TTSRequest
 
+channel:
+  path: /tts/websocket
+  display-name: Text to Speech (WebSocket)
+  auth: false
+  path-parameters:
+    id: string
+  query-parameters:
+    cartesia_version: string
+    api_key: string
+  messages:
+    send:
+      display-name: "Send"
+      origin: client
+      body: string
+
+    receive:
+      display-name: "Receive"
+      origin: server
+      body:
+        name: ReceiveEvent
+        properties:
+          text: string
+
+  examples:
+    - name: Default example
+      path-parameters:
+        id: doc_123
+      messages:
+        - type: send
+          body: "uvxcdv12344412b"
+        - type: receive
+          body:
+            text: "The weather for today..."
+        - type: send
+          body: "uvxcdv12344412b"
+
 types:
   TTSRequest:
     properties:
