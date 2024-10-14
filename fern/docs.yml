@@ -91,6 +91,13 @@ navigation:
         api-name: voices
         paginated: true
         flattened: true
+        layout:
+          - api-status: []
+          - tts:
+              - page: Compare TTS Endpoints
+                path: api-reference/tts-endpoints-overview.mdx
+                icon: fa-scale-balanced
+          - voices: []
 typography:
   bodyFont:
     name: Tiempos Text
