@@ -70,3 +70,10 @@ html {
 .external-link-icon {
 	display: none !important;
 }
+
+.fern-sidebar-icon {
+	width: 2.5rem !important;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
