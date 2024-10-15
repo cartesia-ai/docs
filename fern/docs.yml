@@ -48,38 +48,51 @@ navigation:
         contents:
           - page: Overview
             path: getting-started/overview.mdx
+            icon: fa-browser
           - page: Make an API request
             path: getting-started/make-an-api-request.mdx
-          - page: Dev Quickstart
-            path: getting-started/dev-quickstart.mdx
+            icon: fa-paper-plane
+      - section: Use an SDK
+        contents:
+          - page: JavaScript/TypeScript
+            path: client-libraries/javascript-typescript.mdx
+            icon: fa-code
+          - page: Python
+            path: client-libraries/python.mdx
+            icon: fa-code
       - section: Learn about Sonic
         contents:
           - page: Models
             path: learn-about-sonic/models.mdx
-      - section: Concepts
+            icon: fa-microchip
+          - section: Capabilities
+            icon: fa-cubes
+            contents:
+              - page: Clone Voices
+                path: learn-about-sonic/capabilities/clone-voices.mdx
+                icon: fa-clone
+              - page: Specify Custom Pronunciations
+                path: learn-about-sonic/capabilities/custom-pronunciations.mdx
+                icon: fa-microphone
+              - page: Control Speed and Emotion
+                path: learn-about-sonic/capabilities/speed-and-emotion-controls.mdx
+                icon: fa-gauge
+              - page: Stream Inputs
+                path: learn-about-sonic/capabilities/stream-inputs.mdx
+                icon: fa-waveform
+          - page: Formatting Text for Sonic
+            path: learn-about-sonic/format-text-for-sonic.mdx
+            icon: fa-text-size
+      - section: Build with Sonic
         contents:
-          - page: Continuations (Conditioning on Past Generations)
-            path: concepts/continuations.mdx
+          - page: Integrate with Twilio
+            path: build-with-sonic/integrate-with-twilio.mdx
+            icon: fa-phone
+      - section: Peek Behind the Scenes
+        contents:
           - page: Embeddings and Voice Mixing
             path: concepts/embeddings-and-voice-mixing.mdx
-      - section: User Guides
-        contents:
-          - page: Custom Pronunciations
-            path: user-guides/custom-pronunciation-guide.mdx
-          - page: Improving Speech Quality
-            path: user-guides/improving-speech-quality.mdx
-          - page: Voice Cloning Guide
-            path: user-guides/voice-cloning.mdx
-          - page: Controlling Speed & Emotion
-            path: user-guides/voice-control.mdx
-          - page: Twilio + Cartesia
-            path: user-guides/cartesia-twilio.mdx
-      - section: Client Libraries
-        contents:
-          - page: JavaScript/TypeScript
-            path: client-libraries/javascript-typescript.mdx
-          - page: Python
-            path: client-libraries/python.mdx
+            icon: fa-waveform
   - tab: reference
     layout:
       - section: Use the API
@@ -87,6 +100,9 @@ navigation:
           - page: API Conventions
             icon: fa-ruler
             path: api-reference/api-conventions.mdx
+          - page: Concurrency Limits and Timeouts
+            path: api-reference/concurrency-limits-and-timeouts.mdx
+            icon: fa-traffic-light
       - api: API Reference
         api-name: voices
         paginated: true

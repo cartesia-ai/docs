@@ -1,11 +1,9 @@
 ---
-title: Controlling Speed & Emotion
+title: Control Speed and Emotion
 subtitle: >-
-  How to control the speed and emotion of voices while generating audio with Sonic.
-slug: user-guides/voice-control
+  Sonic supports controlling the speed and emotion of generated speech.
+slug: learn-about-sonic/capabilities/speed-and-emotion-controls
 ---
-
-## Controlling Voices through Speed & Emotion
 
 The `__experimental_controls` parameter allows you to fine-tune the voice output by adjusting speed and emotion. This feature is currently experimental and may be subject to changes in future API versions.
 
@@ -37,34 +35,40 @@ The `speed` parameter adjusts the pace of speech. Available options are:
 - `"fast"`: Faster than normal speech
 - `"fastest"`: Very fast speech
 
-For more granular control, you can define speed as a float within the range [-1.0, 1.0]. A value of 0.0 represents the default speed, while negative values slow down the speech and positive values speed it up.
+For more granular control, you can define speed as a number within the range $[-1.0, 1.0]$. A value of 0 represents the default speed, while negative values slow down the speech and positive values speed it up.
 
-Example:
+<Tabs>
+<Tab title="Using a label">
 ```json
 "__experimental_controls": {
   "speed": "fast"
 }
 ```
+</Tab>
 
-Example with float value:
+<Tab title="Using a number">
 ```json
 "__experimental_controls": {
   "speed": -0.1
 }
 ```
+</Tab>
+</Tabs>
 
 ### Emotion Control
 
 The `emotion` parameter is an array of emotion tags that modify the voice's tone by adding emotion. Each tag follows the format `"emotion_name:level"`.
 
-#### Emotion Names:
+#### Emotion Names
+
 - `anger`
 - `positivity`
 - `surprise`
 - `sadness`
 - `curiosity`
 
-#### Emotion Levels:
+#### Emotion Levels
+
 - `lowest`: Slight addition of the emotion
 - `low`: Mild addition of the emotion
 - (omit level for moderate addition of the emotion)

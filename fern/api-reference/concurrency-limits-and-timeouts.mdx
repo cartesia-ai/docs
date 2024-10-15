@@ -1,0 +1,35 @@
+---
+title: Concurrency Limits and Timeouts
+subtitle: >-
+  Learn about concurrency limits and timeouts with the Cartesia API.
+slug: api-reference/concurrency-limits-and-timeouts
+---
+
+We measure concurrency in terms of the number of unique contexts active at a given time. For WebSockets, each `context_id` corresponds to a unique context; additional messages you send with the same `context_id` will not count against your concurrency limit. For regular HTTP endpoints, each HTTP request corresponds to a context.
+
+If you exceed your concurrency limit, you will receive a `429 Too Many Requests` error. You can check your concurrency limit and upgrade it on the playground at [play.cartesia.ai](https://play.cartesia.ai).
+
+## Interpreting concurrency limits
+
+How you interpret your concurrency limit depends on how you're using Sonic.
+
+<AccordionGroup>
+  <Accordion title="Conversational use cases">
+
+    For real-time conversational use cases, such as powering voice agents, the number of parallel conversations you can support is effectively 4X your concurrency limit.
+
+    For example, if you have a concurrency limit of 15, you can typically support 60 parallel conversations.
+
+  </Accordion>
+  <Accordion title="Non-conversational use cases">
+
+    For non-conversational use cases, such as generating speech in batch jobs, there is a more direct relationship between your concurrency limit and the number of parallel generations you can support.
+
+  For example, if you have a concurrency limit of 15, you can typically support 15 parallel generations. You can use a connection pool to ensure you don't exceed your concurrency limit.
+
+  </Accordion>
+</AccordionGroup>
+
+## WebSocket timeouts
+
+We close idle WebSocket connections after 5 minutes. If you need to keep a connection open for longer, you can periodically do a generation to keep the connection from idling.
