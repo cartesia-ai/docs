@@ -212,14 +212,15 @@ while (true) {
 	}
 }
 
-// Close the file.
+// Clean up.
 file.close();
+websocket.disconnect();
 
 // Convert the raw PCM bytes to a WAV file.
 ffmpeg.input("sonic.pcm").inputFormat("f32le").output("sonic.wav").run();
 
 // Play the file.
-spawn("ffplay", ["-autoexit", "-f", "wav", "sonic.wav"]);
+spawn("ffplay", ["-autoexit", "-nodisp", "sonic.wav"]);
 ```
 
 ### Run the script

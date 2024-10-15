@@ -1,26 +1,26 @@
 ---
-title: Twilio + Cartesia
+title: Integrate with Twilio
 subtitle: >-
   How to integrate Twilio with Cartesia to generate audio from text and send it as a voice call.
-slug: user-guides/cartesia-twilio
 ---
-
-
-## Integrating Twilio with Cartesia
 
 This guide will walk you through the process of integrating Cartesia's Text-to-Speech (TTS) API with Twilio's calling capabilities. By following these steps, you'll be able to create an application that initiates phone calls and uses Cartesia's TTS to speak to the call recipient.
 
-### Prerequisites
+## Prerequisites
 
 Before you begin, make sure you have the following:
 
-- Node.js installed on your system
-- A Twilio account with Account SID and Auth Token
-- A Cartesia API key
-- An outbound phone number to call
-- A Twilio phone number to call from
+1. [Node.js](https://nodejs.org/en/download) installed.
+2. A [Twilio account](https://www.twilio.com/en-us/try-twilio). You will need your Account SID and Auth Token.
+3. A [Cartesia API key](https://play.cartesia.ai/keys).
+4. A phone number that you want to call.
+5. A Twilio phone number to call from.
 
-### Step 1: Set Up Your Project
+## Get Started
+
+<Steps>
+
+### Set Up Your Project
 
 1. Create a new directory for your project and navigate to it in your terminal.
 2. Initialize a new Node.js project:
@@ -32,7 +32,7 @@ Before you begin, make sure you have the following:
    npm install twilio ws http ngrok dotenv
    ```
 
-### Step 2: Configure Environment Variables
+### Configure Environment Variables
 
 Create a `.env` file in your project root and add the following:
 
@@ -43,7 +43,7 @@ CARTESIA_API_KEY="your_cartesia_api_key"
 ```
 Replace the placeholder values with your actual credentials.
 
-### Step 3: Create the Main Script
+### Create the Main Script
 
 Create a file named `app.js` (or any name you prefer) and add the following code:
 
@@ -81,7 +81,7 @@ for (const key of requiredConfig) {
 const client = twilio(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOKEN);
 ```
 
-### Step 4: Configure Cartesia TTS
+### Configure Cartesia TTS
 
 In the script, you'll find a configuration section for Cartesia TTS. Make sure to set the following variables according to your needs:
 
@@ -95,7 +95,7 @@ const voice = {
 const partialResponse = 'Hi there, my name is Cartesia. I hope youre having a great day!';
 ```
 
-### Step 5: Set Up Twilio Calling
+### Set Up Twilio Calling
 
 Configure your Twilio outbound and inbound numbers:
 
@@ -104,7 +104,7 @@ const outbound = "+1234567890"; // Replace with the number you want to call
 const inbound = "+1234567890";  // Replace with your Twilio number
 ```
 
-### Step 6: Implement Main Logic
+### Implement Main Logic
 
 The `main()` function orchestrates the entire process:
 
@@ -338,13 +338,15 @@ async function main() {
 main();
 ```
 
-### Step 7: Run the Application
+### Run the Application
 
 To run the application, use the following command:
 
 ```bash
 node app.js
 ```
+
+</Steps>
 
 ## How It Works
 

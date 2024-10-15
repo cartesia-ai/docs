@@ -2,7 +2,6 @@
 title: Concurrency Limits and Timeouts
 subtitle: >-
   Learn about concurrency limits and timeouts with the Cartesia API.
-slug: api-reference/concurrency-limits-and-timeouts
 ---
 
 We measure concurrency in terms of the number of unique contexts active at a given time. For WebSockets, each `context_id` corresponds to a unique context; additional messages you send with the same `context_id` will not count against your concurrency limit. For regular HTTP endpoints, each HTTP request corresponds to a context.

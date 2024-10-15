@@ -1,6 +1,6 @@
-import Cartesia from "npm:@cartesia/cartesia-js";
+import Cartesia from "@cartesia/cartesia-js";
 import fs from "node:fs";
-import FFmpeg from "npm:fluent-ffmpeg";
+import FFmpeg from "fluent-ffmpeg";
 import { spawn } from "node:child_process";
 import { Buffer } from "node:buffer";
 
@@ -48,13 +48,13 @@ const buf = new Float32Array(source.durationToSampleCount(1));
 const file = fs.createWriteStream("sonic.pcm");
 
 while (true) {
-    const read = await source.read(buf);
+	const read = await source.read(buf);
 	// If we've reached the end of the source, then read < buffer.length.
 	// In that case, we don't want to play the entire buffer, as that
 	// will cause repeated audio.
 	const playableAudio = buf.subarray(0, read);
 
-    file.write(Buffer.from(playableAudio.buffer));
+	file.write(Buffer.from(playableAudio.buffer));
 
 	if (read < buf.length) {
 		// No more audio to read.
@@ -62,11 +62,12 @@ while (true) {
 	}
 }
 
-// Close the file.
+// Clean up.
 file.close();
+websocket.disconnect();
 
 // Convert the raw PCM bytes to a WAV file.
 ffmpeg.input("sonic.pcm").inputFormat("f32le").output("sonic.wav").run();
 
 // Play the file.
-spawn("ffplay", ["-autoexit", "-f", "wav", "sonic.wav"]);
+spawn("ffplay", ["-autoexit", "-nodisp", "sonic.wav"]);

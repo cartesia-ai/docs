@@ -33,6 +33,7 @@ tabs:
     display-name: Documentation
     slug: docs
     icon: fa-regular fa-file-alt
+    skip-slug: true
   reference:
     display-name: API Reference
     slug: reference
@@ -60,33 +61,33 @@ navigation:
           - page: Python
             path: client-libraries/python.mdx
             icon: fa-code
-      - section: Learn about Sonic
+      - section: Build with Sonic
         contents:
           - page: Models
-            path: learn-about-sonic/models.mdx
+            path: build-with-sonic/models.mdx
             icon: fa-microchip
-          - section: Capabilities
+          - section: Capability Guides
             icon: fa-cubes
             contents:
               - page: Clone Voices
-                path: learn-about-sonic/capabilities/clone-voices.mdx
+                path: build-with-sonic/capabilities/clone-voices.mdx
                 icon: fa-clone
               - page: Specify Custom Pronunciations
-                path: learn-about-sonic/capabilities/custom-pronunciations.mdx
+                path: build-with-sonic/capabilities/custom-pronunciations.mdx
                 icon: fa-microphone
               - page: Control Speed and Emotion
-                path: learn-about-sonic/capabilities/speed-and-emotion-controls.mdx
+                path: build-with-sonic/capabilities/speed-and-emotion-controls.mdx
                 icon: fa-gauge
-              - page: Stream Inputs
-                path: learn-about-sonic/capabilities/stream-inputs.mdx
+              - page: Stream Inputs using Continuations
+                path: build-with-sonic/capabilities/stream-inputs.mdx
                 icon: fa-waveform
           - page: Formatting Text for Sonic
-            path: learn-about-sonic/format-text-for-sonic.mdx
+            path: build-with-sonic/format-text-for-sonic.mdx
             icon: fa-text-size
-      - section: Build with Sonic
+      - section: Integrate with Sonic
         contents:
-          - page: Integrate with Twilio
-            path: build-with-sonic/integrate-with-twilio.mdx
+          - page: Twilio
+            path: integrate-with-sonic/twilio.mdx
             icon: fa-phone
       - section: Peek Behind the Scenes
         contents:
