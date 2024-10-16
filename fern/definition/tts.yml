@@ -20,36 +20,82 @@ service:
 channel:
   path: /tts/websocket
   display-name: Text to Speech (WebSocket)
-  auth: false
+  auth: true
   query-parameters:
-    cartesia_version: string
-    api_key: string
+    cartesia_version:
+      type: string
+      docs: |
+        You can specify this instead of the `Cartesia-Version` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
+
+        You do not need to specify this if you are passing the header.
+    api_key:
+      type: string
+      docs: |
+        You can specify this instead of the `X-API-Key` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
+
+        You do not need to specify this if you are passing the header.
   messages:
     send:
       display-name: "Send"
       origin: client
-      body: string
+      body: WebSocketTTSRequest
 
     receive:
       display-name: "Receive"
-      origin: server
-      body:
-        name: ReceiveEvent
-        properties:
-          text: string
+      docs: |
+        The server will send you back a stream of messages with the same `context_id` as your request.
 
-  examples:
-    - name: Default example
-      messages:
-        - type: send
-          body: "uvxcdv12344412b"
-        - type: receive
-          body:
-            text: "The weather for today..."
-        - type: send
-          body: "uvxcdv12344412b"
+        The messages can be of type `chunk`, `timestamp`, `error`, or `done`.
+      origin: server
+      body: WebSocketResponse
 
 types:
+  WebSocketBaseResponse:
+    properties:
+      context_id: string
+      status_code: integer
+      done: boolean
+
+  WebSocketResponse:
+    discriminant: type
+    union:
+      error: WebSocketErrorResponse
+      chunk: WebSocketChunkResponse
+      timestamp: WebSocketTimestampResponse
+      done: WebSocketDoneResponse
+
+  WebSocketErrorResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      error: string
+
+  WebSocketChunkResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      data: base64
+      step_time: double
+
+  WebSocketTimestampResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      word_timestamps: WordTimestamps
+
+  WordTimestamps:
+    properties:
+      words: list<string>
+      start: list<double>
+      end: list<double>
+
+  WebSocketDoneResponse:
+    extends: WebSocketBaseResponse
+
+  WebSocketTTSRequest:
+    extends: TTSRequest
+    properties:
+      context_id: string
+      continue: boolean
+      add_timestamps: boolean
+
   TTSRequest:
     properties:
       model_id: string
