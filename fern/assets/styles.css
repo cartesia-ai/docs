@@ -82,3 +82,20 @@ html {
 	font-style: normal;
 	font-weight: normal;
 }
+
+.fern-prose code {
+	white-space: pre-wrap;
+}
+
+.fern-layout-toc {
+	font-family: var(--typography-code-font-family);
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+.fern-layout-toc div + ul {
+	font-family: var(--typography-heading-font-family);
+	font-weight: 400;
+	letter-spacing: 0;
+	text-transform: none;
+}

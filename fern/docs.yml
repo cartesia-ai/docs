@@ -46,13 +46,13 @@ layout:
 navigation:
   - tab: docs
     layout:
-      - section: Getting Started
+      - section: Get Started
         contents:
           - page: Overview
-            path: getting-started/overview.mdx
+            path: get-started/overview.mdx
             icon: fa-browser
           - page: Make an API request
-            path: getting-started/make-an-api-request.mdx
+            path: get-started/make-an-api-request.mdx
             icon: fa-paper-plane
       - section: Use an SDK
         contents:
@@ -85,9 +85,12 @@ navigation:
               - page: Localize Voices
                 path: build-with-sonic/capabilities/localize-voices.mdx
                 icon: fa-earth-americas
-          - page: Formatting Text for Sonic
-            path: build-with-sonic/format-text-for-sonic.mdx
+          - section: Formatting Text for Sonic
             icon: fa-text-size
+            contents:
+              - page: Best Practices
+                path: build-with-sonic/format-text-for-sonic.mdx
+                icon: fa-font
       - section: Integrate with Sonic
         contents:
           - page: Twilio
@@ -96,7 +99,7 @@ navigation:
       - section: Peek Behind the Scenes
         contents:
           - page: Embeddings and Voice Mixing
-            path: concepts/embeddings-and-voice-mixing.mdx
+            path: behind-the-scenes/embeddings-and-voice-mixing.mdx
             icon: fa-waveform
   - tab: reference
     layout:

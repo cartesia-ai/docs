@@ -9,23 +9,21 @@ This guide will cover concepts. For more on implementation see [the WebSocket AP
 
 In many real-time use cases, you don't have input text available upfront—like when you're generating it on the fly using a language model. For these cases, Sonic supports input streaming through a feature we call _continuations_.
 
-## What are continuations?
+## Continuations
 
 Continuations are generations that extend already generated speech. They're called continuations because you're continuing the generation from where the last one left off, maintaining the _prosody_ of the previous generation.
+
+If you don't use continuations, you get sudden changes in prosody that create seams in the audio.
 
 <Note>
 Prosody refers to the rhythm, intonation, and stress in speech. It's what makes speech flow naturally and sound human-like.
 </Note>
 
-## Why use continuations?
-
-> **TL;DR:** If you don't use continuations, you get sudden changes in prosody that create seams in the audio.
-
-Let's say we're trying to generate speech for the following transcript: `Hello, my name is Sonic. It's very nice to meet you.`. However, we don't have the full transcript available upfront. Instead, we get it in three parts:
+Let's say we're using an LLM and it generates a transcript in three parts, with a one second delay between each part:
 
 1. `Hello, my name is Sonic.`
-2. `It's very nice`
-3. `to meet you.`
+2. ` It's very nice`
+3. ` to meet you.`
 
 To generate speech for the whole transcript, we might think to generate speech for each part independently and stitch the audios together:
 
@@ -57,6 +55,12 @@ As you can hear, this output sounds seamless and natural.
 You can scale up continuations to any number of inputs. There is no limit.
 </Check>
 
+## Caveat: Streamed inputs should form a valid transcript when joined
+
+This means that `Hello, world!` can be followed by ` How are you?` (note the leading space) but not `How are you?`, since when joined they form the invalid transcript `Hello, world!How are you?`.
+
+In practice, this means you should maintain spacing and punctuation in your streamed inputs.
+
 ## Caveat: Word-by-word or token-by-token inputs
 
 > **TL;DR:** If you want to stream the input in word-by-word, your code should buffer the first sentence of the input upfront. Then you can stream the remaining input text word-by-word.
@@ -64,10 +68,6 @@ You can scale up continuations to any number of inputs. There is no limit.
 ![](/assets/images/concepts_continuations_multiple_inputs.png)
 
 Let's try the following transcripts with continuations: `['Hello, my name is Sonic.', "It's ", 'very ', 'nice ', 'to ', 'meet ', 'you.']`
-
-<Warning>
-Note that the one word transcripts each have a space after them if they don't have a punctuation.
-</Warning>
 
 <audio controls src="https://cartesia-docs-public.s3.us-east-2.amazonaws.com/concepts/continuations/with_continuations_many_inputs.wav">
   Your browser does not support the audio element.
