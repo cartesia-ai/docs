@@ -1,4 +1,5 @@
-name: Cartesia API
+name: cartesia
+display-name: Cartesia API
 auth: APIKeyHeader
 auth-schemes:
   APIKeyHeader:
