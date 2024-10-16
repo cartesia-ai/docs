@@ -21,8 +21,6 @@ channel:
   path: /tts/websocket
   display-name: Text to Speech (WebSocket)
   auth: false
-  path-parameters:
-    id: string
   query-parameters:
     cartesia_version: string
     api_key: string
@@ -42,8 +40,6 @@ channel:
 
   examples:
     - name: Default example
-      path-parameters:
-        id: doc_123
       messages:
         - type: send
           body: "uvxcdv12344412b"
