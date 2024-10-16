@@ -4,9 +4,17 @@ subtitle: >-
   Learn how to specify custom pronunciations for words that are hard to get right, like proper nouns or domain-specific terms.
 ---
 
-## How to insert phonemes
+<Frame background="subtlewq">
+  <img src="/assets/images/custom-pronunciation.png" />
+</Frame>
 
-When using Sonic (whether through the playground, API, or client library) you can directly add Sonic-flavored IPA phonemes in the transcript. Just wrap them in `<<>>` and append each phoneme with a pipe `|`.
+When using Sonic (whether through the playground or API) you can directly add Sonic-flavored IPA phonemes in the transcript.
+
+Wrap phonemes in `<<>>` and append each phoneme with a pipe `|`.
+
+## Usage example
+
+`Can I <<g|ˈɛ|t|>> <<h|ɑː|l|ˈə|p|eɪ|n|y|ˌoʊ|>> on that?` will be pronounced as `Can I get jalapeño on that?`
 
 ## Sonic-flavored IPA
 
@@ -23,9 +31,3 @@ You can copy/paste some of these uncommon symbols from the original [charts here
 ## Stresses and vowel length markers
 
 Our model requires stress markers for first (`ˈ`) and second (`ˌ`) stressed syllables, which go directly before the vowel. We also use annotations for vowel length (`ː`). The model can also operate without them, but you will have noticeably better robustness and control when using them.
-
-## Usage example
-
-Original input: `"transcript": "Can I get jalapeño on that?"`
-
-Transformed input: `"transcript": "Can I <<g|ˈɛ|t|>> <<h|ɑː|l|ˈə|p|eɪ|n|y|ˌoʊ|>> on that?"`

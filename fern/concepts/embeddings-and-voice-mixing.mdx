@@ -4,6 +4,10 @@ subtitle: Learn how Sonic uses embeddings to represent voices and enable voice m
 slug: concepts/embeddings-and-voice-mixing
 ---
 
+<Note>
+You don't need to understand embeddings to use Voice Mixing. Visit the [Voice Mixing](/build-with-sonic/capabilities/voice-mixing) guide to get started.
+</Note>
+
 Cartesia models represent voices in the form of _embeddings_. An embedding is a length-192 vector of floats between -1 and 1. Collectively, these numbers capture the characteristics of the voice: speed, emotion, accent, and so on.
 
 Our text-to-speech endpoints currently require embeddings to be specified for each generation. Support for specifying voice IDs instead of embeddings is planned.

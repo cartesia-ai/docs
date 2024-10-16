@@ -1,5 +1,6 @@
 imports:
   embedding: ./embedding.yml
+  tts: ./tts.yml
 
 types:
   VoiceId:
@@ -30,11 +31,13 @@ types:
         docs: |
           The date and time the voice was created.
       embedding: embedding.Embedding
+      language: tts.SupportedLanguage
   CreateVoiceRequest:
     properties:
       name: *name
       description: *description
       embedding: embedding.Embedding
+      language: tts.SupportedLanguage
   UpdateVoiceRequest:
     properties:
       name: *name

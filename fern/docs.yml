@@ -81,6 +81,9 @@ navigation:
               - page: Stream Inputs using Continuations
                 path: build-with-sonic/capabilities/stream-inputs.mdx
                 icon: fa-waveform
+              - page: Localize Voices
+                path: build-with-sonic/capabilities/localize-voices.mdx
+                icon: fa-earth-americas
           - page: Formatting Text for Sonic
             path: build-with-sonic/format-text-for-sonic.mdx
             icon: fa-text-size

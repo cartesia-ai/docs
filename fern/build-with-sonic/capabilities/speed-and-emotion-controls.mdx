@@ -4,11 +4,27 @@ subtitle: >-
   Learn how to control the speed and emotion of generated speech.
 ---
 
-The `__experimental_controls` parameter allows you to control the voice output by adjusting speed and emotion. This feature is currently experimental and may be subject to changes in future API versions.
+Speed and emotion controls are available through the [playground](https://play.cartesia.ai) and the [API](/docs/reference/api/sonic/generate-speech).
 
-### Usage
+<Note>
+**The effects of controls vary by voice and transcript.** If you find that the controls cause artifacts in the generated speech, try reducing their strength or reducing the number of controls you have applied.
+</Note>
 
-Add the `__experimental_controls` dictionary to the `voice` object in your API request:
+## Playground
+
+In the playground, you can access speed and emotion controls by clicking the "Speed/Emotion" button in the Text to Speech tab.
+
+<Frame background="subtle">
+  <img src="/assets/images/speed-emotion-pg.png" />
+</Frame>
+
+## API
+
+<Warning>
+This feature is currently experimental and is subject to breaking changes.
+</Warning>
+
+To use controls in the API, add the `__experimental_controls` dictionary to the `voice` object in your API request:
 
 ```json
 "voice": {
@@ -24,9 +40,7 @@ Add the `__experimental_controls` dictionary to the `voice` object in your API r
 }
 ```
 
-### Speed Control
-
-The `speed` parameter adjusts the pace of speech. Available options are:
+### Speed Options
 
 - `"slowest"`: Very slow speech
 - `"slow"`: Slower than normal speech
@@ -54,9 +68,9 @@ For more granular control, you can define speed as a number within the range $[-
 </Tab>
 </Tabs>
 
-### Emotion Control
+### Emotion Options
 
-The `emotion` parameter is an array of emotion tags that modify the voice's tone by adding emotion. Each tag follows the format `"emotion_name:level"`.
+The `emotion` parameter is an array of "tags" in the form `emotion_name:level`. For example, `positivity:high` or `curiosity`.
 
 #### Emotion Names
 
@@ -68,47 +82,12 @@ The `emotion` parameter is an array of emotion tags that modify the voice's tone
 
 #### Emotion Levels
 
-- `lowest`: Slight addition of the emotion
-- `low`: Mild addition of the emotion
+<Note>
+**Emotion controls are purely additive, they cannot reduce or remove emotions.** For example, `anger:low` will add a small amount of anger to the voice, not make the voice less angry.
+</Note>
+
+- `lowest`
+- `low`
 - (omit level for moderate addition of the emotion)
-- `high`: Strong addition of the emotion
-- `highest`: Maximum addition of the emotion
-
-Example:
-```json
-"__experimental_controls": {
-  "emotion": [
-    "curiosity",
-    "positivity:high"
-  ]
-}
-```
-
-In this example, the voice will express:
-- High positivity
-- Medium curiosity (level omitted)
-- Low surprise
-
-### Combining Speed and Emotion
-
-You can combine both speed and emotion controls:
-
-```json
-"__experimental_controls": {
-  "speed": "fast",
-  "emotion": [
-    "positivity:high",
-    "curiosity"
-  ]
-}
-```
-
-This configuration will result in fast speech with high positivity and medium curiosity.
-
-### Notes
-
-- All emotion tag levels add the specified emotion to the voice. They don't reduce or remove emotions, but rather add them in varying intensities.
-- The effects of these controls may vary depending on the chosen voice and the content being spoken.
-- Experiment with different combinations to achieve the desired output for your use case.
-- If the voice is unstable, reducing the magnitude of the added modifications and reducing the number of different modifications added should help.
-- As this is an experimental feature, be prepared for potential changes or updates in future API versions.
+- `high`
+- `highest`

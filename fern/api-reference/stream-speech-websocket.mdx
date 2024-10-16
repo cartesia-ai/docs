@@ -8,6 +8,76 @@ subtitle: >-
 
 In many real-time use cases, you don't have your transcripts available upfront—like when you're generating them using a language model. For these cases, Sonic supports input streaming using WebSocket contexts. This allows you to stream a transcript in multiple chunks to Sonic and receive seamless speech in return.
 
+
+<AccordionGroup>
+  <Accordion
+    title="Example Python Code"
+  >
+```python
+import asyncio
+from cartesia import AsyncCartesia
+from datetime import datetime
+import os
+import sys
+import wave
+
+async def generate_audio_continuous(client, model_id, output_format, voice_id, transcripts):
+    wave_file = wave.open(f'test_gen_continuations_{datetime.now().strftime("%Y%m%d_%H%M%S")}.wav', 'wb')
+    wave_file.setnchannels(1)
+    wave_file.setsampwidth(2)
+    wave_file.setframerate(output_format['sample_rate'])
+
+    # Connect a websocket
+    ws = await client.tts.websocket()
+    ctx = ws.context()
+
+    for transcript in transcripts:
+        await ctx.send(
+            model_id=model_id,
+            transcript=transcript,
+            voice_id=voice_id,
+            output_format=output_format,
+            continue_=True,
+        )
+
+    # Indicate that no more inputs will be sent. Otherwise, the context will close after 5 seconds of inactivity.
+    await ctx.no_more_inputs()
+
+    async for output in ctx.receive():
+        if "audio" in output:
+            buffer = output["audio"]
+            wave_file.writeframes(buffer)
+
+    wave_file.close()
+    await ws.close()
+
+async def main():
+    transcripts = ['Hello, my name is Sonic.', "It's very nice ", "to meet you."]
+    voice_id = 'bd9120b6-7761-47a6-a446-77ca49132781' # Tutorial Man
+
+    model_id = "sonic-english"
+
+    output_format = {
+        "container": "raw",
+        "encoding": "pcm_s16le",
+        "sample_rate": 44100,
+    }
+
+    # Make sure your API key is set at CARTESIA_API_KEY
+    async with AsyncCartesia(api_key=os.environ.get('CARTESIA_API_KEY'), timeout=200) as client:
+        # Run the generation
+        await generate_audio_continuous(client, model_id, output_format, voice_id, transcripts)
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+    loop.close()
+    sys.exit(0)
+```
+  </Accordion>
+</AccordionGroup>
+
+
 <Card title="Input Streaming with WebSockets" icon="code" href="/reference/web-socket/stream-speech/working-with-web-sockets#input-streaming-with-contexts">
     API Reference for Input Streaming and working with Contexts.
 </Card>

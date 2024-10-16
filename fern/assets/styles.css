@@ -77,3 +77,8 @@ html {
 	align-items: center;
 	justify-content: center;
 }
+
+.fern-prose blockquote {
+	font-style: normal;
+	font-weight: normal;
+}

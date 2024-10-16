@@ -3,145 +3,72 @@ title: Stream Inputs using Continuations
 subtitle: Learn how to stream input text to the Sonic API.
 ---
 
-In many real-time use cases, you don't have your transcripts available upfront—like when you're generating them using a language model. For these cases, Sonic supports input streaming using WebSocket contexts. This allows you to stream a transcript in multiple chunks to Sonic and receive seamless speech in return.
+<Info>
+This guide will cover concepts. For more on implementation see [the WebSocket API reference](/reference/web-socket/stream-speech/working-with-web-sockets#input-streaming-with-contexts).
+</Info>
 
-## What are Continuations?
+In many real-time use cases, you don't have input text available upfront—like when you're generating it on the fly using a language model. For these cases, Sonic supports input streaming through a feature we call _continuations_.
 
-Continuations refers to the ability to extend audio generation segments across multiple sequential inputs. This is also known as **conditioning on past generations**.
+## What are continuations?
 
-This document will cover concepts, for more on implementation see [here](/reference/web-socket/stream-speech/working-with-web-sockets#input-streaming-with-contexts). Note that **continuations are only available through the [websocket endpoint](/reference/web-socket/stream-speech/stream-speech)**.
+Continuations are generations that extend already generated speech. They're called continuations because you're continuing the generation from where the last one left off, maintaining the _prosody_ of the previous generation.
 
-## Why should I use Continuations?
+<Note>
+Prosody refers to the rhythm, intonation, and stress in speech. It's what makes speech flow naturally and sound human-like.
+</Note>
 
-Given a large transcript or multiple transcripts, technically you could generate all sections independently and stitch them together to get the resulting audio. However, this is both inefficient and also results in unstable audio quality. Let's consider the simple example of `Hello, my name is Sonic. It's very nice to meet you.`
+## Why use continuations?
 
-### Prosody
+> **TL;DR:** If you don't use continuations, you get sudden changes in prosody that create seams in the audio.
 
-<figure>
+Let's say we're trying to generate speech for the following transcript: `Hello, my name is Sonic. It's very nice to meet you.`. However, we don't have the full transcript available upfront. Instead, we get it in three parts:
+
+1. `Hello, my name is Sonic.`
+2. `It's very nice`
+3. `to meet you.`
+
+To generate speech for the whole transcript, we might think to generate speech for each part independently and stitch the audios together:
+
+<Frame caption="Figure 1: Generate transcripts independently & stitch them together." background="subtle">
     <img src="/assets/images/concepts_continuations_without_continuations.png" alt="no_continuations" />
-    <figcaption>Figure 1: Generate transcripts independently & stitch them together.</figcaption>
-</figure>
+</Frame>
 
-Let's split the example transcript into 3 parts. Transcript 1 will be `Hello, my name is Sonic.`, Transcript 2 will be `It's very nice`, and Transcript 3 will be `to meet you.`. We can generate each independently and combine them to get our final result:
-
+Unfortunately, we end up with speech that has sudden changes in prosody and strange pacing:
 
 <audio controls src="https://cartesia-docs-public.s3.us-east-2.amazonaws.com/concepts/continuations/without_continuations.wav">
   Your browser does not support the audio element.
 </audio>
 
-Technically we've achieved TTS for the example transcript, but I think we can all agree this sounds incredibly weird. There are two main problems with this:
-- The [prosody](https://en.wikipedia.org/wiki/Prosody_(linguistics)) is off between the clips, so it doesn't sound like a natural sentence. This is because `It's very nice` doesn't know that there's more to the sentence, and `to meet you.` doesn't know that something came before it.
-- The breaks between audio 1, audio 2, and audio 3 are too short relative to a normal speaking cadence.
+Now, let's try the same transcripts, but using continuations. The setup looks like this:
 
-<figure>
+<Frame caption="Figure 2: Generate transcripts using continuations." background="subtle">
     <img src="/assets/images/concepts_continuations_with_continuations.png" alt="continuations" />
-    <figcaption>Figure 2: Generate transcripts using continuations.</figcaption>
-</figure>
+</Frame>
 
-Let's try the same transcripts, but using continuations:
-
-<AccordionGroup>
-  <Accordion
-    title="Example Python Code"
-  >
-```python
-import asyncio
-from cartesia import AsyncCartesia
-from datetime import datetime
-import os
-import sys
-import wave
-
-async def generate_audio_continuous(client, model_id, output_format, voice_id, transcripts):
-    wave_file = wave.open(f'test_gen_continuations_{datetime.now().strftime("%Y%m%d_%H%M%S")}.wav', 'wb')
-    wave_file.setnchannels(1)
-    wave_file.setsampwidth(2)
-    wave_file.setframerate(output_format['sample_rate'])
-
-    # Connect a websocket
-    ws = await client.tts.websocket()
-    ctx = ws.context()
-
-    for transcript in transcripts:
-        await ctx.send(
-            model_id=model_id,
-            transcript=transcript,
-            voice_id=voice_id,
-            output_format=output_format,
-            continue_=True,
-        )
-
-    # Indicate that no more inputs will be sent. Otherwise, the context will close after 5 seconds of inactivity.
-    await ctx.no_more_inputs()
-
-    async for output in ctx.receive():
-        if "audio" in output:
-            buffer = output["audio"]
-            wave_file.writeframes(buffer)
-
-    wave_file.close()
-    await ws.close()
-
-async def main():
-    transcripts = ['Hello, my name is Sonic.', "It's very nice ", "to meet you."]
-    voice_id = 'bd9120b6-7761-47a6-a446-77ca49132781' # Tutorial Man
-
-    model_id = "sonic-english"
-
-    output_format = {
-        "container": "raw",
-        "encoding": "pcm_s16le",
-        "sample_rate": 44100,
-    }
-
-    # Make sure your API key is set at CARTESIA_API_KEY
-    async with AsyncCartesia(api_key=os.environ.get('CARTESIA_API_KEY'), timeout=200) as client:
-        # Run the generation
-        await generate_audio_continuous(client, model_id, output_format, voice_id, transcripts)
-
-if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
-    loop.close()
-    sys.exit(0)
-```
-  </Accordion>
-</AccordionGroup>
+Here's what we get:
 
 <audio controls src="https://cartesia-docs-public.s3.us-east-2.amazonaws.com/concepts/continuations/with_continuations.wav">
   Your browser does not support the audio element.
 </audio>
 
-We can hear that the transcript flows much more naturally.
+As you can hear, this output sounds seamless and natural.
 
-### Multiple inputs
+<Check>
+You can scale up continuations to any number of inputs. There is no limit.
+</Check>
 
-You'll notice in Figure 2 that there's an `Audio N...` section in the output audio as well. This is because continuations allows you to chain any N inputs together for a coherent audio output.
+## Caveat: Word-by-word or token-by-token inputs
 
-### What if I want to stream in word by word?
+> **TL;DR:** If you want to stream the input in word-by-word, your code should buffer the first sentence of the input upfront. Then you can stream the remaining input text word-by-word.
 
 ![](/assets/images/concepts_continuations_multiple_inputs.png)
 
 Let's try the following transcripts with continuations: `['Hello, my name is Sonic.', "It's ", 'very ', 'nice ', 'to ', 'meet ', 'you.']`
 
-<Note>
+<Warning>
 Note that the one word transcripts each have a space after them if they don't have a punctuation.
-</Note>
+</Warning>
 
 <audio controls src="https://cartesia-docs-public.s3.us-east-2.amazonaws.com/concepts/continuations/with_continuations_many_inputs.wav">
   Your browser does not support the audio element.
 </audio>
-
-One of the more common use-cases we've seen is using an LLM of your choice to stream text into our Text-To-Speech API. Our current API will optimally buffer on our server side, but since some of our users want to generate audio from short snippets, we only begin buffering after first submission. What this means is **you need to buffer the first chunk on your end**.
-
-<Note>
-We recommend having the first chunk be a sentence, and then you can stream in token by token.
-</Note>
-
-We'll be adding a flag shortly in the future to begin the buffering from the first chunk.
-
-## Cancellations
-
-Many of us know the feeling of kicking off a massive job and then realizing that we've made a grave mistake. Luckily we support cancellations. If you haven't signaled the end of transcript submissions (an empty transcript with `continue=False` or `ctx.no_more_inputs()` if you're using the Client), you can submit a cancellation request to prevent queued generations from occurring. This can be helpful for managing concurrency and character usage.
-
-For more on implementation see [here](/reference/web-socket/stream-speech/working-with-web-sockets#cancelling-requests).
