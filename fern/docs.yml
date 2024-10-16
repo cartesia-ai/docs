@@ -7,6 +7,7 @@ logo:
   dark: logo/new-logo-dark.svg
   height: 28
 css: assets/styles.css
+js: assets/script.js
 favicon: logo/icon.png
 colors:
   accent-primary:
