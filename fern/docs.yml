@@ -185,3 +185,77 @@ typography:
       - path: assets/fonts/BerkeleyMono-BoldItalic.woff2
         weight: 700
         style: italic
+
+redirects:
+  - source: /getting-started/welcome
+    destination: /get-started/overview
+    permanent: true
+  - source: /getting-started/getting-help
+    destination: /get-started/overview
+    permanent: true
+  - source: /getting-started/using-the-api
+    destination: /get-started/make-an-api-request
+    permanent: true
+  - source: /getting-started/available-models
+    destination: /build-with-sonic/models
+    permanent: true
+  - source: /getting-started/dev-quickstart
+    destination: /get-started/make-an-api-request
+    permanent: true
+  - source: /concepts/continuations
+    destination: /build-with-sonic/capabilities/stream-inputs
+    permanent: true
+  - source: /concepts/embeddings-and-voice-mixing
+    destination: /behind-the-scenes/embeddings-and-voice-mixing
+    permanent: true
+  - source: /user-guides/custom-pronunciation-guide
+    destination: /build-with-sonic/capabilities/custom-pronunciations
+    permanent: true
+  - source: /user-guides/improving-speech-quality
+    destination: /build-with-sonic/formatting-text-for-sonic/best-practices
+    permanent: true
+  - source: /user-guides/voice-cloning
+    destination: /build-with-sonic/capabilities/clone-voices
+    permanent: true
+  - source: /user-guides/voice-control
+    destination: /build-with-sonic/capabilities/speed-and-emotion-controls
+    permanent: true
+  - source: user-guides/cartesia-twilio
+    destination: /integrate-with-sonic/twilio
+    permanent: true
+  - source: /reference/web-socket/stream-speech/stream-speech
+    destination: /api-reference/tts/tts
+    permanent: true
+  - source: /reference/web-socket/stream-speech/working-with-web-sockets
+    destination: /api-reference/tts/working-with-web-sockets/contexts
+    permanent: true
+  - source: /reference/api-reference/rest/stream-speech-bytes
+    destination: /api-reference/tts/bytes
+    permanent: true
+  - source: /reference/api-reference/rest/stream-speech-server-sent-events
+    destination: /api-reference/tts/sse
+    permanent: true
+  - source: /reference/api-reference/rest/clone-voice-from-clip
+    destination: /api-reference/voices/clone-from-clip
+    permanent: true
+  - source: /reference/api-reference/rest/mix-voices
+    destination: /api-reference/voices/mix
+    permanent: true
+  - source: /reference/api-reference/rest/create-voice
+    destination: /api-reference/voices/create
+    permanent: true
+  - source: /reference/api-reference/rest/list-voices
+    destination: /api-reference/voices/list
+    permanent: true
+  - source: /reference/api-reference/rest/delete-voice
+    destination: /api-reference/voices/delete
+    permanent: true
+  - source: /reference/api-reference/rest/get-voice
+    destination: /api-reference/voices/get
+    permanent: true
+  - source: /reference/api-reference/rest/update-voice
+    destination: /api-reference/voices/update
+    permanent: true
+  - source: /reference/api-reference/rest/api-status-and-version
+    destination: /api-reference/api-status/get
+    permanent: true
