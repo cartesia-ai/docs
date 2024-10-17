@@ -25,7 +25,7 @@ navbar-links:
     url: https://cartesia.ai
   - type: minimal
     text: Discord
-    url: https://discord.com/invite/gAbbHgdyQM
+    url: https://discord.gg/cartesia
   - type: filled
     text: Playground
     url: https://play.cartesia.ai
@@ -130,6 +130,15 @@ navigation:
               - page: Compare TTS Endpoints
                 path: api-reference/tts-endpoints-overview.mdx
                 icon: fa-scale-balanced
+              - tts.bytes
+              - tts.sse
+              - tts.tts
+              - section: Working with WebSockets
+                icon: fa-plug
+                contents:
+                  - page: Contexts
+                    path: api-reference/contexts.mdx
+                    icon: fa-waveform
           - voices: []
 typography:
   bodyFont:

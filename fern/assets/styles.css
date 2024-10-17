@@ -87,6 +87,10 @@ html {
 	white-space: pre-wrap;
 }
 
+.prose-base {
+	line-height: 1.75;
+}
+
 .fern-layout-toc {
 	font-family: var(--typography-code-font-family);
 	letter-spacing: 0.05em;
