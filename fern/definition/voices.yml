@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
 imports:
   embedding: ./embedding.yml
   tts: ./tts.yml
@@ -7,6 +9,7 @@ types:
     type: string
     docs: |
       The ID of the voice.
+
   Voice:
     properties:
       id: VoiceId
@@ -32,21 +35,26 @@ types:
           The date and time the voice was created.
       embedding: embedding.Embedding
       language: tts.SupportedLanguage
+      base_voice_id:
+        type: optional<VoiceId>
+        docs: |
+          The ID of the base voice associated with this voice. Used for features like voice mixing.
+
   CreateVoiceRequest:
     properties:
       name: *name
       description: *description
       embedding: embedding.Embedding
       language: tts.SupportedLanguage
+
   UpdateVoiceRequest:
     properties:
       name: *name
       description: *description
+
   LocalizeTargetLanguage:
     docs: |
       Target language to localize the voice to.
-
-
       Options: English (en), German (de), Spanish (es), French (fr), Japanese (ja), Portuguese (pt), Chinese (zh).
     enum:
       - en
@@ -56,6 +64,7 @@ types:
       - ja
       - pt
       - zh
+
   LocalizeDialect:
     enum:
       - au
@@ -65,37 +74,43 @@ types:
       - us
     docs: |
       The dialect to localize to. This is only available when language is set to English.
-
-
       Options: Australian (au), Indian (in), Southern American (so), UK (uk), US (us).
+
   Gender:
     enum:
       - male
       - female
+
   LocalizeVoiceRequest:
     properties:
       embedding: embedding.Embedding
       language: LocalizeTargetLanguage
       original_speaker_gender: Gender
       dialect: LocalizeDialect
+
   EmbeddingResponse:
     properties:
       embedding: embedding.Embedding
+
   MixVoicesRequest:
     properties:
       voices: list<MixVoiceSpecifier>
+
   Weight:
     type: double
     docs: |
       The weight of the voice or embedding in the mix. If weights do not sum to 1, they will be normalized.
+
   IdSpecifier:
     properties:
       id: VoiceId
       weight: Weight
+
   EmbeddingSpecifier:
     properties:
       embedding: embedding.Embedding
       weight: Weight
+
   MixVoiceSpecifier:
     discriminated: false
     union:
@@ -111,18 +126,21 @@ service:
       method: GET
       display-name: List Voices
       response: list<Voice>
+
     post:
       path: /
       method: POST
       display-name: Create Voice
       request: CreateVoiceRequest
       response: Voice
+
     delete:
       path: /{id}
       method: DELETE
       display-name: Delete Voice
       path-parameters:
         id: VoiceId
+
     patch:
       path: /{id}
       method: PATCH
@@ -131,6 +149,7 @@ service:
         id: VoiceId
       request: UpdateVoiceRequest
       response: Voice
+
     get:
       path: /{id}
       method: GET
@@ -138,18 +157,21 @@ service:
       path-parameters:
         id: VoiceId
       response: Voice
+
     localize:
       path: /localize
       method: POST
       display-name: Localize Voice
       request: LocalizeVoiceRequest
       response: EmbeddingResponse
+
     mix:
       path: /mix
       method: POST
       display-name: Mix Voices
       request: MixVoicesRequest
       response: EmbeddingResponse
+
     cloneFromClip:
       path: /clone/clip
       method: POST

@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
 imports:
   voices: ./voices.yml
   embedding: ./embedding.yml
@@ -11,6 +13,7 @@ service:
       method: POST
       display-name: Text to Speech (Bytes)
       request: TTSRequest
+
     sse:
       path: /sse
       method: POST
@@ -19,54 +22,47 @@ service:
 
 channel:
   path: /tts/websocket
+
   display-name: Text to Speech (WebSocket)
+
   docs: |
     This endpoint creates a bidirectional WebSocket connection. The connection supports multiplexing, so you can send multiple requests and receive the corresponding responses in parallel.
-
     The WebSocket API is built around _contexts_:
-
     - When you send a generation request, you pass a `context_id`. Further inputs on the same `context_id` will [continue the generation](/build-with-sonic/capability-guides/stream-inputs-using-continuations), maintaining prosody.
     - Responses for a context contain the `context_id` you passed in so that you can match requests and responses.
-
     Read the guide on [working with contexts](/api-reference/tts/working-with-contexts) to learn more.
-
     For the best performance, we recommend the following usage pattern:
-
     1. **Do many generations over a single WebSocket.** Just use a separate context for each generation. The WebSocket scales up to dozens of concurrent generations.
     2. **Set up the WebSocket before the first generation.** This ensures you don't incur latency when you start generating speech.
     3. **Buffer the first input on a context** to at least 3 or 4 words for optimizing both latency and prosody.
     4. **Split inputs into sentences:** Sending inputs in sentences allows Sonic to generate speech more accurately and with better prosody. Include necessary spaces and punctuation.
-
     For conversational agent use cases, we recommend the following usage pattern:
-
     1. **Each turn in a conversation should correspond to a context:** For example, if you are using Sonic to power a voice agent, each turn in the conversation should be a new context.
     2. **Start a new context for interruptions:** If the user interrupts the agent, start a new context for the agent's response.
 
   auth: true
+
   query-parameters:
     cartesia_version:
       type: string
       docs: |
         You can specify this instead of the `Cartesia-Version` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
-
         You do not need to specify this if you are passing the header.
     api_key:
       type: string
       docs: |
         You can specify this instead of the `X-API-Key` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
-
         You do not need to specify this if you are passing the header.
+
   messages:
     send:
       display-name: "Send"
       origin: client
       body: WebSocketRequest
-
     receive:
       display-name: "Receive"
       docs: |
         The server will send you back a stream of messages with the same `context_id` as your request.
-
         The messages can be of type `chunk`, `timestamp`, `error`, or `done`.
       origin: server
       body: WebSocketResponse
@@ -146,7 +142,6 @@ types:
     type: string
     docs: |
       A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
-
       Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
 
   WebSocketBaseResponse:
@@ -206,7 +201,6 @@ types:
         type: optional<boolean>
         docs: |
           Whether this input may be followed by more inputs.
-
           If not specified, this defaults to `false`.
       add_timestamps:
         type: optional<boolean>
@@ -237,15 +231,12 @@ types:
         type: optional<double>
         docs: |
           The maximum duration of the audio in seconds. You do not usually need to specify this.
-
           If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
 
   SupportedLanguage:
     docs: |
       The language that the given voice should speak the transcript in.
-
       Options: English (en), French (fr), German (de), Spanish (es), Portuguese (pt), Chinese (zh), Japanese (ja), Hindi (hi), Italian (it), Korean (ko), Dutch (nl), Polish (pl), Russian (ru), Swedish (sv), Turkish (tr).
-
     enum:
       - en
       - fr
@@ -295,29 +286,34 @@ types:
     union:
       id: TTSRequestIdSpecifier
       embedding: TTSRequestEmbeddingSpecifier
+
   TTSRequestIdSpecifier:
     properties:
       id: voices.VoiceId
       __experimental_controls: optional<Controls>
+
   TTSRequestEmbeddingSpecifier:
     properties:
       embedding: embedding.Embedding
       __experimental_controls: optional<Controls>
+
   Controls:
     properties:
       speed: Speed
       emotion: Emotion
+
   Speed:
     docs: |
       Either a number between -1.0 and 1.0 or a natural language description of speed.
-
       If you specify a number, 0.0 is the default speed, -1.0 is the slowest speed, and 1.0 is the fastest speed.
     discriminated: false
     union:
       - NumericalSpecifier
       - NaturalSpecifier
+
   NumericalSpecifier:
     type: double
+
   NaturalSpecifier:
     enum:
       - slowest
@@ -325,12 +321,11 @@ types:
       - normal
       - fast
       - fastest
+
   Emotion:
     docs: |
       An array of emotion:level tags.
-
       Supported emotions are: anger, positivity, surprise, sadness, and curiosity.
-
       Supported levels are: lowest, low, (omit), high, highest.
     enum:
       - value: anger:lowest
