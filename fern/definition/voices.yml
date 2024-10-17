@@ -146,7 +146,7 @@ service:
       path-parameters:
         id: VoiceId
 
-    patch:
+    update:
       path: /{id}
       method: PATCH
       display-name: Update Voice
