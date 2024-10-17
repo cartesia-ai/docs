@@ -19,6 +19,7 @@ service:
       method: POST
       display-name: Text to Speech (SSE)
       request: TTSRequest
+      response-stream: WebSocketResponse
 
 channel:
   path: /tts/websocket
@@ -161,10 +162,10 @@ types:
   WebSocketResponse:
     discriminant: type
     union:
-      error: WebSocketErrorResponse
       chunk: WebSocketChunkResponse
-      timestamp: WebSocketTimestampResponse
       done: WebSocketDoneResponse
+      timestamp: WebSocketTimestampResponse
+      error: WebSocketErrorResponse
 
   WebSocketErrorResponse:
     extends: WebSocketBaseResponse
