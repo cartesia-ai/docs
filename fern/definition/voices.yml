@@ -10,6 +10,11 @@ types:
     docs: |
       The ID of the voice.
 
+  BaseVoiceId:
+    type: VoiceId
+    docs: |
+      The ID of the base voice associated with the voice, used for features like voice mixing.
+
   Voice:
     properties:
       id: VoiceId
@@ -35,10 +40,7 @@ types:
           The date and time the voice was created.
       embedding: embedding.Embedding
       language: tts.SupportedLanguage
-      base_voice_id:
-        type: optional<VoiceId>
-        docs: |
-          The ID of the base voice associated with this voice. Used for features like voice mixing.
+      base_voice_id: optional<BaseVoiceId>
 
   CreateVoiceRequest:
     properties:
@@ -46,6 +48,7 @@ types:
       description: *description
       embedding: embedding.Embedding
       language: tts.SupportedLanguage
+      base_voice_id: optional<BaseVoiceId>
 
   UpdateVoiceRequest:
     properties:
