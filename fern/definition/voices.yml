@@ -132,7 +132,7 @@ service:
       display-name: List Voices
       response: list<Voice>
 
-    post:
+    create:
       path: /
       method: POST
       display-name: Create Voice
