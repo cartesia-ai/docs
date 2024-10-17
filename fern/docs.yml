@@ -74,7 +74,6 @@ navigation:
             icon: fa-microchip
           - section: Capability Guides
             icon: fa-cubes
-            slug: capabilities
             contents:
               - page: Clone Voices
                 path: build-with-sonic/capabilities/clone-voices.mdx
@@ -204,22 +203,22 @@ redirects:
     destination: /get-started/make-an-api-request
     permanent: true
   - source: /concepts/continuations
-    destination: /build-with-sonic/capabilities/stream-inputs-using-continuations
+    destination: /build-with-sonic/capability-guides/stream-inputs-using-continuations
     permanent: true
   - source: /concepts/embeddings-and-voice-mixing
     destination: /behind-the-scenes/embeddings-and-voice-mixing
     permanent: true
   - source: /user-guides/custom-pronunciation-guide
-    destination: /build-with-sonic/capabilities/specify-custom-pronunciations
+    destination: /build-with-sonic/capability-guides/specify-custom-pronunciations
     permanent: true
   - source: /user-guides/improving-speech-quality
     destination: /build-with-sonic/formatting-text-for-sonic/best-practices
     permanent: true
   - source: /user-guides/voice-cloning
-    destination: /build-with-sonic/capabilities/clone-voices
+    destination: /build-with-sonic/capability-guides/clone-voices
     permanent: true
   - source: /user-guides/voice-control
-    destination: /build-with-sonic/capabilities/control-speed-and-emotion
+    destination: /build-with-sonic/capability-guides/control-speed-and-emotion
     permanent: true
   - source: user-guides/cartesia-twilio
     destination: /integrate-with-sonic/twilio
