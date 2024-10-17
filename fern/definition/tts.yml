@@ -20,6 +20,20 @@ service:
 channel:
   path: /tts/websocket
   display-name: Text to Speech (WebSocket)
+  docs: |
+    We recommend using this endpoint for real-time applications.
+
+    The WebSocket API is built around _contexts_. When you send a generation request, you pass a context ID. If you want to continue a generation, just pass the same context ID.
+
+    1. Contexts allow you to multiplex multiple generations over a single connection.
+    2. Each context maintains prosody between its inputs using a Sonic feature called _continuations_.
+
+    Read the guide on working with contexts to learn more.
+
+    Here's the recommended usage pattern:
+
+    1. **Set up a WebSocket before the first generation.** This gets rid of the latency from connection setup.
+    2. **Multiplex generations over a single connection.**
   auth: true
   query-parameters:
     cartesia_version:
@@ -38,7 +52,7 @@ channel:
     send:
       display-name: "Send"
       origin: client
-      body: WebSocketTTSRequest
+      body: WebSocketRequest
 
     receive:
       display-name: "Receive"
@@ -89,12 +103,27 @@ types:
   WebSocketDoneResponse:
     extends: WebSocketBaseResponse
 
-  WebSocketTTSRequest:
+  CancelContextRequest:
+    properties:
+      context_id: string
+      cancel: literal<true>
+
+  GenerationRequest:
     extends: TTSRequest
     properties:
       context_id: string
       continue: boolean
       add_timestamps: boolean
+
+  WebSocketRequest:
+    discriminated: false
+    union:
+      - type: GenerationRequest
+        docs: |
+          Use this to generate speech for a transcript.
+      - type: CancelContextRequest
+        docs: |
+          Use this to cancel a context, so that no more messages are generated for that context.
 
   TTSRequest:
     properties:

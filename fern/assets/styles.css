@@ -78,12 +78,12 @@ html {
 	justify-content: center;
 }
 
-.fern-prose blockquote {
+.fern-prose blockquote, .prose-base blockquote {
 	font-style: normal;
 	font-weight: normal;
 }
 
-.fern-prose code {
+.fern-prose code, .prose-base code {
 	white-space: pre-wrap;
 }
 

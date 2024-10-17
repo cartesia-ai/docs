@@ -89,13 +89,22 @@ navigation:
             icon: fa-text-size
             contents:
               - page: Best Practices
-                path: build-with-sonic/format-text-for-sonic.mdx
+                path: build-with-sonic/formatting-text-for-sonic/best-practices.mdx
                 icon: fa-font
+              - page: Inserting Breaks/Pauses
+                path: build-with-sonic/formatting-text-for-sonic/inserting-breaks-pauses.mdx
+                icon: fa-pause
+              - page: Spelling out Input Text
+                path: build-with-sonic/formatting-text-for-sonic/spelling-out-input-text.mdx
+                icon: fa-spell-check
       - section: Integrate with Sonic
         contents:
           - page: Twilio
             path: integrate-with-sonic/twilio.mdx
             icon: fa-phone
+          - page: Pipecat
+            path: integrate-with-sonic/pipecat.mdx
+            icon: fa-cat
       - section: Peek Behind the Scenes
         contents:
           - page: Embeddings and Voice Mixing

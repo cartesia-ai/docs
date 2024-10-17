@@ -6,8 +6,6 @@ subtitle: >-
   bytes.
 ---
 
-In many real-time use cases, you don't have your transcripts available upfront—like when you're generating them using a language model. For these cases, Sonic supports input streaming using WebSocket contexts. This allows you to stream a transcript in multiple chunks to Sonic and receive seamless speech in return.
-
 
 <AccordionGroup>
   <Accordion
@@ -77,14 +75,6 @@ if __name__ == "__main__":
   </Accordion>
 </AccordionGroup>
 
-
-<Card title="Input Streaming with WebSockets" icon="code" href="/reference/web-socket/stream-speech/working-with-web-sockets#input-streaming-with-contexts">
-    API Reference for Input Streaming and working with Contexts.
-</Card>
-
-<Note>
-Read up the Input Streaming section in the [WebSocket API Reference](/reference/web-socket/stream-speech/working-with-web-sockets#input-streaming-with-contexts) before you start building your conversational applications.
-</Note>
 
 For the best performance, we recommend the following usage pattern:
 1. **Set up a WebSocket at start of the conversation** and maintain it throughout the conversation. This incurs a one-time latency cost and optimizes latency for subsequent turns.
