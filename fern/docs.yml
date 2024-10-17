@@ -74,6 +74,7 @@ navigation:
             icon: fa-microchip
           - section: Capability Guides
             icon: fa-cubes
+            slug: capabilities
             contents:
               - page: Clone Voices
                 path: build-with-sonic/capabilities/clone-voices.mdx
@@ -203,13 +204,13 @@ redirects:
     destination: /get-started/make-an-api-request
     permanent: true
   - source: /concepts/continuations
-    destination: /build-with-sonic/capabilities/stream-inputs
+    destination: /build-with-sonic/capabilities/stream-inputs-using-continuations
     permanent: true
   - source: /concepts/embeddings-and-voice-mixing
     destination: /behind-the-scenes/embeddings-and-voice-mixing
     permanent: true
   - source: /user-guides/custom-pronunciation-guide
-    destination: /build-with-sonic/capabilities/custom-pronunciations
+    destination: /build-with-sonic/capabilities/specify-custom-pronunciations
     permanent: true
   - source: /user-guides/improving-speech-quality
     destination: /build-with-sonic/formatting-text-for-sonic/best-practices
@@ -218,7 +219,7 @@ redirects:
     destination: /build-with-sonic/capabilities/clone-voices
     permanent: true
   - source: /user-guides/voice-control
-    destination: /build-with-sonic/capabilities/speed-and-emotion-controls
+    destination: /build-with-sonic/capabilities/control-speed-and-emotion
     permanent: true
   - source: user-guides/cartesia-twilio
     destination: /integrate-with-sonic/twilio
@@ -255,6 +256,9 @@ redirects:
     permanent: true
   - source: /reference/api-reference/rest/update-voice
     destination: /api-reference/voices/update
+    permanent: true
+  - source: /reference/api-reference/rest/localize-voice
+    destination: /api-reference/voices/localize
     permanent: true
   - source: /reference/api-reference/rest/api-status-and-version
     destination: /api-reference/api-status/get
