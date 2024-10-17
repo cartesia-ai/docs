@@ -62,10 +62,11 @@ navigation:
       - section: Use an SDK
         contents:
           - page: JavaScript/TypeScript
-            path: client-libraries/javascript-typescript.mdx
+            path: use-an-sdk/javascript-typescript.mdx
+            slug: javascript-typescript
             icon: fa-code
           - page: Python
-            path: client-libraries/python.mdx
+            path: use-an-sdk/python.mdx
             icon: fa-code
       - section: Build with Sonic
         contents:
@@ -222,6 +223,12 @@ redirects:
     permanent: true
   - source: user-guides/cartesia-twilio
     destination: /integrate-with-sonic/twilio
+    permanent: true
+  - source: /client-libraries/javascript-typescript
+    destination: /use-an-sdk/javascript-typescript
+    permanent: true
+  - source: /client-libraries/python
+    destination: /use-an-sdk/python
     permanent: true
   - source: /reference/web-socket/stream-speech/stream-speech
     destination: /api-reference/tts/tts
