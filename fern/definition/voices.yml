@@ -59,7 +59,7 @@ types:
     docs: |
       Target language to localize the voice to.
 
-      Options: English (en), German (de), Spanish (es), French (fr), Japanese (ja), Portuguese (pt), Chinese (zh).
+      Options: English (en), German (de), Spanish (es), French (fr), Japanese (ja), Portuguese (pt), Chinese (zh), Hindi (hi), Italian (it), Korean (ko), Dutch (nl), Polish (pl), Russian (ru), Swedish (sv), Turkish (tr).
     enum:
       - en
       - de
@@ -68,6 +68,14 @@ types:
       - ja
       - pt
       - zh
+      - hi
+      - it
+      - ko
+      - nl
+      - pl
+      - ru
+      - sv
+      - tr
 
   LocalizeDialect:
     enum:
