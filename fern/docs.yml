@@ -76,9 +76,13 @@ navigation:
           - section: Capability Guides
             icon: fa-cubes
             contents:
-              - page: Clone Voices
-                path: build-with-sonic/capabilities/clone-voices.mdx
+              - section: Clone Voices
                 icon: fa-clone
+                contents:
+                  - page: Instant Voice Cloning
+                    path: build-with-sonic/capabilities/clone-voices/instant.mdx
+                  - page: HiFi Voice Cloning
+                    path: build-with-sonic/capabilities/clone-voices/hifi-voice-cloning.mdx
               - page: Specify Custom Pronunciations
                 path: build-with-sonic/capabilities/custom-pronunciations.mdx
                 icon: fa-microphone

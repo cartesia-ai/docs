@@ -1,0 +1,48 @@
+---
+title: HiFi Voice Cloning
+subtitle: >-
+  Learn how to leverage model Fine-Tuning to create High Fidelity (HiFi) voice clones.
+---
+
+<Frame background="subtle">
+  <img src="/assets/images/hifi-clone.png" />
+</Frame>
+
+HiFi Voice Cloning is available through the [Playground](https://play.cartesia.ai) to Scale and Enterprise tier users only. It uses model fine-tuning to train a custom model directly on your audio.
+
+Let's walk through the process of creating an HiFi Voice Clone using our `Sarah` voice as an example.
+
+To start, navigate to the [HiFi Voice Cloning](https://play.cartesia.ai/clone/requests) page in the Playground and click the **Request** button.
+
+<Frame background="subtle">
+  <img src="/assets/images/hifi-clone-request.png" />
+</Frame>
+
+From there, fill out the **Request a Fine-Tune** form with the Name, Description, and Language for your voice. Only English is supported at this time.
+
+<Frame background="subtle">
+  <img src="/assets/images/fine-tune-request-form.png" />
+</Frame>
+
+Afterwards, you'll be directed to the **Fine Tune Request** page with a **Files** tab where you can upload the audio files associated with your voice. Here are some best practices for recording your audio:
+
+- Generally, the more audio you upload, the better the quality of your clone.
+- We recommend uploading at least **30 minutes of audio** for the best results.
+- All audio files should be from the same speaker.
+- Large file uploads can be slow. Try breaking your audio up into multiple files to speed up the upload process.
+
+Click the **Train** button to start the training process after uploading your all of your audio files. This will take between 2-8 hours to complete depending on the amount of audio you uploaded. The cost of training is **3 Million Characters** and will be charged once training has completed successfully.
+
+<Frame background="subtle">
+  <img src="/assets/images/fine-tune-train.png" />
+</Frame>
+
+Once the training is complete, you'll see **5** versions of your new voice in the **Created Voices** tab. All versions will also be available in the [Voice Library](https://play.cartesia.ai/library) along with your other voices. Each version is associated with a set of fine tuning parameters automatically selected based on the source audio.
+
+<Frame background="subtle">
+  <img src="/assets/images/fine-tune-voices.png" />
+</Frame>
+
+You'll have access to all voices via the Playground, but API access will be locked. To unlock, click the Lock icon next to each voice. There is a one time cost of **27 Million Characters** per voice you unlock.
+
+<p style="color: red; font-weight: bold">**Locked Voices will be deleted after 30 days if not Unlocked!**</p>
