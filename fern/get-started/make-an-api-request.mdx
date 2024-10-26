@@ -61,17 +61,18 @@ In comparison, Cartesia's WebSocket and Server-Sent Events endpoints stream out 
 ### Install the SDK
 
 ```sh
-pip install cartesia ffmpeg-python
+pip install cartesia
 
 # Or, if you're using uv
-uv add cartesia ffmpeg-python
+uv add cartesia
 ```
 
 ### Make the API call
 
 ```python
-from cartesia import Cartesia
 import os
+import subprocess
+from cartesia import Cartesia
 
 if os.environ.get("CARTESIA_API_KEY") is None:
     raise ValueError("CARTESIA_API_KEY is not set")
@@ -116,16 +117,16 @@ env CARTESIA_API_KEY=YOUR_API_KEY uv run cartesia.py
 
 ```sh
 # NPM
-npm install @cartesia/cartesia-js fluent-ffmpeg
+npm install @cartesia/cartesia-js
 
 # Yarn
-yarn add @cartesia/cartesia-js fluent-ffmpeg
+yarn add @cartesia/cartesia-js
 
 # Bun
-bun add @cartesia/cartesia-js fluent-ffmpeg
+bun add @cartesia/cartesia-js
 
 # PNPM
-pnpm add @cartesia/cartesia-js fluent-ffmpeg
+pnpm add @cartesia/cartesia-js
 ```
 
 ### Make the API call
