@@ -72,47 +72,26 @@ uv add cartesia ffmpeg-python
 ```python
 from cartesia import Cartesia
 import os
-import subprocess
-import ffmpeg
 
 if os.environ.get("CARTESIA_API_KEY") is None:
     raise ValueError("CARTESIA_API_KEY is not set")
 
 client = Cartesia(api_key=os.environ.get("CARTESIA_API_KEY"))
 
-voice_id = "a0e99841-438c-4a64-b679-ae501e7d6091"  # Barbershop Man
-model_id = "sonic-english"
-transcript = "Welcome to Cartesia Sonic!"
+data = client.tts.bytes(
+    model_id="sonic-english",
+    transcript="Hello, world! I'm generating audio on Cartesia.",
+    voice_id="a0e99841-438c-4a64-b679-ae501e7d6091",  # Barbershop Man
+    # You can find the supported `output_format`s at https://docs.cartesia.ai/api-reference/tts/bytes
+    output_format={
+        "container": "wav",
+        "encoding": "pcm_f32le",
+        "sample_rate": 44100,
+    },
+)
 
-output_format = {
-    "container": "raw",
-    "encoding": "pcm_f32le",
-    "sample_rate": 44100,
-}
-
-# Set up a WebSocket connection.
-ws = client.tts.websocket()
-
-# Open a file to write the raw PCM audio bytes to.
-f = open("sonic.pcm", "wb")
-
-# Generate and stream audio.
-for output in ws.send(
-    model_id=model_id,
-    transcript=transcript,
-    voice_id=voice_id,
-    stream=True,
-    output_format=output_format,
-):
-    buffer = output["audio"]  # buffer contains raw PCM audio bytes
-    f.write(buffer)
-
-# Close the connection to release resources
-ws.close()
-f.close()
-
-# Convert the raw PCM bytes to a WAV file.
-ffmpeg.input("sonic.pcm", format="f32le").output("sonic.wav").run()
+with open("sonic.wav", "wb") as f:
+    f.write(data)
 
 # Play the file
 subprocess.run(["ffplay", "-autoexit", "-nodisp", "sonic.wav"])
