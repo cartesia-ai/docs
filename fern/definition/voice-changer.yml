@@ -16,8 +16,19 @@ service:
         body:
           properties:
             clip: file
-            voice: VoiceIdSpecifier
-            output_format: tts.OutputFormat
+            voice[id]: string
+            output_format[container]:
+              type: OutputFormatContainer
+            output_format[sample_rate]:
+              type: integer
+            output_format[encoding]:
+              type: optional<tts.RawEncoding>
+              docs: |
+                Required for RAW and WAV containers.
+            output_format[bit_rate]:
+              type: optional<integer>
+              docs: |
+                Required for MP3 and WAV containers.
       response: file
 
     sse:
@@ -29,11 +40,24 @@ service:
         body:
           properties:
             clip: file
-            voice: VoiceIdSpecifier
-            output_format: tts.OutputFormat
+            voice[id]: string
+            output_format[container]:
+              type: OutputFormatContainer
+            output_format[sample_rate]:
+              type: integer
+            output_format[encoding]:
+              type: optional<tts.RawEncoding>
+              docs: |
+                Required for RAW and WAV containers.
+            output_format[bit_rate]:
+              type: optional<integer>
+              docs: |
+                Required for MP3 and WAV containers.
       response-stream: tts.WebSocketResponse
 
 types:
-  VoiceIdSpecifier:
-    properties:
-      id: string
+  OutputFormatContainer:
+    enum:
+      - RAW
+      - WAV
+      - MP3
