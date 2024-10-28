@@ -1,0 +1,39 @@
+imports:
+  tts: ./tts.yml
+
+service:
+  base-path: /voice-changer
+  auth: true
+  endpoints:
+    bytes:
+      path: /bytes
+      method: POST
+      display-name: Voice Changer (Bytes)
+      docs: |
+        Takes an audio file of speech, and returns the same speech spoken with a different voice.
+      request:
+        name: VoiceChangerBytesRequest
+        body:
+          properties:
+            clip: file
+            voice: VoiceIdSpecifier
+            output_format: tts.OutputFormat
+      response: file
+
+    sse:
+      path: /sse
+      method: POST
+      display-name: Voice Changer (SSE)
+      request:
+        name: VoiceChangerSSERequest
+        body:
+          properties:
+            clip: file
+            voice: VoiceIdSpecifier
+            output_format: tts.OutputFormat
+      response-stream: tts.WebSocketResponse
+
+types:
+  VoiceIdSpecifier:
+    properties:
+      id: string

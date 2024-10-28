@@ -154,6 +154,7 @@ navigation:
                     path: api-reference/contexts.mdx
                     icon: fa-waveform
           - voices: []
+          - voice-changer: []
 typography:
   bodyFont:
     name: Tiempos Text
