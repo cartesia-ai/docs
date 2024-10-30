@@ -34,7 +34,7 @@ channel:
     - When you send a generation request, you pass a `context_id`. Further inputs on the same `context_id` will [continue the generation](/build-with-sonic/capability-guides/stream-inputs-using-continuations), maintaining prosody.
     - Responses for a context contain the `context_id` you passed in so that you can match requests and responses.
 
-    Read the guide on [working with contexts](/api-reference/tts/working-with-contexts) to learn more.
+    Read the guide on [working with contexts](/api-reference/tts/working-with-web-sockets/contexts) to learn more.
 
     For the best performance, we recommend the following usage pattern:
 
