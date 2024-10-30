@@ -10,7 +10,9 @@ service:
       method: POST
       display-name: Voice Changer (Bytes)
       docs: |
-        Takes an audio file of speech, and returns the same speech spoken with a different voice.
+        Takes an audio file of speech, and returns an audio file of speech spoken with the same intonation, but with a different voice.
+
+        This endpoint is priced at 15 characters per second of input audio.
       request:
         name: VoiceChangerBytesRequest
         body:
@@ -37,6 +39,10 @@ service:
       display-name: Voice Changer (SSE)
       request:
         name: VoiceChangerSSERequest
+        docs: |
+          Takes an audio file of speech, and streams an audio file of speech spoken with the same intonation, but with a different voice.
+
+          This endpoint is priced at 15 characters per second of input audio.
         body:
           properties:
             clip: file
