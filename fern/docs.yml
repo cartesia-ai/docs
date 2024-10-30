@@ -138,6 +138,9 @@ navigation:
         api-name: voices
         paginated: true
         flattened: true
+        snippets: 
+          python: "cartesia"
+          typescript: "@cartesia/cartesia-js"
         layout:
           - api-status: []
           - tts:
