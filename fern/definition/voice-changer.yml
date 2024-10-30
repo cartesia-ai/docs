@@ -53,11 +53,18 @@ service:
               type: optional<integer>
               docs: |
                 Required for MP3 and WAV containers.
-      response-stream: tts.WebSocketResponse
+      response-stream: StreamingResponse
 
 types:
   OutputFormatContainer:
     enum:
-      - RAW
-      - WAV
-      - MP3
+      - raw
+      - wav
+      - mp3
+
+  StreamingResponse:
+    discriminant: type
+    union:
+      chunk: tts.WebSocketChunkResponse
+      done: tts.WebSocketDoneResponse
+      error: tts.WebSocketErrorResponse
