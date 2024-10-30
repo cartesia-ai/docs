@@ -24,11 +24,11 @@ service:
             output_format[encoding]:
               type: optional<tts.RawEncoding>
               docs: |
-                Required for RAW and WAV containers.
+                Required for `raw` and `wav` containers.
             output_format[bit_rate]:
               type: optional<integer>
               docs: |
-                Required for MP3 and WAV containers.
+                Required for `mp3` containers.
       response: file
 
     sse:
@@ -48,11 +48,11 @@ service:
             output_format[encoding]:
               type: optional<tts.RawEncoding>
               docs: |
-                Required for RAW and WAV containers.
+                Required for `raw` and `wav` containers.
             output_format[bit_rate]:
               type: optional<integer>
               docs: |
-                Required for MP3 and WAV containers.
+                Required for `mp3` containers.
       response-stream: StreamingResponse
 
 types:
