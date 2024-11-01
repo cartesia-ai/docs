@@ -13,6 +13,43 @@ service:
       method: POST
       display-name: Text to Speech (Bytes)
       request: TTSRequest
+      examples:
+        - name: MP3
+          request:
+            model_id: "sonic-english"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "mp3"
+              sample_rate: 44100
+              bit_rate: 128000
+        - name: WAV
+          request:
+            model_id: "sonic-english"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "wav"
+              sample_rate: 44100
+              encoding: "pcm_f32le"
+        - name: RAW
+          request:
+            model_id: "sonic-english"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "raw"
+              sample_rate: 44100
+              encoding: "pcm_f32le"
 
     sse:
       path: /sse
