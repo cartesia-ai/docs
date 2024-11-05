@@ -215,6 +215,9 @@ redirects:
   - source: /concepts/continuations
     destination: /build-with-sonic/capability-guides/stream-inputs-using-continuations
     permanent: true
+  - source: /build-with-cartesia/capability-guides/stream-inputs-with-continuations
+    destination: /build-with-sonic/capability-guides/stream-inputs-using-continuations
+    permanent: true
   - source: /concepts/embeddings-and-voice-mixing
     destination: /behind-the-scenes/embeddings-and-voice-mixing
     permanent: true
