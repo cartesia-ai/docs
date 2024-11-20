@@ -216,7 +216,6 @@ service:
       response: EmbeddingResponse
 
     cloneFromClip:
-      availability: deprecated
       path: /clone/clip
       method: POST
       display-name: Clone Voice from Clip

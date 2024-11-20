@@ -96,33 +96,24 @@ navigation:
             path: ../api-reference/concurrency-limits-and-timeouts.mdx
             icon: fa-traffic-light
       - api: API Reference
-        paginated: true
-        flattened: true
+        api-name: definition-2024-11-13
         # snippets:
         #   python: "cartesia"
         #   typescript: "@cartesia/cartesia-js"
-        layout:
-          - api-status: []
-          - tts:
-              - page: Compare TTS Endpoints
-                path: ../api-reference/tts-endpoints-overview.mdx
-                icon: fa-scale-balanced
-              - tts.bytes
-              - tts.sse
-              - tts.tts
-              - section: Working with WebSockets
-                icon: fa-plug
-                contents:
-                  - page: Contexts
-                    path: ../api-reference/contexts.mdx
-                    icon: fa-waveform
-          - voices:
-              - voices.list
-              - voices.create
-              - voices.delete
-              - voices.update
-              - voices.get
-              - voices.localize
-              - voices.mix
-              - voices.clone
-          - voice-changer: []
+        # layout:
+        #   - api-status: []
+        #   - tts:
+        #       - page: Compare TTS Endpoints
+        #         path: ../api-reference/tts-endpoints-overview.mdx
+        #         icon: fa-scale-balanced
+        #       - tts.bytes
+        #       - tts.sse
+        #       - tts.tts
+        #       - section: Working with WebSockets
+        #         icon: fa-plug
+        #         contents:
+        #           - page: Contexts
+        #             path: ../api-reference/contexts.mdx
+        #             icon: fa-waveform
+        #   - voices: []
+        #   - voice-changer: []

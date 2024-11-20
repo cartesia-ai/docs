@@ -11,3 +11,9 @@ headers:
 environments:
   Production: https://api.cartesia.ai
 default-environment: Production
+version:
+  header: Cartesia-Version
+  default: "2024-11-13"
+  values:
+    - "2024-11-13"
+    - "2024-06-10"
