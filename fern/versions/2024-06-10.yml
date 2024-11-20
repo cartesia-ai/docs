@@ -66,15 +66,15 @@ navigation:
                 icon: fa-spell-check
       - section: Integrate with Sonic
         contents:
-          - page: Twilio
-            path: ../integrate-with-sonic/twilio.mdx
-            icon: fa-phone
-          - page: Pipecat
-            path: ../integrate-with-sonic/pipecat.mdx
-            icon: fa-cat
           - page: LiveKit
             path: ../integrate-with-sonic/livekit.mdx
             icon: fa-circle
+          - page: Pipecat
+            path: ../integrate-with-sonic/pipecat.mdx
+            icon: fa-cat
+          - page: Twilio
+            path: ../integrate-with-sonic/twilio.mdx
+            icon: fa-phone
       - section: Enterprise
         contents:
           - page: Set up SSO
