@@ -219,11 +219,20 @@ service:
       path: /clone
       method: POST
       display-name: Clone Voice
+      docs: |
+        Clone a voice from an audio clip. This endpoint has two modes, stability and similarity.
+
+        Similarity mode clones are more similar to the source clip, but may reproduce background noise. For these, use an audio clip about 5 seconds long.
+
+        Stability mode clones are more stable, but may not sound as similar to the source clip. For these, use an audio clip 10-20 seconds long.
       request:
         name: CloneVoiceRequest
         body:
           properties:
-            clip: file
+            clip:
+              type: file
+              docs: |
+                The audio clip to clone. For stability mode, the clip should be 10-20 seconds long. For similarity mode, the clip should be about 5 seconds long.
             name:
               type: string
               docs: |
@@ -275,7 +284,7 @@ service:
             mode: similarity
             language: en
             transcript: "A transcript of the words spoken in the audio clip."
-            enhance: true
+            enhance: false
           response:
             body:
               id: "40248dd5-bfe9-48e2-93f7-ea3f9d5c7f72"
@@ -285,23 +294,3 @@ service:
               description: "Copied from Cartesia docs"
               created_at: "2024-11-13T07:06:22.476564Z"
               language: en
-
-    cloneFromClip:
-      path: /clone/clip
-      method: POST
-      display-name: Clone Voice from Clip
-      docs: |
-        Clone a voice from a clip. The clip should be a 15-20 second recording of a person speaking with little to no background noise.
-
-        The endpoint will return an embedding that can either be used directly with text-to-speech endpoints or used to create a new voice.
-      request:
-        name: CloneFromClipRequest
-        body:
-          properties:
-            clip:
-              type: file
-            enhance:
-              type: boolean
-              docs: |
-                Whether to enhance the clip to improve its quality before cloning. Useful if the clip is low quality.
-      response: EmbeddingResponse

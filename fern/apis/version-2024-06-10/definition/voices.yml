@@ -1,0 +1,235 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  embedding: ./embedding.yml
+  tts: ./tts.yml
+
+types:
+  VoiceId:
+    type: string
+    docs: |
+      The ID of the voice.
+
+  BaseVoiceId:
+    type: VoiceId
+    docs: |
+      The ID of the base voice associated with the voice, used for features like voice mixing.
+
+  Voice:
+    properties:
+      id: VoiceId
+      user_id:
+        type: string
+        docs: |
+          The ID of the user who owns the voice.
+      is_public:
+        type: boolean
+        docs: |
+          Whether the voice is publicly accessible.
+      name: &name
+        type: string
+        docs: |
+          The name of the voice.
+      description: &description
+        type: string
+        docs: |
+          The description of the voice.
+      created_at:
+        type: datetime
+        docs: |
+          The date and time the voice was created.
+      embedding: embedding.Embedding
+      language: tts.SupportedLanguage
+      base_voice_id: optional<BaseVoiceId>
+
+  VoiceMetadata:
+    properties:
+      id: VoiceId
+      user_id:
+        type: string
+        docs: |
+          The ID of the user who owns the voice.
+      is_public:
+        type: boolean
+        docs: |
+          Whether the voice is publicly accessible.
+      name: &name
+        type: string
+        docs: |
+          The name of the voice.
+      description: &description
+        type: string
+        docs: |
+          The description of the voice.
+      created_at:
+        type: datetime
+        docs: |
+          The date and time the voice was created.
+      language: tts.SupportedLanguage
+
+  CreateVoiceRequest:
+    properties:
+      name: *name
+      description: *description
+      embedding: embedding.Embedding
+      language: tts.SupportedLanguage
+      base_voice_id: optional<BaseVoiceId>
+
+  UpdateVoiceRequest:
+    properties:
+      name: *name
+      description: *description
+
+  LocalizeTargetLanguage:
+    docs: |
+      Target language to localize the voice to.
+
+      Options: English (en), German (de), Spanish (es), French (fr), Japanese (ja), Portuguese (pt), Chinese (zh), Hindi (hi), Italian (it), Korean (ko), Dutch (nl), Polish (pl), Russian (ru), Swedish (sv), Turkish (tr).
+    enum:
+      - en
+      - de
+      - es
+      - fr
+      - ja
+      - pt
+      - zh
+      - hi
+      - it
+      - ko
+      - nl
+      - pl
+      - ru
+      - sv
+      - tr
+
+  LocalizeDialect:
+    enum:
+      - au
+      - in
+      - so
+      - uk
+      - us
+    docs: |
+      The dialect to localize to. This is only available when language is set to English.
+
+      Options: Australian (au), Indian (in), Southern American (so), UK (uk), US (us).
+
+  Gender:
+    enum:
+      - male
+      - female
+
+  LocalizeVoiceRequest:
+    properties:
+      embedding: embedding.Embedding
+      language: LocalizeTargetLanguage
+      original_speaker_gender: Gender
+      dialect: LocalizeDialect
+
+  EmbeddingResponse:
+    properties:
+      embedding: embedding.Embedding
+
+  MixVoicesRequest:
+    properties:
+      voices: list<MixVoiceSpecifier>
+
+  Weight:
+    type: double
+    docs: |
+      The weight of the voice or embedding in the mix. If weights do not sum to 1, they will be normalized.
+
+  IdSpecifier:
+    properties:
+      id: VoiceId
+      weight: Weight
+
+  EmbeddingSpecifier:
+    properties:
+      embedding: embedding.Embedding
+      weight: Weight
+
+  MixVoiceSpecifier:
+    discriminated: false
+    union:
+      - IdSpecifier
+      - EmbeddingSpecifier
+
+  CloneMode:
+    enum:
+      - similarity
+      - stability
+
+service:
+  base-path: /voices
+  auth: true
+  endpoints:
+    list:
+      path: /
+      method: GET
+      display-name: List Voices
+      response: list<Voice>
+
+    create:
+      path: /
+      method: POST
+      display-name: Create Voice
+      request: CreateVoiceRequest
+      response: Voice
+
+    delete:
+      path: /{id}
+      method: DELETE
+      display-name: Delete Voice
+      path-parameters:
+        id: VoiceId
+
+    update:
+      path: /{id}
+      method: PATCH
+      display-name: Update Voice
+      path-parameters:
+        id: VoiceId
+      request: UpdateVoiceRequest
+      response: Voice
+
+    get:
+      path: /{id}
+      method: GET
+      display-name: Get Voice
+      path-parameters:
+        id: VoiceId
+      response: Voice
+
+    localize:
+      path: /localize
+      method: POST
+      display-name: Localize Voice
+      request: LocalizeVoiceRequest
+      response: EmbeddingResponse
+
+    mix:
+      path: /mix
+      method: POST
+      display-name: Mix Voices
+      request: MixVoicesRequest
+      response: EmbeddingResponse
+
+    cloneFromClip:
+      path: /clone/clip
+      method: POST
+      display-name: Clone Voice from Clip
+      docs: |
+        Clone a voice from a clip. The clip should be a 15-20 second recording of a person speaking with little to no background noise.
+        The endpoint will return an embedding that can either be used directly with text-to-speech endpoints or used to create a new voice.
+      request:
+        name: CloneFromClipRequest
+        body:
+          properties:
+            clip:
+              type: file
+            enhance:
+              type: boolean
+              docs: |
+                Whether to enhance the clip to improve its quality before cloning. Useful if the clip is low quality.
+      response: EmbeddingResponse
