@@ -1,0 +1,129 @@
+tabs:
+  docs:
+    display-name: Documentation
+    slug: docs
+    icon: fa-regular fa-file-alt
+    skip-slug: true
+  reference:
+    display-name: API Reference
+    slug: reference
+    icon: fa-regular fa-code
+    skip-slug: true
+navigation:
+  - tab: docs
+    layout:
+      - section: Get Started
+        contents:
+          - page: Overview
+            path: ../get-started/overview.mdx
+            icon: fa-browser
+          - page: Make an API request
+            path: ../get-started/make-an-api-request.mdx
+            icon: fa-paper-plane
+      - section: Use an SDK
+        contents:
+          - page: JavaScript/TypeScript
+            path: ../use-an-sdk/javascript-typescript.mdx
+            slug: javascript-typescript
+            icon: fa-code
+          - page: Python
+            path: ../use-an-sdk/python.mdx
+            icon: fa-code
+      - section: Build with Sonic
+        contents:
+          - page: Models
+            path: ../build-with-sonic/models.mdx
+            icon: fa-microchip
+          - section: Capability Guides
+            icon: fa-cubes
+            contents:
+              - page: Clone Voices
+                path: ../build-with-sonic/capabilities/clone-voices.mdx
+                icon: fa-clone
+              - page: Specify Custom Pronunciations
+                path: ../build-with-sonic/capabilities/custom-pronunciations.mdx
+                icon: fa-microphone
+              - page: Control Speed and Emotion
+                path: ../build-with-sonic/capabilities/speed-and-emotion-controls.mdx
+                icon: fa-gauge
+              - page: Stream Inputs using Continuations
+                path: ../build-with-sonic/capabilities/stream-inputs.mdx
+                icon: fa-waveform
+              - page: Localize Voices
+                path: ../build-with-sonic/capabilities/localize-voices.mdx
+                icon: fa-earth-americas
+          - section: Formatting Text for Sonic
+            icon: fa-text-size
+            contents:
+              - page: Best Practices
+                path: ../build-with-sonic/formatting-text-for-sonic/best-practices.mdx
+                icon: fa-font
+              - page: Inserting Breaks/Pauses
+                path: ../build-with-sonic/formatting-text-for-sonic/inserting-breaks-pauses.mdx
+                icon: fa-pause
+              - page: Spelling out Input Text
+                path: ../build-with-sonic/formatting-text-for-sonic/spelling-out-input-text.mdx
+                icon: fa-spell-check
+      - section: Integrate with Sonic
+        contents:
+          - page: Twilio
+            path: ../integrate-with-sonic/twilio.mdx
+            icon: fa-phone
+          - page: Pipecat
+            path: ../integrate-with-sonic/pipecat.mdx
+            icon: fa-cat
+          - page: LiveKit
+            path: ../integrate-with-sonic/livekit.mdx
+            icon: fa-circle
+      - section: Enterprise
+        contents:
+          - page: Set up SSO
+            path: ../enterprise/sso.mdx
+            icon: fa-shield-halved
+      - section: Peek Behind the Scenes
+        contents:
+          - page: Embeddings and Voice Mixing
+            path: ../behind-the-scenes/embeddings-and-voice-mixing.mdx
+            icon: fa-waveform
+  - tab: reference
+    layout:
+      - section: Use the API
+        contents:
+          - page: API Conventions
+            icon: fa-ruler
+            path: ../api-reference/api-conventions.mdx
+          - page: Concurrency Limits and Timeouts
+            path: ../api-reference/concurrency-limits-and-timeouts.mdx
+            icon: fa-traffic-light
+      - api: API Reference
+        api-name: definition-2024-06-10
+        paginated: true
+        flattened: true
+        # snippets:
+        #   python: "cartesia"
+        #   typescript: "@cartesia/cartesia-js"
+        layout:
+          - api-status: []
+          - tts:
+              - page: Compare TTS Endpoints
+                path: ../api-reference/tts-endpoints-overview.mdx
+                icon: fa-scale-balanced
+              - tts.bytes
+              - tts.sse
+              - tts.tts
+              - section: Working with WebSockets
+                icon: fa-plug
+                contents:
+                  - page: Contexts
+                    path: ../api-reference/contexts.mdx
+                    icon: fa-waveform
+          - voices:
+              - voices.list
+              - voices.create
+              - voices.delete
+              - voices.update
+              - voices.get
+              - voices.localize
+              - voices.mix
+              - voices.cloneFromClip
+          - voice-changer: []
