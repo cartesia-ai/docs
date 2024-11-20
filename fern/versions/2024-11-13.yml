@@ -38,7 +38,7 @@ navigation:
             icon: fa-cubes
             contents:
               - page: Clone Voices
-                path: ../build-with-sonic/capabilities/clone-voices.mdx
+                path: ../apis/version-2024-11-13/build-with-sonic/capabilities/clone-voices.mdx
                 icon: fa-clone
               - page: Specify Custom Pronunciations
                 path: ../build-with-sonic/capabilities/custom-pronunciations.mdx
