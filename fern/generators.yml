@@ -38,4 +38,9 @@ groups:
           allowCustomFetcher: true
           skipResponseValidation: true
           includeApiReference: true
+          extraDependencies:
+            emittery: "^1.0.3"
+            human-id: "^4.1.1"
+          extraDevDependencies: 
+            "@types/ws": "^8.5.13"
         smart-casing: true
