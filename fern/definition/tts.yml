@@ -111,7 +111,7 @@ channel:
       display-name: "Receive"
       docs: |
         The server will send you back a stream of messages with the same `context_id` as your request.
-        The messages can be of type `chunk`, `timestamp`, `error`, or `done`.
+        The messages can be of type `chunk`, `timestamps`, `error`, or `done`.
       origin: server
       body: WebSocketResponse
 
@@ -166,7 +166,7 @@ channel:
             step_time: 123
         - type: receive
           body:
-            type: timestamp
+            type: timestamps
             context_id: "happy-monkeys-fly"
             status_code: 206
             done: false
@@ -204,7 +204,7 @@ types:
     union:
       chunk: WebSocketChunkResponse
       done: WebSocketDoneResponse
-      timestamp: WebSocketTimestampResponse
+      timestamps: WebSocketTimestampsResponse
       error: WebSocketErrorResponse
 
   WebSocketErrorResponse:
@@ -218,7 +218,7 @@ types:
       data: base64
       step_time: double
 
-  WebSocketTimestampResponse:
+  WebSocketTimestampsResponse:
     extends: WebSocketBaseResponse
     properties:
       word_timestamps: optional<WordTimestamps>
@@ -228,6 +228,10 @@ types:
       word_timestamps: optional<WordTimestamps>
       audio: optional<unknown>
       context_id: optional<ContextID>
+
+  WebSocketStreamOptions:
+    properties:
+      timeout: optional<double>
 
   WordTimestamps:
     properties:
@@ -296,12 +300,12 @@ types:
         type: string
         docs: |
           The ID of the model to use for the generation. See [Models](/build-with-sonic/models) for available models.
-      output_format: OutputFormat
+      output_format: optional<OutputFormat>
       transcript: optional<string>
       voice: TTSRequestVoiceSpecifier
       duration: optional<integer>
       language: optional<string>
-      add_timestamps: boolean
+      add_timestamps: optional<boolean>
       context_id: optional<string>
 
   TTSRequest:

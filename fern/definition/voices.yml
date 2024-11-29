@@ -47,7 +47,7 @@ types:
       name: *name
       description: *description
       embedding: embedding.Embedding
-      language: tts.SupportedLanguage
+      language: optional<tts.SupportedLanguage>
       base_voice_id: optional<BaseVoiceId>
 
   UpdateVoiceRequest:
@@ -99,7 +99,7 @@ types:
       embedding: embedding.Embedding
       language: LocalizeTargetLanguage
       original_speaker_gender: Gender
-      dialect: LocalizeDialect
+      dialect: optional<LocalizeDialect>
 
   EmbeddingResponse:
     properties:

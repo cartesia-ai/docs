@@ -18,16 +18,22 @@ service:
         body:
           properties:
             clip: file
-            voice[id]: string
+            voice[id]: 
+              name: voice_id
+              type: string
             output_format[container]:
+              name: output_format_container
               type: OutputFormatContainer
             output_format[sample_rate]:
+              name: output_format_sample_rate
               type: integer
             output_format[encoding]:
+              name: output_format_encoding
               type: optional<tts.RawEncoding>
               docs: |
                 Required for `raw` and `wav` containers.
             output_format[bit_rate]:
+              name: output_format_bit_rate
               type: optional<integer>
               docs: |
                 Required for `mp3` containers.
