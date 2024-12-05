@@ -31,8 +31,6 @@ groups:
           token: ${NPM_TOKEN}
         github:
           repository: cartesia-ai/cartesia-js
-          mode: push
-          branch: v2
         config:
           namespaceExport: Cartesia
           allowCustomFetcher: true
