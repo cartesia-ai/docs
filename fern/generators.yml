@@ -32,6 +32,7 @@ groups:
         github:
           repository: cartesia-ai/cartesia-js
         config:
+          outputEsm: true
           namespaceExport: Cartesia
           allowCustomFetcher: true
           skipResponseValidation: true
