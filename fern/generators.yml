@@ -39,6 +39,7 @@ groups:
           extraDependencies:
             emittery: "^1.0.3"
             human-id: "^4.1.1"
+            ws: "^8.15.13"
           extraDevDependencies: 
             "@types/ws": "^8.5.13"
         smart-casing: true
