@@ -1,0 +1,56 @@
+types:
+  Dataset:
+    properties:
+      id: string
+      name: string
+      created_at: string
+
+  CreateDatasetRequest:
+    properties:
+      name: string
+
+  DatasetFile:
+    properties:
+      id: string
+      filename: string
+      created_at: string
+
+  FilePurpose:
+    enum:
+      - fine_tune
+
+service:
+  base-path: /datasets
+  auth: true
+  endpoints:
+    list:
+      path: /
+      method: GET
+      response: list<Dataset>
+
+    create:
+      path: /
+      method: POST
+      request: CreateDatasetRequest
+      response: Dataset
+
+    getFiles:
+      path: /{id}/files
+      method: GET
+      path-parameters:
+        id: string
+      response: list<DatasetFile>
+
+    uploadFile:
+      path: /{id}/files
+      method: POST
+      path-parameters:
+        id: string
+      request:
+        name: UploadDatasetFileRequest
+        body:
+          properties:
+            file:
+              type: file
+            purpose:
+              type: FilePurpose
