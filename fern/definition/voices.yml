@@ -102,17 +102,27 @@ types:
       - sv
       - tr
 
-  LocalizeDialect:
+  LocalizeEnglishDialect:
     enum:
       - au
       - in
       - so
       - uk
       - us
-    docs: |
-      The dialect to localize to. This is only available when language is set to English.
 
-      Options: Australian (au), Indian (in), Southern American (so), UK (uk), US (us).
+  LocalizeDialect:
+    discriminated: false
+    union:
+      - type: LocalizeEnglishDialect
+        display-name: English dialect
+        docs: |
+          Only available when language is set to English (`en`).
+      - type: literal<"st">
+        display-name: Standard dialect
+        docs: |
+          The standard dialect for the language.
+    docs: |
+      The dialect to localize to.
 
   Gender:
     enum:
