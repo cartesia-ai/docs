@@ -19,6 +19,16 @@ types:
     enum:
       - fine_tune
 
+  PaginatedDatasets:
+    properties:
+      data: list<Dataset>
+      has_more: boolean
+
+  PaginatedDatasetFiles:
+    properties:
+      data: list<DatasetFile>
+      has_more: boolean
+
 service:
   base-path: /datasets
   auth: true
@@ -26,7 +36,7 @@ service:
     list:
       path: /
       method: GET
-      response: list<Dataset>
+      response: PaginatedDatasets
 
     create:
       path: /
@@ -34,12 +44,12 @@ service:
       request: CreateDatasetRequest
       response: Dataset
 
-    getFiles:
+    listFiles:
       path: /{id}/files
       method: GET
       path-parameters:
         id: string
-      response: list<DatasetFile>
+      response: PaginatedFiles
 
     uploadFile:
       path: /{id}/files
