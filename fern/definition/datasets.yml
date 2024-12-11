@@ -49,7 +49,7 @@ service:
       method: GET
       path-parameters:
         id: string
-      response: PaginatedFiles
+      response: PaginatedDatasetFiles
 
     uploadFile:
       path: /{id}/files
