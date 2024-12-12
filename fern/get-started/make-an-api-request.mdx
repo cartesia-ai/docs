@@ -37,7 +37,7 @@ curl -N -X POST "https://api.cartesia.ai/tts/bytes" \
         -H "Cartesia-Version: 2024-06-10" \
         -H "X-API-Key: YOUR_API_KEY" \
         -H "Content-Type: application/json" \
-        -d '{"transcript": "Welcome to Cartesia Sonic!", "model_id": "sonic-english", "voice": {"mode":"id", "id": "a0e99841-438c-4a64-b679-ae501e7d6091"}, "output_format":{"container":"wav", "encoding":"pcm_f32le", "sample_rate":44100}}' > sonic.wav
+        -d '{"transcript": "Welcome to Cartesia Sonic!", "model_id": "sonic-english", "voice": {"mode":"id", "id": "694f9389-aac1-45b6-b726-9d9369183238"}, "output_format":{"container":"wav", "encoding":"pcm_f32le", "sample_rate":44100}}' > sonic.wav
 ```
 
 <Warning>
@@ -82,7 +82,7 @@ client = Cartesia(api_key=os.environ.get("CARTESIA_API_KEY"))
 data = client.tts.bytes(
     model_id="sonic-english",
     transcript="Hello, world! I'm generating audio on Cartesia.",
-    voice_id="a0e99841-438c-4a64-b679-ae501e7d6091",  # Barbershop Man
+    voice_id="694f9389-aac1-45b6-b726-9d9369183238",  # Barbershop Man
     # You can find the supported `output_format`s at https://docs.cartesia.ai/api-reference/tts/bytes
     output_format={
         "container": "wav",
