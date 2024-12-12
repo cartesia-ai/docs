@@ -3,17 +3,50 @@ title: Models
 subtitle: Learn about the Sonic variants available on Cartesia
 ---
 
-## Sonic English
+Cartesia provides a family of state-of-the-art state space machine models, including our highly-accurate, low-latency Sonic model for text-to-speech.
 
-_Sonic English_ is our latest English text-to-speech model. It demonstrates strong overall capabilities and is optimized for efficiency to achieve low latency.
+## Overview
 
-**Model ID:** `sonic-english`
+| Model ID | Description | Supported languages |
+| ----- | ----------- | ------------------ |
+| `sonic` | Stable alias, currently points to `sonic-2024-10-19`. | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr |
+| `sonic-preview` | Preview alias, currently points to `sonic-2024-12-12`. | en |
+| `sonic-2024-10-19` | Latest stable model, with multilingual support and low latency. | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr |
+| `sonic-2024-12-12` | Latest preview model, with superior transcript following. | en |
 
-**Release date:** May 2024
+### Continuous updates
 
-**Last updated:** Aug 2024
+`sonic` and `sonic-preview` are aliases for the latest stable and preview models. We recommend using these for prototyping and development, then switching to a dated model for production use cases to ensure stability.
 
-**Supported languages:** English
+To learn how to use Sonic, see [Make an API request](/get-started/make-an-api-request).
+
+## Sonic
+
+_Sonic_ is our flagship text-to-speech model. It produces high-accuracy, expressive speech, and is optimized for efficiency to achieve low latency.
+
+- **Model ID:** `sonic`
+- **Release date:** Oct 2024
+- **Stable version:** `sonic-2024-10-19`
+- **Preview version:** `sonic-2024-12-12`
+
+### sonic-2024-12-12
+
+This is our latest preview model, with superior transcript following. `sonic-2024-12-12` demonstrates superior transcript following, especially for dates, long numbers, and phone numbers.
+
+### sonic-2024-10-19
+
+This is our latest stable model, with multilingual support and low latency.
+
+## Legacy Models
+
+### Sonic English (deprecated)
+
+_Sonic English_ is our original English text-to-speech model. While it is still supported in our API, we recommend using the `sonic` model instead.
+
+- **Model ID:** `sonic-english`
+- **Release date:** May 2024
+- **Latest version:** Aug 2024
+- **Supported languages:** English
 
 **Capabilities:**
 
@@ -26,16 +59,13 @@ _Sonic English_ is our latest English text-to-speech model. It demonstrates stro
 * Audio generations may occasionally sound fast.
 * Some long numbers and phone numbers may sound rushed as well.
 
+### Sonic Multilingual (deprecated)
 
-## Sonic Multilingual [Alpha]
+_Sonic Multilingual_ was the first multilingual Sonic variant, with improved transcript following and low latency.  While it is still supported in our API, we recommend using the `sonic` model instead.
 
-_Sonic Multilingual_ is the first multilingual Sonic variant, demonstrating great transcript following and low latency.
-
-**Model ID:** `sonic-multilingual`
-
-**Release date:** Jun 2024
-
-**Last updated:** September 2024
+- **Model ID:** `sonic-multilingual`
+- **Release date:** Jun 2024
+- **Latest version:** September 2024
 
 **Supported languages:**
 
