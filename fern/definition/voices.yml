@@ -117,12 +117,8 @@ types:
         display-name: English dialect
         docs: |
           Only available when language is set to English (`en`).
-      - type: literal<"st">
-        display-name: Standard dialect
-        docs: |
-          The standard dialect for the language.
     docs: |
-      The dialect to localize to.
+      The dialect to localize to. Only supported for English (`en`).
 
   Gender:
     enum:
