@@ -7,12 +7,38 @@ Cartesia provides a family of state-of-the-art state space machine models, inclu
 
 ## Overview
 
-| Model ID | Description | Supported languages |
-| ----- | ----------- | ------------------ |
-| `sonic` | Stable alias, currently points to `sonic-2024-10-19`. | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr |
-| `sonic-preview` | Preview alias, currently points to `sonic-2024-12-12`. | en |
-| `sonic-2024-10-19` | Latest stable model, with multilingual support and low latency. | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr |
-| `sonic-2024-12-12` | Latest preview model, with superior transcript following. | en |
+<div class="fern-table-root not-prose">
+	<table class="fern-table">
+		<thead>
+			<tr>
+				<th>Model ID</th>
+				<th>Description</th>
+				<th>Available languages</th>
+			</tr>
+		</thead>
+		<tr>
+			<td><code>sonic</code></td>
+			<td>Stable alias, currently points to <code style="white-space: nowrap">sonic-2024-10-19</code>.</td>
+			<td>en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr</td>
+		</tr>
+		<tr>
+			<td><pre><code>sonic-preview</code></pre></td>
+			<td>Preview model.</td>
+			<td>en</td>
+		</tr>
+		<tr>
+			<td><pre><code>sonic-2024-12-12</code></pre></td>
+			<td>Latest model.</td>
+			<td>en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr</td>
+		</tr>
+		<tr>
+			<td><pre><code>sonic-2024-10-19</code></pre></td>
+			<td>October release.</td>
+			<td>en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr</td>
+		</tr>
+	</table>
+</div>
+
 
 ### Continuous updates
 
@@ -24,18 +50,19 @@ To learn how to use Sonic, see [Make an API request](/get-started/make-an-api-re
 
 _Sonic_ is our flagship text-to-speech model. It produces high-accuracy, expressive speech, and is optimized for efficiency to achieve low latency.
 
-- **Model ID:** `sonic`
+- **Model alias:** `sonic`
 - **Release date:** Oct 2024
-- **Stable version:** `sonic-2024-10-19`
-- **Preview version:** `sonic-2024-12-12`
+- **Latest version:** `sonic-2024-12-12`
 
-### sonic-2024-12-12
 
-This is our latest preview snapshot, with superior transcript following. `sonic-2024-12-12` demonstrates superior transcript following, especially for dates, long numbers, and phone numbers.
+## Sonic-preview
 
-### sonic-2024-10-19
+Sonic-preview is our latest preview snapshot. It is updated regularly, and may not be as stable as `sonic`. Use `sonic-preview` to see the latest features and research direction from Cartesia.
 
-This is our latest stable snapshot, with multilingual support and low latency.
+The latest version of `sonic-preview` demonstrates superior transcript following, especially for dates, long numbers, and phone numbers.
+
+- **Model alias:** `sonic-preview`
+- **Supported languages:** en
 
 ## Legacy Models
 
