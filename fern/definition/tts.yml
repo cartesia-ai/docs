@@ -445,8 +445,6 @@ types:
         name: ANGER_LOWEST
       - value: anger:low
         name: ANGER_LOW
-      - value: anger
-        name: ANGER_NORMAL
       - value: anger:high
         name: ANGER_HIGH
       - value: anger:highest
@@ -455,8 +453,6 @@ types:
         name: POSITIVITY_LOWEST
       - value: positivity:low
         name: POSITIVITY_LOW
-      - value: positivity
-        name: POSITIVITY_NORMAL
       - value: positivity:high
         name: POSITIVITY_HIGH
       - value: positivity:highest
@@ -471,12 +467,8 @@ types:
         name: SADNESS_LOWEST
       - value: sadness:low
         name: SADNESS_LOW
-      - value: sadness
-        name: SADNESS_NORMAL
       - value: curiosity:low
         name: CURIOSITY_LOW
-      - value: curiosity
-        name: CURIOSITY_NORMAL
       - value: curiosity:high
         name: CURIOSITY_HIGH
       - value: curiosity:highest
