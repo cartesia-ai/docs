@@ -12,7 +12,7 @@ service:
       path: /bytes
       method: POST
       display-name: Text to Speech (Bytes)
-      request: TTSRequest
+      request: TTSBytesRequest
       response: file
       examples:
         - name: MP3
@@ -27,6 +27,7 @@ service:
               container: "mp3"
               sample_rate: 44100
               bit_rate: 128000
+              loudness: -17
         - name: WAV
           request:
             model_id: "sonic-english"
@@ -39,6 +40,7 @@ service:
               container: "wav"
               sample_rate: 44100
               encoding: "pcm_f32le"
+              loudness: -17
         - name: RAW
           request:
             model_id: "sonic-english"
@@ -51,12 +53,13 @@ service:
               container: "raw"
               sample_rate: 44100
               encoding: "pcm_f32le"
+              loudness: -17
 
     sse:
       path: /sse
       method: POST
       display-name: Text to Speech (SSE)
-      request: TTSRequest
+      request: TTSSSERequest
       response-stream:
         type: WebSocketResponse
         format: sse
@@ -321,22 +324,6 @@ types:
       add_timestamps: optional<boolean>
       context_id: optional<string>
 
-  TTSRequest:
-    properties:
-      model_id:
-        type: string
-        docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-sonic/models) for available models.
-      transcript: string
-      voice: TTSRequestVoiceSpecifier
-      language: optional<SupportedLanguage>
-      output_format: OutputFormat
-      duration:
-        type: optional<double>
-        docs: |
-          The maximum duration of the audio in seconds. You do not usually need to specify this.
-          If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
-
   SupportedLanguage:
     docs: |
       The language that the given voice should speak the transcript in.
@@ -371,6 +358,15 @@ types:
       encoding: RawEncoding
       sample_rate: integer
 
+  RawBytesOutputFormat:
+    extends: RawOutputFormat
+    properties:
+      loudness:
+        type: optional<integer>
+        docs: |
+          The loudness of the audio in LUFS.
+          Supports values between -14 (loudest) and -24 (quietest).
+
   RawEncoding:
     enum:
       - pcm_f32le
@@ -381,6 +377,9 @@ types:
   WAVOutputFormat:
     extends: RawOutputFormat
 
+  WAVBytesOutputFormat:
+    extends: RawBytesOutputFormat
+
   MP3OutputFormat:
     properties:
       sample_rate: integer
@@ -388,6 +387,11 @@ types:
         type: integer
         docs: |
           The bit rate of the audio in bits per second. Supported bit rates are 32000, 64000, 96000, 128000, 192000.
+      loudness:
+        type: optional<integer>
+        docs: |
+          The loudness of the audio in LUFS.
+          Supports values between -14 (loudest) and -24 (quietest).
 
   TTSRequestVoiceSpecifier:
     discriminated: false
@@ -473,3 +477,48 @@ types:
         name: CURIOSITY_HIGH
       - value: curiosity:highest
         name: CURIOSITY_HIGHEST
+
+  TTSBytesRequest:
+    properties:
+      model_id:
+        type: string
+        docs: |
+          The ID of the model to use for the generation. See [Models](/build-with-sonic/models) for available models.
+      transcript: string
+      voice: TTSRequestVoiceSpecifier
+      language: optional<SupportedLanguage>
+      output_format: BytesOutputFormat
+      duration:
+        type: optional<double>
+        docs: |
+          The maximum duration of the audio in seconds. You do not usually need to specify this.
+          If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+
+  BytesOutputFormat:
+    discriminant: container
+    union:
+      raw: RawBytesOutputFormat
+      wav: WAVBytesOutputFormat
+      mp3: MP3OutputFormat
+
+  TTSSSERequest:
+    properties:
+      model_id:
+        type: string
+        docs: |
+          The ID of the model to use for the generation. See [Models](/build-with-sonic/models) for available models.
+      transcript: string
+      voice: TTSRequestVoiceSpecifier
+      language: optional<SupportedLanguage>
+      output_format: SSEOutputFormat
+      duration:
+        type: optional<double>
+        docs: |
+          The maximum duration of the audio in seconds. You do not usually need to specify this.
+          If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+
+  SSEOutputFormat:
+    discriminant: container
+    union:
+      raw: RawOutputFormat
+      wav: WAVOutputFormat
