@@ -10,7 +10,7 @@ We recommend using our WebSocket endpoint for real-time applications for a few r
 
 1. **Latency**: You can establish a WebSocket connection in advance, which means that you do not incur any connection latency when you start generating speech. (This usually saves you about 200ms.)
 2. **Input Streaming**: You can stream in inputs while maintaining the prosody of the generated speech, which is useful when generating text inputs in real-time, such as with an LLM.
-3. **Timestamps**: You can get timestamped transcripts for the generated speech to build features like subtitles or live transcripts.
+3. **Timestamps**: You can get timestamped transcripts for the generated speech to build features like subtitles or live transcripts. (Currently timestamps are only supported for en, de, es, and fr. Timestamp support for hi, it, ja, ko, nl, pl, pt, ru, sv, tr, and zh coming soon!)
 4. **Multiplexing**: You can multiplex multiple conversations over a single connection.
 
 ### If you want to generate speech ahead of time

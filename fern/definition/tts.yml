@@ -319,6 +319,7 @@ types:
       duration: optional<integer>
       language: optional<string>
       add_timestamps: optional<boolean>
+      continue: optional<boolean>
       context_id: optional<string>
 
   TTSRequest:
