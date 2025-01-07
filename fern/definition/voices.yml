@@ -40,7 +40,6 @@ types:
           The date and time the voice was created.
       embedding: embedding.Embedding
       language: tts.SupportedLanguage
-      base_voice_id: optional<BaseVoiceId>
 
   VoiceMetadata:
     properties:
@@ -73,7 +72,6 @@ types:
       description: *description
       embedding: embedding.Embedding
       language: optional<tts.SupportedLanguage>
-      base_voice_id: optional<BaseVoiceId>
 
   UpdateVoiceRequest:
     properties:
