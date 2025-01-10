@@ -370,7 +370,10 @@ types:
   RawOutputFormat:
     properties:
       encoding: RawEncoding
-      sample_rate: integer
+      sample_rate: 
+        type: integer
+        docs: |
+          Allowed values: 8000, 16000, 22050, 44100, 48000
 
   RawEncoding:
     enum:
@@ -384,7 +387,10 @@ types:
 
   MP3OutputFormat:
     properties:
-      sample_rate: integer
+      sample_rate: 
+        type: integer
+        docs: |
+          Allowed values: 8000, 16000, 22050, 44100, 48000
       bit_rate:
         type: integer
         docs: |
