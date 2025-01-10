@@ -295,7 +295,11 @@ types:
     properties:
       container: literal<"raw">
       encoding: RawEncoding
-      sample_rate: integer
+      sample_rate: 
+        type: integer
+        docs: |
+          Allowed values: 8000, 16000, 22050, 44100, 48000
+
 
   WebSocketRequest:
     discriminated: false
