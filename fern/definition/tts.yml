@@ -29,7 +29,7 @@ service:
               bit_rate: 128000
         - name: WAV
           request:
-            model_id: "sonic
+            model_id: "sonic"
             transcript: "Hello, world!"
             voice:
               mode: "id"
