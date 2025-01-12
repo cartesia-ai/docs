@@ -149,7 +149,8 @@ navigation:
                 icon: fa-scale-balanced
               - tts.bytes
               - tts.sse
-              - tts.tts
+              - endpoint: tts.tts
+                slug: websocket
               - section: Working with WebSockets
                 icon: fa-plug
                 contents:
@@ -283,4 +284,7 @@ redirects:
     permanent: true
   - source: /reference/api-reference/rest/api-status-and-version
     destination: /api-reference/api-status/get
+    permanent: true
+  - source: /api-reference/tts/tts
+    destination: /api-reference/tts/websocket
     permanent: true
