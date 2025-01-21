@@ -12,7 +12,7 @@ groups:
         github:
           repository: cartesia-ai/cartesia-python
           mode: push
-          branch: v2
+          branch: fern-python-sdk
         config:
           client:
             class_name: BaseCartesia
