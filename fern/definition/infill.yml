@@ -19,9 +19,9 @@ service:
         body:
           properties:
             left_audio:
-              type: file
+              type: optional<file>
             right_audio:
-              type: file
+              type: optional<file>
             model_id[]:
               type: string
               docs: The ID of the model to use for generating audio
