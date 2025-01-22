@@ -219,6 +219,7 @@ types:
       done: WebSocketDoneResponse
       timestamps: WebSocketTimestampsResponse
       error: WebSocketErrorResponse
+      phoneme_timestamps: WebSocketPhonemeTimestampsResponse
 
   WebSocketErrorResponse:
     extends: WebSocketBaseResponse
@@ -236,6 +237,11 @@ types:
     properties:
       word_timestamps: optional<WordTimestamps>
 
+  WebSocketPhonemeTimestampsResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      phoneme_timestamps: optional<PhonemeTimestamps>
+
   WebSocketTTSOutput:
     properties:
       word_timestamps: optional<WordTimestamps>
@@ -249,6 +255,12 @@ types:
   WordTimestamps:
     properties:
       words: list<string>
+      start: list<double>
+      end: list<double>
+
+  PhonemeTimestamps:
+    properties:
+      phonemes: list<string>
       start: list<double>
       end: list<double>
 
@@ -290,6 +302,10 @@ types:
         type: optional<boolean>
         docs: |
           Whether to return word-level timestamps.
+      add_phoneme_timestamps:
+        type: optional<boolean>
+        docs: |
+          Whether to return phoneme-level timestamps.
 
   WebSocketRawOutputFormat:
     properties:
@@ -319,6 +335,7 @@ types:
       duration: optional<integer>
       language: optional<string>
       add_timestamps: optional<boolean>
+      add_phoneme_timestamps: optional<boolean>
       continue: optional<boolean>
       context_id: optional<string>
 
