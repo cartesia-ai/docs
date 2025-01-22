@@ -307,21 +307,6 @@ types:
         docs: |
           Use this to cancel a context, so that no more messages are generated for that context.
 
-  WebSocketTTSRequest:
-    properties:
-      model_id:
-        type: string
-        docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-sonic/models) for available models.
-      output_format: optional<OutputFormat>
-      transcript: optional<string>
-      voice: TTSRequestVoiceSpecifier
-      duration: optional<integer>
-      language: optional<string>
-      add_timestamps: optional<boolean>
-      continue: optional<boolean>
-      context_id: optional<string>
-
   TTSRequest:
     properties:
       model_id:
