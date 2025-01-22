@@ -124,7 +124,7 @@ channel:
       display-name: "Receive"
       docs: |
         The server will send you back a stream of messages with the same `context_id` as your request.
-        The messages can be of type `chunk`, `timestamps`, `error`, or `done`.
+        The messages can be of type `chunk`, `timestamps`, `phoneme_timestamps` `error`, or `done`.
       origin: server
       body: WebSocketResponse
 
@@ -245,6 +245,7 @@ types:
   WebSocketTTSOutput:
     properties:
       word_timestamps: optional<WordTimestamps>
+      phoneme_timestamps: optional<PhonemeTimestamps>
       audio: optional<unknown>
       context_id: optional<ContextID>
 
