@@ -478,6 +478,8 @@ types:
         name: POSITIVITY_HIGHEST
       - value: surprise:lowest
         name: SURPRISE_LOWEST
+      - value: surprise:low
+        name: SURPRISE_LOW
       - value: surprise:high
         name: SURPRISE_HIGH
       - value: surprise:highest
@@ -486,6 +488,12 @@ types:
         name: SADNESS_LOWEST
       - value: sadness:low
         name: SADNESS_LOW
+      - value: sadness:high
+        name: SADNESS_HIGH
+      - value: sadness:highest
+        name: SADNESS_HIGHEST
+      - value: curiosity:lowest
+        name: CURIOSITY_LOWEST
       - value: curiosity:low
         name: CURIOSITY_LOW
       - value: curiosity:high
