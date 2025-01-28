@@ -114,6 +114,9 @@ navigation:
           - page: LiveKit
             path: integrate-with-sonic/livekit.mdx
             icon: fa-circle
+          - page: Rasa
+            path: integrate-with-sonic/rasa.mdx
+            icon: fa-robot
       - section: Enterprise
         contents:
           - page: Set up SSO
@@ -138,7 +141,7 @@ navigation:
         api-name: voices
         paginated: true
         flattened: true
-        snippets: 
+        snippets:
         #   python: "cartesia"
           typescript: "@cartesia/cartesia-js"
         layout:
