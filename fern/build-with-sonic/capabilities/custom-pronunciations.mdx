@@ -4,13 +4,46 @@ subtitle: >-
   Learn how to specify custom pronunciations for words that are hard to get right, like proper nouns or domain-specific terms.
 ---
 
-The Sonic model supports custom pronunciations using IPA phonemes for all 15 supported languages.
+Both the Sonic and Sonic Preview models support custom pronunciations in your transcripts. They do so in slightly different ways.
 
-Phonemized words should be wrapped in double angle brackets `<<` `>>` , with pipe characters `|` between phonemes and no whitespace, e.g. `Can I <<ɡ|ɛ|t>> <<cʰ|ɛ|tʃ|ə|p>> on that?` will be pronounced `Can I get ketchup on that?` . Each individual word should be wrapped in it’s own set of angle brackets.
+# For Sonic English
+<Frame background="subtle">
+  <img src="/assets/images/custom-pronunciation.png" />
+</Frame>
 
-# Constructing Pronunciations
+The Sonic English model uses Sonic-flavored IPA phonemes. It will be updated soon to use standard IPA like the rest of our models.
 
-Sonic uses the full IPA phoneset as defined by the [Montreal Forced Aligner](https://montreal-forced-aligner.readthedocs.io/en/latest/). Because of the size and complexity of this phoneset, you may find it easier to construct your custom pronunciation starting from existing words with known phonemizations. We suggest the following workflow for constructing a custom pronunciation for a word:
+Wrap phonemes in `<<>>` and append each phoneme with a pipe `|`.
+
+## Usage example
+
+`Can I <<g|ˈɛ|t|>> <<h|ɑː|l|ˈə|p|eɪ|n|y|ˌoʊ|>> on that?` will be pronounced as `Can I get jalapeño on that?`
+
+## Sonic-flavored IPA
+
+We've compiled a pronunciation guide for the style of IPA that works most effectively with Sonic English.
+
+<Note>
+Our model follows the [English phonology article on Wikipedia](https://en.wikipedia.org/wiki/English\_phonology) for most phonemes, but in spots where our model requires different notation than you may expect, we've included a blue `<=` in the margins.
+</Note>
+
+You can copy/paste some of these uncommon symbols from the original [charts here](https://docs.google.com/spreadsheets/d/1OJbiKtxLyodpNPqVfOu43X2HloLsAixTtFppEuQ\_4pI/edit?usp=sharing).
+
+![](/assets/images/sonic_ipa_guide.png)
+
+## Stresses and vowel length markers
+
+Sonic English requires stress markers for first (`ˈ`) and second (`ˌ`) stressed syllables, which go directly before the vowel. We also use annotations for vowel length (`ː`). The model can also operate without them, but you will have noticeably better robustness and control when using them.
+
+# Sonic Preview and non-English Sonic
+
+All other models, including Sonic Preview and non-English Sonic models for all 15 supported languages, use MFA-style IPA phonemes.
+
+As with Sonic English, phonemized words should be wrapped in double angle brackets `<<` `>>` , with pipe characters `|` between phonemes and no whitespace, e.g. `Can I <<ɡ|ɛ|t>> <<cʰ|ɛ|tʃ|ə|p>> on that?` will be pronounced `Can I get ketchup on that?` . Each individual word should be wrapped in it’s own set of angle brackets.
+
+## Constructing Pronunciations
+
+These models use the IPA phoneset as defined by the [Montreal Forced Aligner](https://montreal-forced-aligner.readthedocs.io/en/latest/). Because of the size and complexity of this phoneset, you may find it easier to construct your custom pronunciation starting from existing words with known phonemizations. We suggest the following workflow for constructing a custom pronunciation for a word:
 
 1. Go to the [MFA pronunciation dictionary index](https://mfa-models.readthedocs.io/en/latest/dictionary/index.html) and find the page corresponding to your language. Make sure the phoneset is MFA, and try to download the latest version (for most languages, v3.0 or v3.1).
     1. This page will give you the full range of acceptable phones for your language under the “phones” section.
@@ -19,9 +52,9 @@ Sonic uses the full IPA phoneset as defined by the [Montreal Forced Aligner](htt
     1. The first column in the file contains words, and the last column contains space delimited phonemes. Ignore the other columns.
 4. Look up your word or words that sound similar to your intended pronunciation in the dictionary. Use these pronunciations as a starting point to construct your custom pronunciation.
 
-Automatic pronunciation suggestions based on audio samples will be added in a future update.
+Automatic pronunciation suggestions based on audio samples will be added in a future update. Note that MFA-style IPA does not support stress markers.
 
-# Example
+## Example
 
 Suppose I want to generate the text “This is a generation from Cartesia” and the model is not pronouncing “Cartesia” correctly. I would do the following:
 
