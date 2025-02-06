@@ -33,7 +33,7 @@ service:
             transcript[]:
               type: string
               docs: The infill text to generate
-            voice[id]:
+            voice_id[]:
               type: string
               docs: The ID of the voice to use for generating audio
             output_format[container]:
