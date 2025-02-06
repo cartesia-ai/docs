@@ -205,6 +205,13 @@ types:
       A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
 
       Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
+  
+  FlushID:
+    type: integer
+    docs: |
+      A unique identifier for the flush. You can use any unique identifier, like a UUID or human ID.
+
+      Some customers use unique identifiers from their own systems (such as conversation IDs) as flush IDs.
 
   WebSocketBaseResponse:
     properties:
@@ -216,6 +223,7 @@ types:
     discriminant: type
     union:
       chunk: WebSocketChunkResponse
+      flush_done: WebSocketFlushDoneResponse
       done: WebSocketDoneResponse
       timestamps: WebSocketTimestampsResponse
       error: WebSocketErrorResponse
@@ -248,6 +256,8 @@ types:
       phoneme_timestamps: optional<PhonemeTimestamps>
       audio: optional<unknown>
       context_id: optional<ContextID>
+      flush_id: optional<FlushID>
+      flush_done: optional<boolean>
 
   WebSocketStreamOptions:
     properties:
@@ -268,6 +278,12 @@ types:
   WebSocketDoneResponse:
     extends: WebSocketBaseResponse
 
+  WebSocketFlushDoneResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      flush_id: FlushID
+      flush_done: boolean
+
   CancelContextRequest:
     properties:
       context_id:
@@ -284,7 +300,10 @@ types:
         type: string
         docs: |
           The ID of the model to use for the generation. See [Models](/build-with-sonic/models) for available models.
-      transcript: string
+      transcript:
+        type: unknown
+        docs: |
+          The transcript to generate speech for. This can be a string or an iterator over strings.
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
       output_format: WebSocketRawOutputFormat
@@ -293,7 +312,7 @@ types:
         docs: |
           The maximum duration of the audio in seconds. You do not usually need to specify this.
           If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
-      context_id: ContextID
+      context_id: optional<ContextID>
       continue:
         type: optional<boolean>
         docs: |

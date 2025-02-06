@@ -19,12 +19,15 @@ groups:
             filename: base_client.py
             exported_class_name: Cartesia
             exported_filename: client.py
+          use_typeddict_requests: true
           extra_dependencies:
-            websockets: "12.0"
+            aiohttp: ">=3.10.10"
+            iterators: ">=0.2.0"
+            websockets: ">=10.4"
   ts-sdk:
     generators:
       - name: fernapi/fern-typescript-node-sdk
-        version: 0.41.0
+        version: 0.48.4
         output:
           location: npm
           package-name: "@cartesia/cartesia-js"
