@@ -13,6 +13,8 @@ service:
       docs: |
         Generate audio that smoothly connects two existing audio segments. This is useful for inserting new speech between existing speech segments while maintaining natural transitions.
 
+        The cost is 1 credit per character of the infill text plus a fixed cost of 300 credits.
+
         Only the `sonic-preview` model is supported for infill at this time.
 
         At least one of `left_audio` or `right_audio` must be provided.
@@ -24,16 +26,16 @@ service:
               type: file
             right_audio:
               type: file
-            model_id[]:
+            model_id:
               type: string
               docs: The ID of the model to use for generating audio
-            language[]:
+            language:
               type: string
               docs: The language of the transcript
-            transcript[]:
+            transcript:
               type: string
               docs: The infill text to generate
-            voice[id]:
+            voice_id:
               type: string
               docs: The ID of the voice to use for generating audio
             output_format[container]:
@@ -57,7 +59,7 @@ service:
 
                 If you specify a number, 0.0 is the default speed, -1.0 is the slowest speed, and 1.0 is the fastest speed.
             voice[__experimental_controls][emotion][]:
-              type: optional<tts.Emotion>
+              type: optional<list<tts.Emotion>>
               docs: |
                 An array of emotion:level tags.
 
@@ -68,19 +70,23 @@ service:
       examples:
         - name: MP3
           request:
-            model_id[]: sonic-preview
-            language[]: en
-            transcript[]: middle segment
-            voice[id]: 694f9389-aac1-45b6-b726-9d9369183238
+            model_id: sonic-preview
+            language: en
+            transcript: middle segment
+            voice_id: 694f9389-aac1-45b6-b726-9d9369183238
             output_format[container]: mp3
             output_format[sample_rate]: 44100
             output_format[bit_rate]: 128000
+            voice[__experimental_controls][speed]: slowest
+            voice[__experimental_controls][emotion][]: [surprise:high, curiosity:high]
         - name: WAV
           request:
-            model_id[]: sonic-preview
-            language[]: en
-            transcript[]: middle segment
-            voice[id]: 694f9389-aac1-45b6-b726-9d9369183238
+            model_id: sonic-preview
+            language: en
+            transcript: middle segment
+            voice_id: 694f9389-aac1-45b6-b726-9d9369183238
             output_format[container]: wav
             output_format[sample_rate]: 44100
             output_format[encoding]: pcm_f32le
+            voice[__experimental_controls][speed]: slowest
+            voice[__experimental_controls][emotion][]: [surprise:high, curiosity:high]
