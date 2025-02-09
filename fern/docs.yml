@@ -34,17 +34,6 @@ navbar-links:
   - type: filled
     text: Playground
     url: https://play.cartesia.ai
-tabs:
-  docs:
-    display-name: Documentation
-    slug: docs
-    icon: fa-regular fa-file-alt
-    skip-slug: true
-  reference:
-    display-name: API Reference
-    slug: reference
-    icon: fa-regular fa-code
-    skip-slug: true
 layout:
   tabs-placement: header
   searchbar-placement: header

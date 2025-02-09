@@ -1,3 +1,14 @@
+tabs:
+  docs:
+    display-name: Documentation
+    slug: docs
+    icon: fa-regular fa-file-alt
+    skip-slug: true
+  reference:
+    display-name: API Reference
+    slug: reference
+    icon: fa-regular fa-code
+    skip-slug: true
 navigation:
   - tab: docs
     layout:
@@ -55,18 +66,18 @@ navigation:
                 icon: fa-spell-check
       - section: Integrate with Sonic
         contents:
-          - page: Twilio
-            path: ../integrate-with-sonic/twilio.mdx
-            icon: fa-phone
-          - page: Pipecat
-            path: ../integrate-with-sonic/pipecat.mdx
-            icon: fa-cat
           - page: LiveKit
             path: ../integrate-with-sonic/livekit.mdx
             icon: fa-circle
+          - page: Pipecat
+            path: ../integrate-with-sonic/pipecat.mdx
+            icon: fa-cat
           - page: Rasa
             path: ../integrate-with-sonic/rasa.mdx
             icon: fa-robot
+          - page: Twilio
+            path: ../integrate-with-sonic/twilio.mdx
+            icon: fa-phone
       - section: Enterprise
         contents:
           - page: Set up SSO
@@ -88,7 +99,7 @@ navigation:
             path: ../api-reference/concurrency-limits-and-timeouts.mdx
             icon: fa-traffic-light
       - api: API Reference
-        api-name: voices
+        api-name: version-2024-06-10
         paginated: true
         flattened: true
         snippets:
