@@ -219,6 +219,25 @@ service:
       request: MixVoicesRequest
       response: EmbeddingResponse
 
+    cloneFromClip:
+      path: /clone/clip
+      method: POST
+      display-name: Clone Voice from Clip
+      docs: |
+        Clone a voice from a clip. The clip should be a 15-20 second recording of a person speaking with little to no background noise.
+        The endpoint will return an embedding that can either be used directly with text-to-speech endpoints or used to create a new voice.
+      request:
+        name: CloneFromClipRequest
+        body:
+          properties:
+            clip:
+              type: file
+            enhance:
+              type: boolean
+              docs: |
+                Whether to enhance the clip to improve its quality before cloning. Useful if the clip is low quality.
+      response: EmbeddingResponse
+
     clone:
       path: /clone
       method: POST
