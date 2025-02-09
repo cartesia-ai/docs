@@ -1,0 +1,120 @@
+imports:
+  tts: ./tts.yml
+
+service:
+  base-path: /voice-changer
+  auth: true
+  endpoints:
+    bytes:
+      path: /bytes
+      method: POST
+      display-name: Voice Changer (Bytes)
+      docs: |
+        Takes an audio file of speech, and returns an audio file of speech spoken with the same intonation, but with a different voice.
+
+        This endpoint is priced at 15 characters per second of input audio.
+      request:
+        name: VoiceChangerBytesRequest
+        body:
+          properties:
+            clip: file
+            voice[id]: 
+              name: voice_id
+              type: string
+            output_format[container]:
+              name: output_format_container
+              type: OutputFormatContainer
+            output_format[sample_rate]:
+              name: output_format_sample_rate
+              type: integer
+            output_format[encoding]:
+              name: output_format_encoding
+              type: optional<tts.RawEncoding>
+              docs: |
+                Required for `raw` and `wav` containers.
+            output_format[bit_rate]:
+              name: output_format_bit_rate
+              type: optional<integer>
+              docs: |
+                Required for `mp3` containers.
+      response: file
+      examples:
+        - name: MP3
+          request:
+            voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
+            output_format[container]: mp3
+            output_format[sample_rate]: 44100
+            output_format[bit_rate]: 128000
+        - name: WAV
+          request:
+            voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
+            output_format[container]: wav
+            output_format[sample_rate]: 44100
+            output_format[encoding]: pcm_f32le
+        - name: RAW
+          request:
+            voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
+            output_format[container]: raw
+            output_format[sample_rate]: 44100
+            output_format[encoding]: pcm_f32le
+
+    sse:
+      path: /sse
+      method: POST
+      display-name: Voice Changer (SSE)
+      request:
+        name: VoiceChangerSSERequest
+        docs: |
+          Takes an audio file of speech, and streams an audio file of speech spoken with the same intonation, but with a different voice.
+
+          This endpoint is priced at 15 characters per second of input audio.
+        body:
+          properties:
+            clip: file
+            voice[id]: string
+            output_format[container]:
+              type: OutputFormatContainer
+            output_format[sample_rate]:
+              type: integer
+            output_format[encoding]:
+              type: optional<tts.RawEncoding>
+              docs: |
+                Required for `raw` and `wav` containers.
+            output_format[bit_rate]:
+              type: optional<integer>
+              docs: |
+                Required for `mp3` containers.
+      response-stream: StreamingResponse
+      examples:
+        - name: MP3
+          request:
+            voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
+            output_format[container]: mp3
+            output_format[sample_rate]: 44100
+            output_format[bit_rate]: 128000
+        - name: WAV
+          request:
+            voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
+            output_format[container]: wav
+            output_format[sample_rate]: 44100
+            output_format[encoding]: pcm_f32le
+        - name: RAW
+          request:
+            voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
+            output_format[container]: raw
+            output_format[sample_rate]: 44100
+            output_format[encoding]: pcm_f32le
+
+types:
+  OutputFormatContainer:
+    enum:
+      - raw
+      - wav
+      - mp3
+
+  StreamingResponse:
+    discriminant: type
+    union:
+      chunk: tts.WebSocketChunkResponse
+      done: tts.WebSocketDoneResponse
+      error: tts.WebSocketErrorResponse
