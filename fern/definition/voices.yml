@@ -107,16 +107,22 @@ types:
       - so
       - uk
       - us
+    docs: |
+      Options: Australian (`au`), Indian (`in`), Southern (`so`), British (`uk`), or American (`us`)
 
   LocalizeSpanishDialect:
     enum:
       - mx
       - pe
+    docs: |
+      Options: Mexican (`mx`) and Peninsular (`pe`)
 
   LocalizePortugueseDialect:
     enum:
       - br
       - eu
+    docs: |
+      Options: Brazilian (`br`) and European Portuguese (`eu`)
 
   LocalizeDialect:
     discriminated: false
@@ -125,12 +131,10 @@ types:
         display-name: English dialect
         docs: |
           Only available when language is set to English (`en`).
-    union:
       - type: LocalizeSpanishDialect
         display-name: Spanish dialect
         docs: |
           Only available when language is set to Spanish (`es`).
-    union:
       - type: LocalizePortugueseDialect
         display-name: Portuguese dialect
         docs: |
