@@ -108,6 +108,16 @@ types:
       - uk
       - us
 
+  LocalizeSpanishDialect:
+    enum:
+      - mx
+      - pe
+
+  LocalizePortugueseDialect:
+    enum:
+      - br
+      - eu
+
   LocalizeDialect:
     discriminated: false
     union:
@@ -115,8 +125,18 @@ types:
         display-name: English dialect
         docs: |
           Only available when language is set to English (`en`).
+    union:
+      - type: LocalizeSpanishDialect
+        display-name: Spanish dialect
+        docs: |
+          Only available when language is set to Spanish (`es`).
+    union:
+      - type: LocalizePortugueseDialect
+        display-name: Portuguese dialect
+        docs: |
+          Only available when language is set to Portuguese (`pt`).
     docs: |
-      The dialect to localize to. Only supported for English (`en`).
+      The dialect to localize to. Only supported for English (`en`), Spanish (`es`), and Portuguese (`pt`).
 
   Gender:
     enum:
