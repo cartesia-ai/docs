@@ -132,7 +132,7 @@ types:
       - type: LocalizePortugueseDialect
         display-name: Portuguese dialect
         docs: |
-          Only available when language is set to Portuguese (`pt`). ptions: Brazilian (`br`) and European Portuguese (`eu`).
+          Only available when language is set to Portuguese (`pt`). Options: Brazilian (`br`) and European Portuguese (`eu`).
     docs: |
       The dialect to localize to. Only supported for English (`en`), Spanish (`es`), and Portuguese (`pt`).
 
