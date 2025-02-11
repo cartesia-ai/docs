@@ -142,7 +142,7 @@ navigation:
         paginated: true
         flattened: true
         snippets:
-        #   python: "cartesia"
+          python: "cartesia"
           typescript: "@cartesia/cartesia-js"
         layout:
           - api-status: []
