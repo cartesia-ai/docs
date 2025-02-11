@@ -11,8 +11,6 @@ groups:
           token: ${PYPI_TOKEN}
         github:
           repository: cartesia-ai/cartesia-python
-          mode: push
-          branch: fern-python-sdk
         config:
           client:
             class_name: BaseCartesia
