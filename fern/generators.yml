@@ -4,7 +4,7 @@ groups:
   python-sdk:
     generators:
       - name: fernapi/fern-python-sdk
-        version: 4.3.11
+        version: 4.3.13
         output:
           location: pypi
           package-name: "cartesia"
@@ -23,6 +23,9 @@ groups:
             iterators: ">=0.2.0"
             websockets: ">=10.4"
             pydub: ">=0.25.1"
+            audioop-lts:
+              version: "0.2.1"
+              python: "^3.13"
           extra_dev_dependencies:
             numpy: ">=1.2.1"
   ts-sdk:
