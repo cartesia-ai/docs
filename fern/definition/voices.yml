@@ -13,7 +13,7 @@ types:
   BaseVoiceId:
     type: VoiceId
     docs: |
-      The ID of the base voice associated with the voice, used for features like voice mixing.
+      Pull in features from a base voice, used for features like voice mixing.
 
   Voice:
     properties:
@@ -72,6 +72,7 @@ types:
       description: *description
       embedding: embedding.Embedding
       language: optional<tts.SupportedLanguage>
+      base_voice_id: optional<BaseVoiceId>
 
   UpdateVoiceRequest:
     properties:
@@ -192,51 +193,6 @@ service:
       display-name: List Voices
       response: list<Voice>
 
-    create:
-      path: /
-      method: POST
-      display-name: Create Voice
-      request: CreateVoiceRequest
-      response: Voice
-
-    delete:
-      path: /{id}
-      method: DELETE
-      display-name: Delete Voice
-      path-parameters:
-        id: VoiceId
-
-    update:
-      path: /{id}
-      method: PATCH
-      display-name: Update Voice
-      path-parameters:
-        id: VoiceId
-      request: UpdateVoiceRequest
-      response: Voice
-
-    get:
-      path: /{id}
-      method: GET
-      display-name: Get Voice
-      path-parameters:
-        id: VoiceId
-      response: Voice
-
-    localize:
-      path: /localize
-      method: POST
-      display-name: Localize Voice
-      request: LocalizeVoiceRequest
-      response: EmbeddingResponse
-
-    mix:
-      path: /mix
-      method: POST
-      display-name: Mix Voices
-      request: MixVoicesRequest
-      response: EmbeddingResponse
-
     clone:
       path: /clone
       method: POST
@@ -315,4 +271,68 @@ service:
               name: "A high-similarity cloned voice"
               description: "Copied from Cartesia docs"
               created_at: "2024-11-13T07:06:22.476564Z"
+              language: en
+
+    delete:
+      path: /{id}
+      method: DELETE
+      display-name: Delete Voice
+      path-parameters:
+        id: VoiceId
+
+    update:
+      path: /{id}
+      method: PATCH
+      display-name: Update Voice
+      path-parameters:
+        id: VoiceId
+      request: UpdateVoiceRequest
+      response: Voice
+
+    get:
+      path: /{id}
+      method: GET
+      display-name: Get Voice
+      path-parameters:
+        id: VoiceId
+      response: Voice
+
+    localize:
+      path: /localize
+      method: POST
+      display-name: Localize Voice
+      request: LocalizeVoiceRequest
+      response: EmbeddingResponse
+
+    mix:
+      path: /mix
+      method: POST
+      display-name: Mix Voices
+      request: MixVoicesRequest
+      response: EmbeddingResponse
+
+    create:
+      path: /
+      method: POST
+      display-name: Create Voice
+      docs: |
+        Create voice from raw features. If you'd like to clone a voice from an audio file, please use Clone Voice instead.
+      request: CreateVoiceRequest
+      response: Voice
+      examples:
+        - name: Create Voice
+          request:
+            name: "My Custom Voice"
+            description: "A custom voice created through the API"
+            embedding: []
+            language: en
+            base_voice_id: "123e4567-e89b-12d3-a456-426614174000"
+          response:
+            body:
+              id: "8f7d3c2e-1a2b-3c4d-5e6f-7g8h9i0j1k2l"
+              is_public: false
+              name: "My Custom Voice"
+              description: "A custom voice created through the API"
+              created_at: "2024-03-15T10:30:00.000Z"
+              embedding: []
               language: en
