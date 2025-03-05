@@ -117,6 +117,9 @@ navigation:
           - page: Rasa
             path: integrate-with-sonic/rasa.mdx
             icon: fa-robot
+          - page: Thoughtly
+            path: integrate-with-sonic/thoughtly.mdx
+            icon: fa-phone
       - section: Enterprise
         contents:
           - page: Set up SSO
@@ -142,7 +145,7 @@ navigation:
         paginated: true
         flattened: true
         snippets:
-        #   python: "cartesia"
+          #   python: "cartesia"
           typescript: "@cartesia/cartesia-js"
         layout:
           - api-status: []
