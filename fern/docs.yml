@@ -117,6 +117,9 @@ navigation:
           - page: Rasa
             path: integrate-with-sonic/rasa.mdx
             icon: fa-robot
+          - page: Rasa
+            path: integrate-with-sonic/thoughtly.mdx
+            icon: fa-phone-volume
       - section: Enterprise
         contents:
           - page: Set up SSO
