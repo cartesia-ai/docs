@@ -68,7 +68,7 @@ navigation:
           - page: Python
             path: use-an-sdk/python.mdx
             icon: fa-code
-      - section: Build with Sonic
+      - section: Build with Cartesia
         contents:
           - page: Models
             path: build-with-sonic/models.mdx
@@ -91,7 +91,7 @@ navigation:
               - page: Localize Voices
                 path: build-with-sonic/capabilities/localize-voices.mdx
                 icon: fa-earth-americas
-          - section: Formatting Text for Sonic
+          - section: Formatting Text for Sonic-2
             icon: fa-text-size
             contents:
               - page: Best Practices

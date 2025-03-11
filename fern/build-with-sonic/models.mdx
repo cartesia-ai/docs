@@ -1,134 +1,80 @@
----
-title: Models
----
+Cartesia provides a family of state-of-the-art models, including our highly-accurate, low-latency Sonic TTS model family.
 
-Cartesia provides a family of state-of-the-art models, including our highly-accurate, low-latency Sonic model for text-to-speech.
+- <span style="color: green;">●</span> the latest **stable** snapshot of the model
+{/* - <span style="color: orange;">●</span> the **preview** snapshot (if available) */}
 
-## Overview
+To use the stable version of the model, we recommend using the base model name (e.g. `sonic-2`).
+In many cases the stable and preview snapshots are the same, but in some cases the preview snapshot may have additional features or improvements.
 
-<div class="fern-table-root not-prose">
-	<table class="fern-table">
-		<thead>
-			<tr>
-				<th>Model ID</th>
-				<th>Description</th>
-				<th>Available languages</th>
-			</tr>
-		</thead>
-		<tr>
-			<td><code>sonic</code></td>
-			<td>Stable alias, currently points to <code style="white-space: nowrap">sonic-2024-12-12</code>.</td>
-			<td>en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr</td>
-		</tr>
-		<tr>
-			<td><pre><code>sonic-preview</code></pre></td>
-			<td>Preview model.</td>
-			<td>en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr</td>
-		</tr>
-		<tr>
-			<td><pre><code>sonic-2024-12-12</code></pre></td>
-			<td>December update.</td>
-			<td>en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr</td>
-		</tr>
-		<tr>
-			<td><pre><code>sonic-2024-10-19</code></pre></td>
-			<td>October update.</td>
-			<td>en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr</td>
-		</tr>
-		<tr>
-			<td><pre><code>sonic-english</code></pre></td>
-			<td>[Deprecated] Please use <code>sonic</code> to use the most updated English model or <code>sonic-[date]</code> for a specific model release. <code>sonic-english</code> will forever point to <code>sonic-2024-10-19</code>.</td>
-			<td>en</td>
-		</tr>
-		<tr>
-			<td><pre><code>sonic-multilingual</code></pre></td>
-			<td>[Deprecated] Please use <code>sonic</code> to use the most updated multilingual model or <code>sonic-[date]</code> for a specific model release. <code>sonic-multilingual</code> will forever point to <code>sonic-2024-10-19</code>.</td>
-			<td>en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr</td>
-		</tr>
-	</table>
-</div>
+## `sonic-2`
 
+Sonic-2 is the new and improved version of Sonic, with a whole new set of capabilities around generative speech.
+Like its predecessor, it produces high-accuracy, expressive speech, and is optimized for efficiency to achieve low latency.
+
+Capabilities:
+- Higher fidelity voice cloning 
+- Timestamps for all 15 languages
+- [Infill](/definition/infill) support
+
+| Snapshot | Release Date | Languages | Status |
+|----------|--------------|-----------|--------|
+| <span style="color: green;">●</span>`sonic-2-2025-03-07` | March 7, 2025 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | Stable |
+
+To learn how to use the Sonic TTS family, see [Make an API request](/get-started/make-an-api-request).
+
+## `sonic-turbo`
+
+All the power of Sonic, with half the latency (as low as 40ms).
+
+| Snapshot | Release Date | Languages | Status |
+|----------|--------------|-----------|--------|
+| <span style="color: green;">●</span>`sonic-turbo-2025-03-07`| March 7, 2025 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | Stable |
+
+## `sonic`
+
+The first version of our flagship text-to-speech model. It produces high-accuracy, expressive speech, and is optimized for efficiency to achieve low latency.
+
+| Snapshot | Release Date | Languages | Status |
+|----------|--------------|-----------|--------|
+| <span style="color: green;">●</span> `sonic-2024-12-12` | December 12, 2024 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | Stable |
+| `sonic-2024-10-19` | October 19, 2024 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | |
+
+## Selecting a Model
+
+When making API calls, you can specify either:
+
+```javascript
+// Use the base model (automatically routes to the latest snapshot)
+const model = "sonic-2";
+
+// Or specify a particular snapshot for consistency
+const model = "sonic-2-2025-03-07";
+```
 
 ### Continuous updates
 
-`sonic` and `sonic-preview` are aliases for the latest stable and preview models. We recommend using these for prototyping and development, then switching to a date-versioned model for production use cases to ensure stability.
-
-## Sonic
-
-_Sonic_ is our flagship text-to-speech model. It produces high-accuracy, expressive speech, and is optimized for efficiency to achieve low latency.
-
-- **Model alias:** `sonic`
-- **Release date:** Dec 2024
-- **Latest version:** `sonic-2024-12-12`
-
-To learn how to use Sonic, see [Make an API request](/get-started/make-an-api-request).
+All models have a base model name (e.g. `sonic-2`, `sonic-turbo`, `sonic`).
+We recommend using these for prototyping and development, then switching to a date-versioned model for production use cases to ensure stability.
 
 
-## Sonic Preview
-
-Sonic Preview is our latest preview snapshot. It is updated regularly, and may not be as stable as `sonic`. Use `sonic-preview` to see the latest features and research direction from Cartesia.
-
-The latest version of `sonic-preview` demonstrates superior transcript following, especially for dates, long numbers, and phone numbers.
-
-- **Model alias:** `sonic-preview`
-- **Supported languages:** en
-
-## Legacy Models
-
-### Sonic English (deprecated)
-
-_Sonic English_ is our original English text-to-speech model. While it is still supported in our API, we recommend using the `sonic` model instead.
-
-- **Model ID:** `sonic-english`
-- **Release date:** May 2024
-- **Latest version:** Oct 2024
-- **Supported languages:** English
-
-**Capabilities:**
-
-* Supports abbreviations, acronyms, initialisms and phonemes (alpha).
-* Supports numbers, dates, phone numbers and SSNs.
-
-**Known issues:**
-
-* Audio generations can loop or diverge on transcripts that have repeated words in succession.
-* Audio generations may occasionally sound fast.
-* Some long numbers and phone numbers may sound rushed as well.
-
-### Sonic Multilingual (deprecated)
-
-_Sonic Multilingual_ was the first multilingual Sonic variant, with improved transcript following and low latency.  While it is still supported in our API, we recommend using the `sonic` model instead.
-
-- **Model ID:** `sonic-multilingual`
-- **Release date:** Jun 2024
-- **Latest version:** Sept 2024
-
-**Supported languages:**
+## Language Support
 
 1. English (`en`)
-2. French (`fr`)
-3. German (`de`)
-4. Spanish (`es`)
-5. Portuguese (`pt`)
-6. Chinese (`zh`)
-7. Japanese (`ja`)
-8. Hindi (`hi`)
-9. Italian (`it`)
-10. Korean (`ko`)
-11. Dutch (`nl`)
-12. Polish (`pl`)
-13. Russian (`ru`)
-14. Swedish (`sv`)
-15. Turkish (`tr`)
+1. French (`fr`)
+1. German (`de`)
+1. Spanish (`es`)
+1. Portuguese (`pt`)
+1. Chinese (`zh`)
+1. Japanese (`ja`)
+1. Hindi (`hi`)
+1. Italian (`it`)
+1. Korean (`ko`)
+1. Dutch (`nl`)
+1. Polish (`pl`)
+1. Russian (`ru`)
+1. Swedish (`sv`)
+1. Turkish (`tr`)
 
-**Capabilities:**
-- Supports numbers, dates, phone numbers in English, French, German, Spanish, and Chinese
+## Future Updates
 
-**Known issues:**
-- Some inaccuracies in numbers, dates, and phone numbers in Japanese and Portuguese.
-- Audio generations may occasionally sound fast.
-
-
-**Recommendations:**
-
-* It is recommended to use voices from the same language as the transcript for the best performance.
+New snapshots are released periodically with improvements in performance, additional language support, and new capabilities. Check back regularly for updates.

@@ -4,23 +4,23 @@ subtitle: >-
   Learn how to specify custom pronunciations for words that are hard to get right, like proper nouns or domain-specific terms.
 ---
 
-Both the Sonic and Sonic Preview models support custom pronunciations in your transcripts. They do so in slightly different ways. 
+All models in the Sonic TTS family support custom pronunciations in your transcripts.
 
-The `sonic`, `sonic-2024-12-12`, and `sonic-2024-10-19` models use Sonic-flavored IPA phonemes for English. The `sonic` and `sonic-2024-12-12` use MFA-style IPA for languages other than English, and the Sonic Preview model uses MFA-style IPA for all languages. Note that `sonic-2024-10-19` does not support custom pronunciations for languages other than English. We will soon be updating all models to use MFA-style IPA.
+`sonic-2` and `sonic-turbo` use MFA-style IPA for all languages.
+For the best controllability around pronunciation, we recommend using `sonic-2`.
 
-Custom words should be wrapped in double angle brackets `<<` `>>` , with pipe characters `|` between phonemes and no whitespace, e.g. `Can I <<g|ˈɛ|t|>> <<h|ɑː|l|ˈə|p|eɪ|n|y|ˌoʊ|>> on that?` for Sonic-flavored IPA or `Can I <<ɡ|ɛ|t>> <<cʰ|ɛ|tʃ|ə|p>> on that?` for MFA-style IPA. Each individual word should be wrapped in it’s own set of angle brackets.
+You can also get custom pronunciations with older Sonic models.
+The `sonic`, `sonic-2024-12-12`, and `sonic-2024-10-19` models use Sonic-flavored IPA phonemes for English.
+The `sonic` and `sonic-2024-12-12` use MFA-style IPA for languages other than English, and the Sonic Preview model uses MFA-style IPA for all languages.
+Note that `sonic-2024-10-19` does not support custom pronunciations for languages other than English.
+We will soon be updating all models to use MFA-style IPA.
 
-# Sonic-flavored IPA
+Custom words should be wrapped in double angle brackets `<<` `>>` , with pipe characters `|` between phonemes and no whitespace.
+For example: 
+- `Can I get <<cʰ|ɛ|tʃ|ə|p>> on that?` (MFA-style IPA)
+- `Can I get <<h|ɑː|l|ˈə|p|eɪ|n|y|ˌoʊ|>> on that?` (Sonic-flavored IPA)
 
-Here is a pronunciation guide for Sonic-flavored IPA.It follows the [English phonology article on Wikipedia](https://en.wikipedia.org/wiki/English\_phonology) for most phonemes, but in spots where our model requires different notation than you may expect, we've included a blue `<=` in the margins.
-
-You can copy/paste some of these uncommon symbols from the original [charts here](https://docs.google.com/spreadsheets/d/1OJbiKtxLyodpNPqVfOu43X2HloLsAixTtFppEuQ\_4pI/edit?usp=sharing).
-
-![](/assets/images/sonic_ipa_guide.png)
-
-## Stresses and vowel length markers
-
-Sonic English requires stress markers for first (`ˈ`) and second (`ˌ`) stressed syllables, which go directly before the vowel. We also use annotations for vowel length (`ː`). The model can also operate without them, but you will have noticeably better robustness and control when using them.
+Each individual word should be wrapped in it’s own set of angle brackets.
 
 # MFA-style IPA
 
@@ -50,3 +50,19 @@ Suppose I want to generate the text “This is a generation from Cartesia” and
     
 4. Ignore the middle four numeric columns. I want to cut off the part of the pronunciation that corresponds to “-an” and replace it with an “uh” sound. I know that the MFA phoneme for “uh” is `ɐ` (if I didn’t know that, I could also look up “uh” in the dictionary). So the pronunciation I want is `kʰ ɑ ɹ tʲ i ʒ ɐ`.
 5. Format the phonemes it in angle brackets with pipe characters between phonemes and no whitespace. So my transcript is `This is a generation from <<kʰ|ɑ|ɹ|tʲ|i|ʒ|ɐ>>`.
+
+
+# Sonic-flavored IPA
+
+Here is a pronunciation guide for Sonic-flavored IPA.
+It follows the [English phonology article on Wikipedia](https://en.wikipedia.org/wiki/English\_phonology) for most phonemes,
+but in spots where our model requires different notation than you may expect, we've included a blue `<=` in the margins.
+
+You can copy/paste some of these uncommon symbols from the original [charts here](https://docs.google.com/spreadsheets/d/1OJbiKtxLyodpNPqVfOu43X2HloLsAixTtFppEuQ\_4pI/edit?usp=sharing).
+
+![](/assets/images/sonic_ipa_guide.png)
+
+## Stresses and vowel length markers
+
+Sonic English requires stress markers for first (`ˈ`) and second (`ˌ`) stressed syllables, which go directly before the vowel. We also use annotations for vowel length (`ː`). The model can also operate without them, but you will have noticeably better robustness and control when using them.
+

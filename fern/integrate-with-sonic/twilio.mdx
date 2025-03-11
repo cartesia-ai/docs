@@ -86,8 +86,8 @@ const client = twilio(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOKEN);
 In the script, you'll find a configuration section for Cartesia TTS. Make sure to set the following variables according to your needs:
 
 ```javascript
-const TTS_WEBSOCKET_URL = `wss://api.cartesia.ai/tts/websocket?api_key=${config.CARTESIA_API_KEY}&cartesia_version=2024-06-10`;
-const modelId = 'sonic';
+const TTS_WEBSOCKET_URL = `wss://api.cartesia.ai/tts/websocket?api_key=${config.CARTESIA_API_KEY}&cartesia_version=2024-11-13`;
+const modelId = 'sonic-2';
 const voice = {
     'mode': 'id',
     'id': "VOICE_ID" // You can check available voices using the Cartesia API or at https://play.cartesia.ai
