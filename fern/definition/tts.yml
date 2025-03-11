@@ -17,7 +17,7 @@ service:
       examples:
         - name: MP3
           request:
-            model_id: "sonic"
+            model_id: "sonic-2"
             transcript: "Hello, world!"
             voice:
               mode: "id"
@@ -29,7 +29,7 @@ service:
               bit_rate: 128000
         - name: WAV
           request:
-            model_id: "sonic"
+            model_id: "sonic-2"
             transcript: "Hello, world!"
             voice:
               mode: "id"
@@ -41,7 +41,7 @@ service:
               encoding: "pcm_f32le"
         - name: RAW
           request:
-            model_id: "sonic"
+            model_id: "sonic-2"
             transcript: "Hello, world!"
             voice:
               mode: "id"
@@ -63,7 +63,7 @@ service:
       examples:
         - name: SSE
           request:
-            model_id: "sonic"
+            model_id: "sonic-2"
             transcript: "Hello, world!"
             voice:
               mode: "id"
@@ -133,7 +133,7 @@ channel:
       messages:
         - type: send
           body:
-            model_id: "sonic"
+            model_id: "sonic-2"
             transcript: "Hello, world! I'm generating audio on "
             voice:
               mode: "id"
@@ -148,7 +148,7 @@ channel:
             continue: true
         - type: send
           body:
-            model_id: "sonic"
+            model_id: "sonic-2"
             transcript: "Cartesia! Look, we did a continuation of the previous generation!"
             voice:
               mode: "id"
