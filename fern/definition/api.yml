@@ -8,7 +8,7 @@ auth-schemes:
     name: apiKey
 headers:
   Cartesia-Version:
-    type: literal<"2024-11-13">
+    type: literal<"2024-06-10">
 environments:
   Production: https://api.cartesia.ai
 default-environment: Production
