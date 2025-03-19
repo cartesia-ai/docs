@@ -63,6 +63,6 @@ jobs:
 
       - name: Compile
         run: |
-          cd fern/apis/version-2024-06-10/.preview/fern-python-sdk
+          cd fern/apis/version-2024-11-13/.preview/fern-python-sdk
           poetry install
           poetry run mypy .
