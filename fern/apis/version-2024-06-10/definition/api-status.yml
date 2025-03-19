@@ -15,3 +15,9 @@ service:
       method: GET
       display-name: API Status and Version
       response: APIInfo
+      examples:
+      - name: API Status and Version
+        response:
+          body:
+            ok: true
+            version: "2024-06-10"
