@@ -14,14 +14,10 @@ types:
   Voice:
     properties:
       id: VoiceId
-      user_id:
-        type: optional<string>
-        docs: |
-          The ID of the user who owns the voice.
-      is_public:
+      is_owner:
         type: boolean
         docs: |
-          Whether the voice is publicly accessible.
+          Whether the current user is the owner of the voice.
       name: &name
         type: string
         docs: |
@@ -34,7 +30,14 @@ types:
         type: datetime
         docs: |
           The date and time the voice was created.
-      embedding: embedding.Embedding
+      embedding:
+        type: optional<embedding.Embedding>
+        docs: |
+          The vector embedding of the voice. Only included when `expand` includes `embedding`.
+      is_starred:
+        type: optional<boolean>
+        docs: |
+          Whether the current user has starred the voice. Only included when `expand` includes `is_starred`.
       language: tts.SupportedLanguage
 
   VoiceMetadata:
@@ -130,6 +133,11 @@ types:
       - male
       - female
 
+  VoiceExpandOptions:
+    enum:
+      - embedding
+      - is_starred
+
   LocalizeVoiceRequest:
     properties:
       embedding: embedding.Embedding
@@ -208,6 +216,10 @@ service:
           gender:
             type: optional<GenderPresentation>
             docs: The gender presentation of the voices to return.
+          expand:
+            type: list<VoiceExpandOptions>
+            docs: |
+              Additional fields to include in the response.
       response: GetVoicesResponse
 
     create:
