@@ -1,0 +1,346 @@
+imports:
+  embedding: ./embedding.yml
+  tts: ./tts.yml
+
+types:
+  VoiceId:
+    type: string
+    docs: |
+      The ID of the voice.
+  BaseVoiceId:
+    type: VoiceId
+    docs: |
+      The ID of the base voice associated with the voice, used for features like voice mixing.
+  Voice:
+    properties:
+      id: VoiceId
+      is_owner:
+        type: boolean
+        docs: |
+          Whether the current user is the owner of the voice.
+      name: &name
+        type: string
+        docs: |
+          The name of the voice.
+      description: &description
+        type: string
+        docs: |
+          The description of the voice.
+      created_at:
+        type: datetime
+        docs: |
+          The date and time the voice was created.
+      embedding:
+        type: optional<embedding.Embedding>
+        docs: |
+          The vector embedding of the voice. Only included when `expand` includes `embedding`.
+      is_starred:
+        type: optional<boolean>
+        docs: |
+          Whether the current user has starred the voice. Only included when `expand` includes `is_starred`.
+      language: tts.SupportedLanguage
+
+  VoiceMetadata:
+    properties:
+      id: VoiceId
+      user_id:
+        type: string
+        docs: |
+          The ID of the user who owns the voice.
+      is_public:
+        type: boolean
+        docs: |
+          Whether the voice is publicly accessible.
+      name: &name
+        type: string
+        docs: |
+          The name of the voice.
+      description: &description
+        type: string
+        docs: |
+          The description of the voice.
+      created_at:
+        type: datetime
+        docs: |
+          The date and time the voice was created.
+      language: tts.SupportedLanguage
+
+  GetVoicesResponse:
+    properties:
+      data:
+        type: list<Voice>
+        docs: The paginated list of Voices.
+      has_more: boolean
+
+  CreateVoiceRequest:
+    properties:
+      name: *name
+      description: *description
+      embedding: embedding.Embedding
+      language: optional<tts.SupportedLanguage>
+
+  UpdateVoiceRequest:
+    properties:
+      name: *name
+      description: *description
+
+  LocalizeTargetLanguage:
+    docs: |
+      Target language to localize the voice to.
+      Options: English (en), German (de), Spanish (es), French (fr), Japanese (ja), Portuguese (pt), Chinese (zh), Hindi (hi), Italian (it), Korean (ko), Dutch (nl), Polish (pl), Russian (ru), Swedish (sv), Turkish (tr).
+    enum:
+      - en
+      - de
+      - es
+      - fr
+      - ja
+      - pt
+      - zh
+      - hi
+      - it
+      - ko
+      - nl
+      - pl
+      - ru
+      - sv
+      - tr
+
+  LocalizeEnglishDialect:
+    enum:
+      - au
+      - in
+      - so
+      - uk
+      - us
+
+  LocalizeDialect:
+    discriminated: false
+    union:
+      - type: LocalizeEnglishDialect
+        display-name: English dialect
+        docs: |
+          Only available when language is set to English (`en`).
+    docs: |
+      The dialect to localize to. Only supported for English (`en`).
+  GenderPresentation:
+    enum:
+      - masculine
+      - feminine
+      - gender_neutral
+
+  Gender:
+    enum:
+      - male
+      - female
+
+  VoiceExpandOptions:
+    enum:
+      - embedding
+      - is_starred
+
+  LocalizeVoiceRequest:
+    properties:
+      embedding: embedding.Embedding
+      language: LocalizeTargetLanguage
+      original_speaker_gender: Gender
+      dialect: optional<LocalizeDialect>
+
+  EmbeddingResponse:
+    properties:
+      embedding: embedding.Embedding
+
+  MixVoicesRequest:
+    properties:
+      voices: list<MixVoiceSpecifier>
+
+  Weight:
+    type: double
+    docs: |
+      The weight of the voice or embedding in the mix. If weights do not sum to 1, they will be normalized.
+  IdSpecifier:
+    properties:
+      id: VoiceId
+      weight: Weight
+
+  EmbeddingSpecifier:
+    properties:
+      embedding: embedding.Embedding
+      weight: Weight
+
+  MixVoiceSpecifier:
+    discriminated: false
+    union:
+      - IdSpecifier
+      - EmbeddingSpecifier
+
+  CloneMode:
+    enum:
+      - similarity
+      - stability
+
+service:
+  base-path: /voices
+  auth: true
+  endpoints:
+    list:
+      path: /
+      method: GET
+      display-name: List Voices
+      request:
+        name: GetVoicesRequest
+        query-parameters:
+          limit:
+            type: optional<integer>
+            default: 10
+            docs: The number of Voices to return per page, ranging between 1 and 100.
+          starting_after:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `starting_after` is a Voice ID that defines your
+              place in the list. For example, if you make a /voices request and receive 100
+              objects, ending with `voice_abc123`, your subsequent call can include
+              `starting_after=voice_abc123` to fetch the next page of the list.
+          ending_before:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `ending_before` is a Voice ID that defines your
+              place in the list. For example, if you make a /voices request and receive 100
+              objects, starting with `voice_abc123`, your subsequent call can include
+              `ending_before=voice_abc123` to fetch the previous page of the list.
+          is_owner:
+            type: optional<boolean>
+            docs: Whether to only return voices owned by the current user.
+          is_starred:
+            type: optional<boolean>
+            docs: Whether to only return starred voices.
+          gender:
+            type: optional<GenderPresentation>
+            docs: The gender presentation of the voices to return.
+          expand:
+            type: list<VoiceExpandOptions>
+            docs: |
+              Additional fields to include in the response.
+      response: GetVoicesResponse
+
+    create:
+      path: /
+      method: POST
+      display-name: Create Voice
+      request: CreateVoiceRequest
+      response: Voice
+
+    delete:
+      path: /{id}
+      method: DELETE
+      display-name: Delete Voice
+      path-parameters:
+        id: VoiceId
+
+    update:
+      path: /{id}
+      method: PATCH
+      display-name: Update Voice
+      path-parameters:
+        id: VoiceId
+      request: UpdateVoiceRequest
+      response: Voice
+
+    get:
+      path: /{id}
+      method: GET
+      display-name: Get Voice
+      path-parameters:
+        id: VoiceId
+      response: Voice
+
+    localize:
+      path: /localize
+      method: POST
+      display-name: Localize Voice
+      request: LocalizeVoiceRequest
+      response: EmbeddingResponse
+
+    mix:
+      path: /mix
+      method: POST
+      display-name: Mix Voices
+      request: MixVoicesRequest
+      response: EmbeddingResponse
+
+    clone:
+      path: /clone
+      method: POST
+      display-name: Clone Voice
+      docs: |
+        Clone a voice from an audio clip. This endpoint has two modes, stability and similarity.
+        Similarity mode clones are more similar to the source clip, but may reproduce background noise. For these, use an audio clip about 5 seconds long.
+        Stability mode clones are more stable, but may not sound as similar to the source clip. For these, use an audio clip 10-20 seconds long.
+      request:
+        name: CloneVoiceRequest
+        body:
+          properties:
+            clip:
+              type: file
+              docs: |
+                The audio clip to clone. For stability mode, the clip should be 10-20 seconds long. For similarity mode, the clip should be about 5 seconds long.
+            name:
+              type: string
+              docs: |
+                The name of the voice.
+            description:
+              type: optional<string>
+              docs: |
+                A description for the voice.
+            language:
+              type: tts.SupportedLanguage
+              docs: |
+                The language of the voice.
+            mode:
+              type: CloneMode
+              docs: |
+                Tradeoff between similarity and stability. Similarity clones sound more like the source clip, but may reproduce background noise. Stability clones always sound like a studio recording, but may not sound as similar to the source clip.
+            enhance:
+              type: boolean
+              docs: |
+                Whether to enhance the clip to improve its quality before cloning. Useful if the clip has background noise.
+            transcript:
+              type: optional<string>
+              docs: |
+                Optional transcript of the words spoken in the audio clip. Only used for similarity mode.
+      response: VoiceMetadata
+      examples:
+        - name: Stability
+          request:
+            # clip: file
+            name: "A high-stability cloned voice"
+            description: "Copied from Cartesia docs"
+            mode: stability
+            language: en
+            enhance: true
+          response:
+            body:
+              id: "df076429-66c6-4f3e-b98b-aee4e2c925ab"
+              user_id: "482aa35e-d86c-42a4-b818-7bdcfe40a858"
+              is_public: false
+              name: "A high-stability cloned voice"
+              description: "Copied from Cartesia docs"
+              created_at: "2024-11-13T07:06:22.476564Z"
+              language: en
+        - name: Similarity
+          request:
+            # clip: file
+            name: "A high-similarity cloned voice"
+            description: "Copied from Cartesia docs"
+            mode: similarity
+            language: en
+            transcript: "A transcript of the words spoken in the audio clip."
+            enhance: false
+          response:
+            body:
+              id: "40248dd5-bfe9-48e2-93f7-ea3f9d5c7f72"
+              user_id: "482aa35e-d86c-42a4-b818-7bdcfe40a858"
+              is_public: false
+              name: "A high-similarity cloned voice"
+              description: "Copied from Cartesia docs"
+              created_at: "2024-11-13T07:06:22.476564Z"
+              language: en

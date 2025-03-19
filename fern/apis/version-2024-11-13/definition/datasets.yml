@@ -1,0 +1,66 @@
+types:
+  Dataset:
+    properties:
+      id: string
+      name: string
+      created_at: string
+
+  CreateDatasetRequest:
+    properties:
+      name: string
+
+  DatasetFile:
+    properties:
+      id: string
+      filename: string
+      created_at: string
+
+  FilePurpose:
+    enum:
+      - fine_tune
+
+  PaginatedDatasets:
+    properties:
+      data: list<Dataset>
+      has_more: boolean
+
+  PaginatedDatasetFiles:
+    properties:
+      data: list<DatasetFile>
+      has_more: boolean
+# Commented these out since they're not used outside of PVCs, which are not yet GA. -Noah
+# service:
+#   base-path: /datasets
+#   auth: true
+#   endpoints:
+#     list:
+#       path: /
+#       method: GET
+#       response: PaginatedDatasets
+
+#     create:
+#       path: /
+#       method: POST
+#       request: CreateDatasetRequest
+#       response: Dataset
+
+#     listFiles:
+#       path: /{id}/files
+#       method: GET
+#       path-parameters:
+#         id: string
+#       response: PaginatedDatasetFiles
+
+#     uploadFile:
+#       path: /{id}/files
+#       method: POST
+#       path-parameters:
+#         id: string
+#       request:
+#         name: UploadDatasetFileRequest
+#         body:
+#           properties:
+#             file:
+#               type: file
+#             purpose:
+#               type: FilePurpose
