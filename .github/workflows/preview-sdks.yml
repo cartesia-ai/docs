@@ -23,13 +23,13 @@ jobs:
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
         run: |
-          fern generate --group ts-sdk --preview --log-level debug --api version-2024-11-13
+          fern generate --group ts-sdk --preview --log-level debug --api version-2024-06-10
 
       - name: Compile
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
         run: |
-          cd fern/apis/version-2024-11-13/.preview/fern-typescript-node-sdk
+          cd fern/apis/version-2024-06-10/.preview/fern-typescript-node-sdk
           yarn install
           yarn build
 
@@ -50,7 +50,7 @@ jobs:
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
         run: |
-          fern generate --group python-sdk --preview --log-level debug --api version-2024-11-13
+          fern generate --group python-sdk --preview --log-level debug --api version-2024-06-10
 
       - name: Set up python
         uses: actions/setup-python@v4
@@ -63,6 +63,6 @@ jobs:
 
       - name: Compile
         run: |
-          cd fern/apis/version-2024-11-13/.preview/fern-python-sdk
+          cd fern/apis/version-2024-06-10/.preview/fern-python-sdk
           poetry install
           poetry run mypy .
