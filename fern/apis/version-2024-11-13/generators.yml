@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://schema.buildwithfern.dev/generators-yml.json
+
+groups:
+  python-sdk:
+    generators:
+      - name: fernapi/fern-python-sdk
+        version: 4.3.13
+        output:
+          location: pypi
+          package-name: "cartesia"
+          token: ${PYPI_TOKEN}
+        github:
+          repository: cartesia-ai/cartesia-python
+        config:
+          client:
+            class_name: BaseCartesia
+            filename: base_client.py
+            exported_class_name: Cartesia
+            exported_filename: client.py
+          use_typeddict_requests: true
+          extra_dependencies:
+            aiohttp: ">=3.10.10"
+            iterators: ">=0.2.0"
+            websockets: ">=10.4"
+            pydub: ">=0.25.1"
+            audioop-lts:
+              version: "0.2.1"
+              python: "^3.13"
+          extra_dev_dependencies:
+            numpy: ">=1.2.1"
+  ts-sdk:
+    generators:
+      - name: fernapi/fern-typescript-node-sdk
+        version: 0.48.4
+        output:
+          location: npm
+          package-name: "@cartesia/cartesia-js"
+          token: ${NPM_TOKEN}
+        github:
+          repository: cartesia-ai/cartesia-js
+        config:
+          namespaceExport: Cartesia
+          allowCustomFetcher: true
+          skipResponseValidation: true
+          includeApiReference: true
+          extraDependencies:
+            emittery: "^0.13.1"
+            human-id: "^4.1.1"
+            ws: "^8.15.13"
+          extraDevDependencies:
+            "@types/ws": "^8.5.13"
+        smart-casing: true
