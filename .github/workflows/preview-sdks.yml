@@ -23,7 +23,7 @@ jobs:
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
         run: |
-          fern generate --group ts-sdk --preview --log-level debug
+          fern generate --group ts-sdk --preview --log-level debug --api version-2024-11-13
 
       - name: Compile
         env:
@@ -32,7 +32,7 @@ jobs:
           cd fern/.preview/fern-typescript-node-sdk
           yarn install
           yarn build
-            
+
 
   preview-python:
     runs-on: ubuntu-latest
@@ -46,12 +46,12 @@ jobs:
       - name: Download Fern
         run: npm install -g fern-api
 
-      - name: Preview Python SDK 
+      - name: Preview Python SDK
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
         run: |
-          fern generate --group python-sdk --preview --log-level debug
-    
+          fern generate --group python-sdk --preview --log-level debug --api version-2024-11-13
+
       - name: Set up python
         uses: actions/setup-python@v4
         with:
@@ -62,7 +62,7 @@ jobs:
           curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
 
       - name: Compile
-        run: | 
+        run: |
           cd fern/.preview/fern-python-sdk
-          poetry install          
+          poetry install
           poetry run mypy .
