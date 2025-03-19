@@ -20,4 +20,4 @@ service:
         response:
           body:
             ok: true
-            version: "2024-06-10"
+            version: "2024-11-13"
