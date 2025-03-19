@@ -50,7 +50,7 @@ jobs:
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
         run: |
-          fern generate --group python-sdk --preview --log-level debug --api version-2024-06-10
+          fern generate --group python-sdk --preview --log-level debug --api version-2024-11-13
 
       - name: Set up python
         uses: actions/setup-python@v4
