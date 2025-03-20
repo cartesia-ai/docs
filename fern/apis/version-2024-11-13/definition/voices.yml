@@ -217,7 +217,7 @@ service:
             type: optional<GenderPresentation>
             docs: The gender presentation of the voices to return.
           expand:
-            type: list<VoiceExpandOptions>
+            type: optional<list<VoiceExpandOptions>>
             docs: |
               Additional fields to include in the response.
       response: GetVoicesResponse
