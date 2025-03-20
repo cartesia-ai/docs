@@ -1,0 +1,58 @@
+---
+title: Context Flushing and Flush IDs
+subtitle: >-
+  Learn about managing multiple transcript generations with context flushing.
+---
+
+## Overview
+
+When working with continuations over a given context ID through the websocket, all audio chunks for transcripts submitted to a single context will be returned to a single receiver. This means there's no built-in way to distinguish which audio chunks correspond to which set of transcripts.
+
+While this behavior works well for streaming audio, some implementations require the ability to map audio chunks back to their originating transcripts.
+
+<Frame caption="Flushing allows you to convert N transcripts into N generators." background="subtle">
+    <img src="/assets/images/api_reference_flushing.png" alt="context_flushing" />
+</Frame>
+
+## Manual Flushing
+
+To address this need, we've implemented a manual flush mechanism that allows you to demarcate boundaries between transcript submissions.
+
+### How It Works
+
+The system uses a `flush_id` that increments each time you trigger a manual flush. This ID is included in each audio chunk payload, allowing you to track which transcript generated specific audio chunks.
+
+### Implementation
+
+To trigger a manual flush:
+
+1. Submit a request with the following parameters:
+   - `continue=True` - Indicates you're continuing with the same context
+   - `flush=True` - Triggers the flush operation
+   - Empty transcript
+   - Same context ID as your previous request
+
+### Example Flow
+
+```
+1. Submit transcript 1 on context 1
+2. Flush context 1
+3. Submit transcript 2 on context 1
+```
+
+In this flow:
+- All audio chunks from transcript 1 will have `flush_id=1`
+- The manual flush increments the ID
+- All audio chunks from transcript 2 will have `flush_id=2`
+
+## Payload Structure
+
+Audio chunk payloads include the `flush_id` field that you can use to track which transcript generated the audio. The `flush_id` increments each time you perform a manual flush operation.
+
+## Benefits & Best Practices
+
+Use manual flushing in the following scenarios:
+- When you need to track which audio chunks correspond to which transcripts
+- When an framework or architecture assumes that each transcript has a corresponding generator
+
+If you're using multiple providers, this can also help align the Cartesia API with abstractions that expect a single generator per transcript.

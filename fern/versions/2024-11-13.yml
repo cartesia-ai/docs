@@ -101,6 +101,9 @@ navigation:
           - page: Concurrency Limits and Timeouts
             path: ../api-reference/concurrency-limits-and-timeouts.mdx
             icon: fa-traffic-light
+          - page: Context Flushing and Flush IDs
+            path: ../api-reference/context-flushing-and-flush-ids.mdx
+            icon: fa-cube
       - api: API Reference
         api-name: version-2024-11-13
         paginated: true
