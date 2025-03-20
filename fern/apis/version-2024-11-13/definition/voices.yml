@@ -221,6 +221,9 @@ service:
             docs: |
               Additional fields to include in the response.
       response: GetVoicesResponse
+      pagination:
+        cursor: $request.starting_after
+        results: $response.data
 
     create:
       path: /
