@@ -12,5 +12,3 @@ headers:
 environments:
   Production: https://api.cartesia.ai
 default-environment: Production
-audiences:
-  - internal
