@@ -123,5 +123,8 @@ navigation:
                   - page: Contexts
                     path: ../api-reference/contexts.mdx
                     icon: fa-waveform
+                  - page: Context Flushing and Flush IDs
+                    path: ../api-reference/context-flushing-and-flush-ids.mdx
+                    icon: fa-cube
           - voices: []
           - voice-changer: []
