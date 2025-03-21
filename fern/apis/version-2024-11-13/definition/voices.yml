@@ -70,7 +70,11 @@ types:
       data:
         type: list<Voice>
         docs: The paginated list of Voices.
-      has_more: boolean
+      last_id:
+        type: optional<VoiceId>
+        docs: The ID of the last Voice in the list.
+        audiences:
+          - internal
 
   CreateVoiceRequest:
     properties:
@@ -223,6 +227,7 @@ service:
       response: GetVoicesResponse
       pagination:
         cursor: $request.starting_after
+        next_cursor: $response.last_id
         results: $response.data
 
     create:
