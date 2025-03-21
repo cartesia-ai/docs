@@ -70,7 +70,10 @@ types:
       data:
         type: list<Voice>
         docs: The paginated list of Voices.
-      has_more: boolean
+      next_page:
+        type: optional<VoiceId>
+        docs: Deprecated. An ID that can be passed as `starting_after` to get the next page of Voices.
+
 
   CreateVoiceRequest:
     properties:
@@ -221,6 +224,10 @@ service:
             docs: |
               Additional fields to include in the response.
       response: GetVoicesResponse
+      pagination:
+        cursor: $request.starting_after
+        next_cursor: $response.next_page
+        results: $response.data
 
     create:
       path: /
