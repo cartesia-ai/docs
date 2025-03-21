@@ -6,7 +6,7 @@ subtitle: >-
 
 ## Overview
 
-When working with continuations over a given context ID through the websocket, all audio chunks for transcripts submitted to a single context will be returned to a single receiver. This means there's no built-in way to distinguish which audio chunks correspond to which set of transcripts.
+When using [context IDs with the WebSocket API](/api-reference/contexts), all audio chunks for transcripts submitted to a single context share the same context ID. This makes it difficult to determine which audio chunks correspond to specific transcript submissions.
 
 While this behavior works well for streaming audio, some implementations require the ability to map audio chunks back to their originating transcripts.
 
@@ -16,19 +16,19 @@ While this behavior works well for streaming audio, some implementations require
 
 ## Manual Flushing
 
-To address this need, we've implemented a manual flush mechanism that allows you to demarcate boundaries between transcript submissions.
+Manual flushing creates clear boundaries between transcript submissions within the same context.
 
 ### How It Works
 
-The system uses a `flush_id` that increments each time you trigger a manual flush. This ID is included in each audio chunk payload, allowing you to track which transcript generated specific audio chunks.
+Each time you trigger a manual flush, the system increments a `flush_id` counter. This ID is included in corresponding response audio chunk payloads, allowing you to track which transcript generated specific audio chunks.
 
 ### Implementation
 
 To trigger a manual flush:
 
-1. Submit a request with the following parameters:
-   - `continue=True` - Indicates you're continuing with the same context
-   - `flush=True` - Triggers the flush operation
+1. Send a request with these parameters:
+   - `continue=True` (indicates you're continuing with the same context)
+   - `flush=True` (triggering the flush operation)
    - Empty transcript
    - Same context ID as your previous request
 
@@ -47,12 +47,13 @@ In this flow:
 
 ## Payload Structure
 
-Audio chunk payloads include the `flush_id` field that you can use to track which transcript generated the audio. The `flush_id` increments each time you perform a manual flush operation.
+Each audio chunk payload includes a `flush_id` field that serves as a transcript identifier. This ID increments with each manual flush operation, creating a clear boundary between transcript submissions.
 
-## Benefits & Best Practices
+## When to Use Manual Flushing
 
-Use manual flushing in the following scenarios:
-- When you need to track which audio chunks correspond to which transcripts
-- When an framework or architecture assumes that each transcript has a corresponding generator
+Consider using manual flushing when:
+- You need to associate audio chunks with their originating transcripts
+- Your application architecture expects a one-to-one relationship between transcripts and response streams
+- You're integrating with frameworks that assume each transcript has a corresponding generator
 
-If you're using multiple providers, this can also help align the Cartesia API with abstractions that expect a single generator per transcript.
+This feature is particularly helpful when using multiple providers, as it aligns the Cartesia API with systems that expect discrete generator responses per transcript.

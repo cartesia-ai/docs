@@ -209,9 +209,9 @@ types:
   FlushID:
     type: integer
     docs: |
-      An identifier indicating the number of flush commands that have been sent for this context. Starts at 1.
+      An identifier corresponding to the number of flush commands that have been sent for this context. Starts at 1.
 
-      This can be used to map chunks of audio to certain transcript subsmissions.
+      This can be used to map chunks of audio to certain transcript submissions.
 
   WebSocketBaseResponse:
     properties:
