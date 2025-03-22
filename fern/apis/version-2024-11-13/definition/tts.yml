@@ -331,6 +331,10 @@ types:
         type: optional<boolean>
         docs: |
           Whether to return phoneme-level timestamps.
+      use_original_timestamps:
+        type: optional<boolean>
+        docs: |
+          Whether to use the original transcript for timestamps.
 
   WebSocketRawOutputFormat:
     properties:
@@ -360,6 +364,7 @@ types:
       duration: optional<integer>
       language: optional<string>
       add_timestamps: optional<boolean>
+      use_original_timestamps: optional<boolean>
       add_phoneme_timestamps: optional<boolean>
       continue: optional<boolean>
       context_id: optional<string>
