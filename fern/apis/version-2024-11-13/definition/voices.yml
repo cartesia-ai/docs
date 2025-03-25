@@ -158,10 +158,10 @@ types:
       The dialect to localize to. Only supported for English (`en`), Spanish (`es`), Portuguese (`pt`), and French (`fr`).
 
   GenderPresentation:
-      enum:
-        - masculine
-        - feminine
-        - gender_neutral
+    enum:
+      - masculine
+      - feminine
+      - gender_neutral
 
   Gender:
     enum:
