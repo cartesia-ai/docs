@@ -300,7 +300,7 @@ types:
       model_id:
         type: string
         docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-sonic/models) for available models.
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
       transcript:
         type: unknown
         docs: |
@@ -357,7 +357,7 @@ types:
       model_id:
         type: string
         docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-sonic/models) for available models.
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
       output_format: optional<OutputFormat>
       transcript: optional<string>
       voice: TTSRequestVoiceSpecifier
@@ -374,7 +374,7 @@ types:
       model_id:
         type: string
         docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-sonic/models) for available models.
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
       transcript: string
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
