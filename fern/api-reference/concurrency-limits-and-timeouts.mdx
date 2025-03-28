@@ -4,7 +4,21 @@ subtitle: >-
   Learn about concurrency limits and timeouts with the Cartesia API.
 ---
 
-We measure concurrency in terms of the number of unique contexts active at a given time. For WebSockets, each `context_id` corresponds to a unique context; additional messages you send with the same `context_id` will not count against your concurrency limit. For regular HTTP endpoints, each HTTP request corresponds to a context.
+Your account is subject to two types of rate limits: WebSocket limits and generation concurrency limits.
+
+## WebSocket limits
+
+> You don't need to worry about WebSocket limits if you're only using the HTTP API.
+
+We limit the number of parallel WebSocket connections to 10X your concurrency limit. For example, if you have a concurrency limit of 15, you can have up to 150 parallel WebSocket connections.
+
+If you exceed your WebSocket limit, you will receive a `429 Too Many Requests` error on trying to open a new WebSocket connection.
+
+Usually, when users run into WebSocket limits (even at scale), it's because they're not properly closing idle connections. Beyond closing idle connections, you can also create a connection pool to ensure you don't exceed your WebSocket limit.
+
+## Concurrency limits
+
+We measure generation concurrency in terms of the number of unique contexts active at a given time. For regular HTTP endpoints, each HTTP request corresponds to a context. For WebSockets, each `context_id` corresponds to a unique context; additional messages you send with the same `context_id` will not count against your concurrency limit.
 
 If you exceed your concurrency limit, you will receive a `429 Too Many Requests` error. You can check your concurrency limit and upgrade it on the playground at [play.cartesia.ai](https://play.cartesia.ai).
 
