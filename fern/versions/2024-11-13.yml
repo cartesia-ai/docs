@@ -20,6 +20,9 @@ navigation:
           - page: Make an API request
             path: ../get-started/make-an-api-request.mdx
             icon: fa-paper-plane
+          - page: Authenticate your client-applications
+            path: ../get-started/authenticate-your-app.mdx
+            icon: fa-key
       - section: Use an SDK
         contents:
           - page: JavaScript/TypeScript

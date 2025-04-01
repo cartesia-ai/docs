@@ -9,6 +9,12 @@ auth-schemes:
 headers:
   Cartesia-Version:
     type: literal<"2024-11-13">
+  Authorization:
+    type: optional<string>
+    name: Authorization
+    docs: |
+      The Access Token to be used to authenticate the client to make requests to the API.
+      The token should be prefixed with `Bearer `, e.g. `Bearer <token>`.
 environments:
   Production: https://api.cartesia.ai
 default-environment: Production
