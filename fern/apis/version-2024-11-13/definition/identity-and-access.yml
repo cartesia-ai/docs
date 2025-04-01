@@ -37,8 +37,8 @@ types:
       expires_in:
         type: optional<integer>
         docs: |
-          The number of milliseconds the token will be valid for since the time of generation. The maximum is 1 hour, or 3600000.
-
+          The number of milliseconds the token will be valid for since the time of generation. The maximum is 1 hour, or 3600000 milliseconds.
+        maximum: 3600000
   TokenResponse:
     properties:
       token:
