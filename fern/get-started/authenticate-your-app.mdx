@@ -3,14 +3,13 @@ title: Authenticate your client-applications
 subtitle: Secure client access to Cartesia APIs using Access Tokens
 ---
 
-Access Tokens provide secure client-side authentication for Cartesia's APIs without exposing your API key. These tokens follow industry-standard JWT format and implement robust security practices to protect your application's resources.
+Access Tokens provide secure client-side authentication for Cartesia's APIs without exposing your API key.
 
 ## Overview
 
 - **Server-side Generation**: Tokens must be generated on your backend server
 - **Short-lived Security**: Configurable lifetime up to 1 hour
 - **Granular Permissions**: Control access to specific Cartesia services
-- **Standard JWT Format**: Compatible with existing JWT libraries and tools
 
 ## Prerequisites
 
@@ -20,35 +19,6 @@ Before implementing Access Tokens:
 2. Configure your server with a Cartesia API key
 3. Implement user authentication in your application
 4. Establish secure client-server communication
-
-## Token Architecture
-
-### JWT Header Structure
-
-```typescript
-{
-  "typ": "JWT",
-  "alg": "HS256",
-  "kid": "<signing_secret_id>"
-}
-```
-
-> **Important**: The Signing Secret associated with your API key must never be exposed to clients or stored in public repositories.
-
-### JWT Payload Structure
-
-```typescript
-{
-  "jti": "<uuid>",              // Unique token identifier
-  "iss": "https://api.cartesia.ai",
-  "iat": number,                // Issued at timestamp
-  "exp": number,                // Expiration timestamp
-  "sub": "<user_id>",          // User identifier
-  "grants": {
-    "tts": boolean,            // Text-to-speech permission
-  }
-}
-```
 
 ### Available Grants
 
@@ -171,5 +141,4 @@ Official SDK support is coming soon.
 
 ## Additional Resources
 
-- [JWT.io Debugger](https://jwt.io) - Inspect and validate JWTs
 - [API Reference](/api-reference/identity-and-access/token) - Complete API documentation
