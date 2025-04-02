@@ -2,8 +2,8 @@ service:
   base-path: ""
   auth: true
   endpoints:
-    token:
-      path: /token
+    access-token:
+      path: /access-token
       method: POST
       display-name: Generate a New Access Token
       docs: |
