@@ -18,7 +18,7 @@ navigation:
             path: ../get-started/overview.mdx
             icon: fa-browser
           - page: Make an API request
-            path: ../get-started/make-an-api-request.mdx
+            path: ../get-started/make-an-api-request-2025-04-10.mdx
             icon: fa-paper-plane
           - page: Authenticate your client-applications
             path: ../get-started/authenticate-your-app.mdx
