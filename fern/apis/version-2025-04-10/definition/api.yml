@@ -1,15 +1,14 @@
 name: cartesia
 display-name: Cartesia API
-auth: AuthorizationHeader
+auth: Bearer
 auth-schemes:
-  AuthorizationHeader:
-    header: Authorization
-    type: string
-    name: authorization
+  Bearer:
+    scheme: bearer
+    token:
+      name: apiKeyOrAccessToken
+      env: CARTESIA_API_KEY
     docs: |
-      We now support authorization either through API Key or Access Token. 
-      The API Key can be passed in the `Authorization` header directly. 
-      The Access Token should be passed in the `Authorization` header as a Bearer token, e.g. `Bearer <token>`.
+      Either an API Key (eg, Bearer sk_car_...) or Access Token (eg, Bearer eyF9...). For more details, see https://docs.cartesia.ai/2025-04-10/use-the-api/api-conventions.
       (Note: Access Tokens are only accepted for `/tts` endpoints at this time.)
 headers:
   Cartesia-Version:
