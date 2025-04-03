@@ -100,7 +100,7 @@ navigation:
         contents:
           - page: API Conventions
             icon: fa-ruler
-            path: ../api-reference/api-conventions.mdx
+            path: ../api-reference/api-conventions-2025-04-10.mdx
           - page: Concurrency Limits and Timeouts
             path: ../api-reference/concurrency-limits-and-timeouts.mdx
             icon: fa-traffic-light
