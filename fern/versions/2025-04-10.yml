@@ -20,6 +20,9 @@ navigation:
           - page: Make an API request
             path: ../get-started/make-an-api-request.mdx
             icon: fa-paper-plane
+          - page: Authenticate your client-applications
+            path: ../get-started/authenticate-your-app.mdx
+            icon: fa-key
       - section: Use an SDK
         contents:
           - page: JavaScript/TypeScript
@@ -102,7 +105,7 @@ navigation:
             path: ../api-reference/concurrency-limits-and-timeouts.mdx
             icon: fa-traffic-light
       - api: API Reference
-        api-name: version-2024-11-13
+        api-name: version-2025-04-10
         paginated: true
         flattened: true
         snippets:

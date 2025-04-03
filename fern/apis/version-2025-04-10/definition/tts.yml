@@ -1,0 +1,542 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  voices: ./voices.yml
+  embedding: ./embedding.yml
+
+service:
+  base-path: /tts
+  auth: true
+  endpoints:
+    bytes:
+      path: /bytes
+      method: POST
+      display-name: Text to Speech (Bytes)
+      request: TTSRequest
+      response: file
+      examples:
+        - name: MP3
+          request:
+            model_id: "sonic-2"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "mp3"
+              sample_rate: 44100
+              bit_rate: 128000
+        - name: WAV
+          request:
+            model_id: "sonic-2"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "wav"
+              sample_rate: 44100
+              encoding: "pcm_f32le"
+        - name: RAW
+          request:
+            model_id: "sonic-2"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "raw"
+              sample_rate: 44100
+              encoding: "pcm_f32le"
+
+    sse:
+      path: /sse
+      method: POST
+      display-name: Text to Speech (SSE)
+      request: TTSRequest
+      response-stream:
+        type: WebSocketResponse
+        format: sse
+      examples:
+        - name: SSE
+          request:
+            model_id: "sonic-2"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "raw"
+              sample_rate: 44100
+              encoding: "pcm_f32le"
+
+channel:
+  path: /tts/websocket
+
+  display-name: Text to Speech (WebSocket)
+
+  docs: |
+    This endpoint creates a bidirectional WebSocket connection. The connection supports multiplexing, so you can send multiple requests and receive the corresponding responses in parallel.
+
+    The WebSocket API is built around _contexts_:
+
+    - When you send a generation request, you pass a `context_id`. Further inputs on the same `context_id` will [continue the generation](/build-with-cartesia/capability-guides/stream-inputs-using-continuations), maintaining prosody.
+    - Responses for a context contain the `context_id` you passed in so that you can match requests and responses.
+
+    Read the guide on [working with contexts](/api-reference/tts/working-with-web-sockets/contexts) to learn more.
+
+    For the best performance, we recommend the following usage pattern:
+
+    1. **Do many generations over a single WebSocket.** Just use a separate context for each generation. The WebSocket scales up to dozens of concurrent generations.
+    2. **Set up the WebSocket before the first generation.** This ensures you don't incur latency when you start generating speech.
+    3. **Buffer the first input on a context** to at least 3 or 4 words for optimizing both latency and prosody.
+    4. **Split inputs into sentences:** Sending inputs in sentences allows Sonic to generate speech more accurately and with better prosody. Include necessary spaces and punctuation.
+    For conversational agent use cases, we recommend the following usage pattern:
+    1. **Each turn in a conversation should correspond to a context:** For example, if you are using Sonic to power a voice agent, each turn in the conversation should be a new context.
+    2. **Start a new context for interruptions:** If the user interrupts the agent, start a new context for the agent's response.
+
+  auth: true
+
+  query-parameters:
+    cartesia_version:
+      type: string
+      docs: |
+        You can specify this instead of the `Cartesia-Version` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
+
+        You do not need to specify this if you are passing the header.
+    api_key:
+      type: string
+      docs: |
+        You can specify this instead of the `X-API-Key` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
+
+        You do not need to specify this if you are passing the header.
+
+  messages:
+    send:
+      display-name: "Send"
+      origin: client
+      body: WebSocketRequest
+    receive:
+      display-name: "Receive"
+      docs: |
+        The server will send you back a stream of messages with the same `context_id` as your request.
+        The messages can be of type `chunk`, `timestamps`, `phoneme_timestamps` `error`, or `done`.
+      origin: server
+      body: WebSocketResponse
+
+  examples:
+    - name: Generation Example
+      messages:
+        - type: send
+          body:
+            model_id: "sonic-2"
+            transcript: "Hello, world! I'm generating audio on "
+            voice:
+              mode: "id"
+              id: "a0e99841-438c-4a64-b679-ae501e7d6091"
+            language: "en"
+            context_id: "happy-monkeys-fly"
+            output_format:
+              container: "raw"
+              encoding: "pcm_s16le"
+              sample_rate: 8000
+            add_timestamps: true
+            continue: true
+        - type: send
+          body:
+            model_id: "sonic-2"
+            transcript: "Cartesia! Look, we did a continuation of the previous generation!"
+            voice:
+              mode: "id"
+              id: "a0e99841-438c-4a64-b679-ae501e7d6091"
+            language: "en"
+            context_id: "happy-monkeys-fly"
+            output_format:
+              container: "raw"
+              encoding: "pcm_s16le"
+              sample_rate: 8000
+            add_timestamps: true
+            continue: false
+        - type: receive
+          body:
+            type: chunk
+            context_id: "happy-monkeys-fly"
+            status_code: 206
+            done: false
+            data: "aSDinaTvuI8gbWludGxpZnk="
+            step_time: 123
+        - type: receive
+          body:
+            type: chunk
+            context_id: "happy-monkeys-fly"
+            status_code: 206
+            done: false
+            data: "aSDinaTvuI8gbWludGxpZnk="
+            step_time: 123
+        - type: receive
+          body:
+            type: timestamps
+            context_id: "happy-monkeys-fly"
+            status_code: 206
+            done: false
+            word_timestamps:
+              words: ["Hello"]
+              start: [0.0]
+              end: [1.0]
+        - type: send
+          body:
+            context_id: "happy-monkeys-fly"
+            cancel: true
+        - type: receive
+          body:
+            type: done
+            context_id: "happy-monkeys-fly"
+            status_code: 206
+            done: true
+
+types:
+  ContextID:
+    type: string
+    docs: |
+      A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
+
+      Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
+
+  FlushID:
+    type: integer
+    docs: |
+      An identifier corresponding to the number of flush commands that have been sent for this context. Starts at 1.
+
+      This can be used to map chunks of audio to certain transcript submissions.
+
+  WebSocketBaseResponse:
+    properties:
+      context_id: optional<ContextID>
+      status_code: integer
+      done: boolean
+
+  WebSocketResponse:
+    discriminant: type
+    union:
+      chunk: WebSocketChunkResponse
+      flush_done: WebSocketFlushDoneResponse
+      done: WebSocketDoneResponse
+      timestamps: WebSocketTimestampsResponse
+      error: WebSocketErrorResponse
+      phoneme_timestamps: WebSocketPhonemeTimestampsResponse
+
+  WebSocketErrorResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      error: string
+
+  WebSocketChunkResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      data: base64
+      step_time: double
+      flush_id: optional<FlushID>
+
+  WebSocketTimestampsResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      word_timestamps: optional<WordTimestamps>
+
+  WebSocketPhonemeTimestampsResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      phoneme_timestamps: optional<PhonemeTimestamps>
+
+  WebSocketTTSOutput:
+    properties:
+      word_timestamps: optional<WordTimestamps>
+      phoneme_timestamps: optional<PhonemeTimestamps>
+      audio: optional<unknown>
+      context_id: optional<ContextID>
+      flush_id: optional<FlushID>
+      flush_done: optional<boolean>
+
+  WebSocketStreamOptions:
+    properties:
+      timeout: optional<double>
+
+  WordTimestamps:
+    properties:
+      words: list<string>
+      start: list<double>
+      end: list<double>
+
+  PhonemeTimestamps:
+    properties:
+      phonemes: list<string>
+      start: list<double>
+      end: list<double>
+
+  WebSocketDoneResponse:
+    extends: WebSocketBaseResponse
+
+  WebSocketFlushDoneResponse:
+    extends: WebSocketBaseResponse
+    properties:
+      flush_id: FlushID
+      flush_done: boolean
+
+  CancelContextRequest:
+    properties:
+      context_id:
+        type: ContextID
+        docs: The ID of the context to cancel.
+      cancel:
+        type: literal<true>
+        docs: |
+          Whether to cancel the context, so that no more messages are generated for that context.
+
+  GenerationRequest:
+    properties:
+      model_id:
+        type: string
+        docs: |
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
+      transcript:
+        type: unknown
+        docs: |
+          The transcript to generate speech for. This can be a string or an iterator over strings.
+      voice: TTSRequestVoiceSpecifier
+      language: optional<SupportedLanguage>
+      output_format: WebSocketRawOutputFormat
+      duration:
+        type: optional<double>
+        docs: |
+          The maximum duration of the audio in seconds. You do not usually need to specify this.
+          If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+      context_id: optional<ContextID>
+      continue:
+        type: optional<boolean>
+        docs: |
+          Whether this input may be followed by more inputs.
+          If not specified, this defaults to `false`.
+      flush:
+        type: optional<boolean>
+        docs: |
+          Whether to flush the context.
+      add_timestamps:
+        type: optional<boolean>
+        docs: |
+          Whether to return word-level timestamps.
+      add_phoneme_timestamps:
+        type: optional<boolean>
+        docs: |
+          Whether to return phoneme-level timestamps.
+      use_original_timestamps:
+        type: optional<boolean>
+        docs: |
+          Whether to use the original transcript for timestamps.
+
+  WebSocketRawOutputFormat:
+    properties:
+      container: literal<"raw">
+      encoding: RawEncoding
+      sample_rate: integer
+
+  WebSocketRequest:
+    discriminated: false
+    union:
+      - type: GenerationRequest
+        docs: |
+          Use this to generate speech for a transcript.
+      - type: CancelContextRequest
+        docs: |
+          Use this to cancel a context, so that no more messages are generated for that context.
+
+  WebSocketTTSRequest:
+    properties:
+      model_id:
+        type: string
+        docs: |
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
+      output_format: optional<OutputFormat>
+      transcript: optional<string>
+      voice: TTSRequestVoiceSpecifier
+      duration: optional<integer>
+      language: optional<string>
+      add_timestamps: optional<boolean>
+      use_original_timestamps: optional<boolean>
+      add_phoneme_timestamps: optional<boolean>
+      continue: optional<boolean>
+      context_id: optional<string>
+
+  TTSRequest:
+    properties:
+      model_id:
+        type: string
+        docs: |
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
+      transcript: string
+      voice: TTSRequestVoiceSpecifier
+      language: optional<SupportedLanguage>
+      output_format: OutputFormat
+      duration:
+        type: optional<double>
+        docs: |
+          The maximum duration of the audio in seconds. You do not usually need to specify this.
+          If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+
+  SupportedLanguage:
+    docs: |
+      The language that the given voice should speak the transcript in.
+
+      Options: English (en), French (fr), German (de), Spanish (es), Portuguese (pt), Chinese (zh), Japanese (ja), Hindi (hi), Italian (it), Korean (ko), Dutch (nl), Polish (pl), Russian (ru), Swedish (sv), Turkish (tr).
+    enum:
+      - en
+      - fr
+      - de
+      - es
+      - pt
+      - zh
+      - ja
+      - hi
+      - it
+      - ko
+      - nl
+      - pl
+      - ru
+      - sv
+      - tr
+
+  OutputFormat:
+    discriminant: container
+    union:
+      raw: RawOutputFormat
+      wav: WAVOutputFormat
+      mp3: MP3OutputFormat
+
+  RawOutputFormat:
+    properties:
+      encoding: RawEncoding
+      sample_rate: integer
+      bit_rate: optional<integer>
+
+  RawEncoding:
+    enum:
+      - pcm_f32le
+      - pcm_s16le
+      - pcm_mulaw
+      - pcm_alaw
+
+  WAVOutputFormat:
+    extends: RawOutputFormat
+
+  MP3OutputFormat:
+    properties:
+      sample_rate: integer
+      bit_rate:
+        type: integer
+        docs: |
+          The bit rate of the audio in bits per second. Supported bit rates are 32000, 64000, 96000, 128000, 192000.
+
+  TTSRequestVoiceSpecifier:
+    discriminated: false
+    union:
+      - TTSRequestIdSpecifier
+      - TTSRequestEmbeddingSpecifier
+
+  TTSRequestIdSpecifier:
+    properties:
+      mode: literal<"id">
+      id: voices.VoiceId
+      __experimental_controls: optional<Controls>
+
+  TTSRequestEmbeddingSpecifier:
+    properties:
+      mode: literal<"embedding">
+      embedding: embedding.Embedding
+      __experimental_controls: optional<Controls>
+
+  Controls:
+    properties:
+      speed: Speed
+      emotion: list<Emotion>
+
+  Speed:
+    docs: |
+      Either a number between -1.0 and 1.0 or a natural language description of speed.
+
+      If you specify a number, 0.0 is the default speed, -1.0 is the slowest speed, and 1.0 is the fastest speed.
+    discriminated: false
+    union:
+      - NumericalSpecifier
+      - NaturalSpecifier
+
+  NumericalSpecifier:
+    type: double
+
+  NaturalSpecifier:
+    enum:
+      - slowest
+      - slow
+      - normal
+      - fast
+      - fastest
+
+  Emotion:
+    docs: |
+      An array of emotion:level tags.
+
+      Supported emotions are: anger, positivity, surprise, sadness, and curiosity.
+
+      Supported levels are: lowest, low, (omit), high, highest.
+    enum:
+      - value: anger:lowest
+        name: ANGER_LOWEST
+      - value: anger:low
+        name: ANGER_LOW
+      - value: anger
+        name: ANGER
+      - value: anger:high
+        name: ANGER_HIGH
+      - value: anger:highest
+        name: ANGER_HIGHEST
+      - value: positivity:lowest
+        name: POSITIVITY_LOWEST
+      - value: positivity:low
+        name: POSITIVITY_LOW
+      - value: positivity
+        name: POSITIVITY
+      - value: positivity:high
+        name: POSITIVITY_HIGH
+      - value: positivity:highest
+        name: POSITIVITY_HIGHEST
+      - value: surprise:lowest
+        name: SURPRISE_LOWEST
+      - value: surprise:low
+        name: SURPRISE_LOW
+      - value: surprise
+        name: SURPRISE
+      - value: surprise:high
+        name: SURPRISE_HIGH
+      - value: surprise:highest
+        name: SURPRISE_HIGHEST
+      - value: sadness:lowest
+        name: SADNESS_LOWEST
+      - value: sadness:low
+        name: SADNESS_LOW
+      - value: sadness
+        name: SADNESS
+      - value: sadness:high
+        name: SADNESS_HIGH
+      - value: sadness:highest
+        name: SADNESS_HIGHEST
+      - value: curiosity:lowest
+        name: CURIOSITY_LOWEST
+      - value: curiosity:low
+        name: CURIOSITY_LOW
+      - value: curiosity
+        name: CURIOSITY
+      - value: curiosity:high
+        name: CURIOSITY_HIGH
+      - value: curiosity:highest
+        name: CURIOSITY_HIGHEST

@@ -35,13 +35,14 @@ To generate your first words, run this command in your terminal, replacing `YOUR
 ```bash
 curl -N -X POST "https://api.cartesia.ai/tts/bytes" \
         -H "Cartesia-Version: 2024-11-13" \
-        -H "X-API-Key: YOUR_API_KEY" \
+        -H "Authorization: YOUR_API_KEY" \
         -H "Content-Type: application/json" \
         -d '{"transcript": "Welcome to Cartesia Sonic!", "model_id": "sonic-2", "voice": {"mode":"id", "id": "694f9389-aac1-45b6-b726-9d9369183238"}, "output_format":{"container":"wav", "encoding":"pcm_f32le", "sample_rate":44100}}' > sonic-2.wav
 ```
 
 <Warning>
-Make sure to replace `YOUR_API_KEY` with your real API key, or the command won’t output anything!
+  Make sure to replace `YOUR_API_KEY` with your real API key, or the command
+  won’t output anything!
 </Warning>
 
 You can play the resulting `sonic-2.wav` file with `afplay sonic-2.wav` (on macOS) or `ffplay sonic-2.wav` (on any system with FFmpeg installed). You can also just double click it in your file explorer.
@@ -52,6 +53,7 @@ This command calls the [Text to Speech (Bytes)](/api-reference/tts/bytes) endpoi
 The bytes endpoint supports a variety of output formats, making it perfect for batch use cases where you want to save the audio in advance.
 
 In comparison, Cartesia's WebSocket and Server-Sent Events endpoints stream out raw PCM audio to avoid latency overhead from transcoding the audio.
+
 </Info>
 
 </Tab>
@@ -133,19 +135,19 @@ pnpm add @cartesia/cartesia-js
 
 ```js
 // hello.js
-import { CartesiaClient } from "@cartesia/cartesia-js"
-import fs from "node:fs"
-import { spawn } from "node:child_process"
-import process from "node:process"
+import { CartesiaClient } from "@cartesia/cartesia-js";
+import fs from "node:fs";
+import { spawn } from "node:child_process";
+import process from "node:process";
 
 if (!process.env.CARTESIA_API_KEY) {
-  throw new Error("CARTESIA_API_KEY is not set")
+  throw new Error("CARTESIA_API_KEY is not set");
 }
 
 // Set up the client.
 const client = new CartesiaClient({
   apiKey: process.env.CARTESIA_API_KEY,
-})
+});
 
 // Make the API call.
 const response = await client.tts.bytes({
@@ -160,13 +162,13 @@ const response = await client.tts.bytes({
     sampleRate: 44100,
   },
   transcript: "Welcome to Cartesia Sonic!",
-})
+});
 
 // Write `response` (of type ArrayBuffer) to a file.
-fs.writeFileSync("sonic-2.wav", new Uint8Array(response))
+fs.writeFileSync("sonic-2.wav", new Uint8Array(response));
 
 // Play the file.
-spawn("ffplay", ["-autoexit", "-nodisp", "sonic-2.wav"])
+spawn("ffplay", ["-autoexit", "-nodisp", "sonic-2.wav"]);
 ```
 
 ### Run the script
@@ -181,6 +183,5 @@ The Cartesia API client also supports other runtimes, like Bun and Deno.
 </Tab>
 
 </Tabs>
-
 
 The voice used above can be found [on the playground](https://play.cartesia.ai/voices/a0e99841-438c-4a64-b679-ae501e7d6091).

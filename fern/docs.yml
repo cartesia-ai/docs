@@ -12,6 +12,8 @@ versions:
     path: ./versions/2024-11-13.yml
   - display-name: "2024-06-10"
     path: ./versions/2024-06-10.yml
+  - display-name: "2025-04-10"
+    path: ./versions/2025-04-10.yml
 logo:
   light: logo/new-logo-light.svg
   dark: logo/new-logo-dark.svg

@@ -1,0 +1,23 @@
+name: cartesia
+display-name: Cartesia API
+auth: AuthorizationHeader
+auth-schemes:
+  AuthorizationHeader:
+    header: Authorization
+    type: string
+    name: authorization
+    docs: |
+      We now support authorization either through API Key or Access Token. 
+      The API Key can be passed in the `Authorization` header directly. 
+      The Access Token should be passed in the `Authorization` header as a Bearer token, e.g. `Bearer <token>`.
+      (Note: Access Tokens are only accepted for `/tts` endpoints at this time.)
+headers:
+  Cartesia-Version:
+    type: literal<"2025-04-10">
+  Authorization:
+    type: string
+    docs: |
+      The API Key or Access Token to use to authenticate the client to make requests to the API. (Note: Access Tokens are only accepted for `/tts` endpoints at this time.)
+environments:
+  Production: https://api.cartesia.ai
+default-environment: Production
