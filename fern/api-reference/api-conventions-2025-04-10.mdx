@@ -29,7 +29,7 @@ Our versioning scheme is inspired by the [Anthropic API](https://docs.anthropic.
 Authentication is handled using API keys. You can create a new API key from [play.cartesia.ai/keys](https://play.cartesia.ai/keys).
 
 - While we will continue to support HTTP requests with `X-API-Key: <your_api_key>` in the HTTP headers, we recommend using `Authorization: Bearer <your_api_key>`.
-- For client-side HTTP requests using Access Tokens, include `Authorization: Bearer <access_token>` in the HTTP headers.
+- For client-side HTTP requests using Access Tokens, include `Authorization: Bearer <access_token>` in the HTTP headers. Access Tokens are only accepted for `/tts` endpoints at this time.
 - For WebSocket connections, authentication is handled by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection.
 
 ### Check response codes
