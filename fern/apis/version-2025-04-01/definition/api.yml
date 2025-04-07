@@ -1,0 +1,14 @@
+name: cartesia
+display-name: Cartesia API
+auth: Bearer
+auth-schemes:
+  Bearer:                     
+    scheme: bearer
+    token:
+      env: CARTESIA_TOKEN
+headers:
+  Cartesia-Version:
+    type: literal<"2024-11-13">
+environments:
+  Production: https://api.cartesia.ai
+default-environment: Production

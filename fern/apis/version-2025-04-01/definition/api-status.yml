@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+types:
+  APIInfo:
+    properties:
+      ok: boolean
+      version: string
+
+service:
+  base-path: ""
+  auth: false
+  endpoints:
+    get:
+      path: /
+      method: GET
+      display-name: API Status and Version
+      response: APIInfo
+      examples:
+      - name: API Status and Version
+        response:
+          body:
+            ok: true
+            version: "2024-11-13"
