@@ -86,6 +86,11 @@ navigation:
           - page: Set up SSO
             path: ../enterprise/sso.mdx
             icon: fa-shield-halved
+      - section: Developer Tools
+        contents:
+          - page: Changelog
+            path: ../developer-tools/changelog.mdx
+            icon: fa-file-lines
   - tab: reference
     layout:
       - section: Use the API

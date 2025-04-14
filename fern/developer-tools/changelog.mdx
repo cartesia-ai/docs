@@ -1,0 +1,23 @@
+# Changelog
+
+## Version 2025-04-16
+
+### New Features
+
+**New authentication**
+
+Check `API Conventions` and `Authenticate your app` pages for more info.
+
+- Deprecated `X-API-Key`. Authorization is expected to be via the `Authorization: Bearer {token}` header in HTTP request.
+- Support client-facing authentication using `/access-token` to generate temporary tokens without exposing your API key
+- JavascriptSDK:
+- Python SDK:
+
+### Updates to existing APIs
+
+- Experimental controls are not compatible with `sonic-2` voices and are not supported in TTS generations
+- Voice cloning only supports `similarity` clones -- don't worry, the `sonic-2` clones are really good
+- Removed `embeddings` from all endpoints.
+  - `/tts` generations cannot be called with voice embeddings
+  - Voices may only be retrieved via TTSRequest Id Specifier
+  - Deprecated `/voices/create` and `/voices/mix`
