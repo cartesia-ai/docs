@@ -60,20 +60,6 @@ service:
               type: optional<integer>
               docs: |
                 Required for `mp3` containers.
-            voice[__experimental_controls][speed]:
-              type: optional<tts.Speed>
-              docs: |
-                Either a number between -1.0 and 1.0 or a natural language description of speed.
-
-                If you specify a number, 0.0 is the default speed, -1.0 is the slowest speed, and 1.0 is the fastest speed.
-            voice[__experimental_controls][emotion][]:
-              type: optional<list<tts.Emotion>>
-              docs: |
-                An array of emotion:level tags.
-
-                Supported emotions are: anger, positivity, surprise, sadness, and curiosity.
-
-                Supported levels are: lowest, low, (omit), high, highest.
       response: file
       examples:
         - name: MP3
@@ -85,8 +71,6 @@ service:
             output_format[container]: mp3
             output_format[sample_rate]: 44100
             output_format[bit_rate]: 128000
-            voice[__experimental_controls][speed]: slowest
-            voice[__experimental_controls][emotion][]: [surprise:high, curiosity:high]
         - name: WAV
           request:
             model_id: sonic-2
@@ -96,5 +80,3 @@ service:
             output_format[container]: wav
             output_format[sample_rate]: 44100
             output_format[encoding]: pcm_f32le
-            voice[__experimental_controls][speed]: slowest
-            voice[__experimental_controls][emotion][]: [surprise:high, curiosity:high]

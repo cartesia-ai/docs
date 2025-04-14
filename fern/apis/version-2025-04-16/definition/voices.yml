@@ -1,5 +1,4 @@
 imports:
-  embedding: ./embedding.yml
   tts: ./tts.yml
 
 types:
@@ -32,10 +31,6 @@ types:
         type: datetime
         docs: |
           The date and time the voice was created.
-      embedding:
-        type: optional<embedding.Embedding>
-        docs: |
-          The vector embedding of the voice. Only included when `expand` includes `embedding`.
       is_starred:
         type: optional<boolean>
         docs: |
@@ -78,15 +73,6 @@ types:
       next_page:
         type: optional<VoiceId>
         docs: (Deprecated - use the id of the last Voice in the current response instead.) An ID that can be passed as `starting_after` to get the next page of Voices.
-
-
-  CreateVoiceRequest:
-    properties:
-      name: *name
-      description: *description
-      embedding: embedding.Embedding
-      language: optional<tts.SupportedLanguage>
-      base_voice_id: optional<BaseVoiceId>
 
   UpdateVoiceRequest:
     properties:
@@ -173,7 +159,6 @@ types:
 
   VoiceExpandOptions:
     enum:
-      - embedding
       - is_starred
 
   LocalizeVoiceRequest:
@@ -194,14 +179,6 @@ types:
       original_speaker_gender: Gender
       dialect: optional<LocalizeDialect>
 
-  EmbeddingResponse:
-    properties:
-      embedding: embedding.Embedding
-
-  MixVoicesRequest:
-    properties:
-      voices: list<MixVoiceSpecifier>
-
   Weight:
     type: double
     docs: |
@@ -212,21 +189,9 @@ types:
       id: VoiceId
       weight: Weight
 
-  EmbeddingSpecifier:
-    properties:
-      embedding: embedding.Embedding
-      weight: Weight
-
-  MixVoiceSpecifier:
-    discriminated: false
-    union:
-      - IdSpecifier
-      - EmbeddingSpecifier
-
   CloneMode:
     enum:
       - similarity
-      - stability
 
 service:
   base-path: /voices
@@ -281,11 +246,9 @@ service:
       method: POST
       display-name: Clone Voice
       docs: |
-        Clone a voice from an audio clip. This endpoint has two modes, stability and similarity.
+        Clone a high similarity voice from an audio clip.
 
         Similarity mode clones are more similar to the source clip, but may reproduce background noise. For these, use an audio clip about 5 seconds long.
-
-        Stability mode clones are more stable, but may not sound as similar to the source clip. For these, use an audio clip 10-20 seconds long.
       request:
         name: CloneVoiceRequest
         body:
@@ -293,7 +256,7 @@ service:
             clip:
               type: file
               docs: |
-                The audio clip to clone. For stability mode, the clip should be 10-20 seconds long. For similarity mode, the clip should be about 5 seconds long.
+                The audio clip to clone. The clip should be about 5 seconds long.
             name:
               type: string
               docs: |
@@ -309,7 +272,7 @@ service:
             mode:
               type: CloneMode
               docs: |
-                Tradeoff between similarity and stability. Similarity clones sound more like the source clip, but may reproduce background noise. Stability clones always sound like a studio recording, but may not sound as similar to the source clip.
+                Similarity clones sound more like the source clip, but may reproduce background noise.
             enhance:
               type: boolean
               docs: |
@@ -320,23 +283,6 @@ service:
                 Optional transcript of the words spoken in the audio clip. Only used for similarity mode.
       response: VoiceMetadata
       examples:
-        - name: Stability
-          request:
-            # clip: file
-            name: "A high-stability cloned voice"
-            description: "Copied from Cartesia docs"
-            mode: stability
-            language: en
-            enhance: true
-          response:
-            body:
-              id: "df076429-66c6-4f3e-b98b-aee4e2c925ab"
-              user_id: "482aa35e-d86c-42a4-b818-7bdcfe40a858"
-              is_public: false
-              name: "A high-stability cloned voice"
-              description: "Copied from Cartesia docs"
-              created_at: "2024-11-13T07:06:22.476564Z"
-              language: en
         - name: Similarity
           request:
             # clip: file
@@ -406,19 +352,3 @@ service:
               description: "Sarah Voice in Peninsular Spanish"
               created_at: "2024-03-15T10:30:00.000Z"
               language: es
-
-    mix:
-      path: /mix
-      method: POST
-      display-name: Mix Voices
-      request: MixVoicesRequest
-      response: EmbeddingResponse
-
-    create:
-      path: /
-      method: POST
-      display-name: Create Voice
-      docs: |
-        Create voice from raw features. If you'd like to clone a voice from an audio file, please use Clone Voice instead.
-      request: CreateVoiceRequest
-      response: Voice

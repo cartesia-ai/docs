@@ -44,8 +44,8 @@ POST https://api.cartesia.ai/access-token
 // Headers
 {
   "Content-Type": "application/json",
-  "Cartesia-Version": "2025-04-10",
-  Authorization: "<your_api_key>"
+  "Cartesia-Version": "2025-04-16",
+  Authorization: "Bearer <your_api_key>"
 }
 
 // Body
@@ -64,8 +64,8 @@ const response = await fetch("https://api.cartesia.ai/access-token", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Cartesia-Version": "2025-04-10",
-    Authorization: "<your_api_key>",
+    "Cartesia-Version": "2025-04-16",
+    Authorization: "Bearer <your_api_key>",
   },
   body: JSON.stringify({
     grants: { tts: true },
@@ -96,7 +96,7 @@ const response = await fetch("https://api.cartesia.ai/tts/bytes", {
 
 ### 4. Token Refresh Strategy
 
-Implement proactive token refresh.
+Implement proactive token refresh in your application.
 
 ## Security Best Practices
 
@@ -124,7 +124,19 @@ Implement proactive token refresh.
 
 ## SDK Support
 
-Official SDK support is coming soon.
+<Tabs>
+  <Tab title="cURL">
+  ```bash
+  curl --location 'https://api.cartesia.ai/access-token' \
+    -H 'Cartesia-Version: 2025-04-16' \
+    -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer sk_car_QmyWKEoLQRkmBzkQjysn4V' \
+    -d '{ "grants": {"tts": true}, "expires_in": 60}'
+  ```
+</Tab>
+<Tab title="Python"></Tab>
+<Tab title="JavaScript"></Tab>
+</Tabs>
 
 ## Additional Resources
 
