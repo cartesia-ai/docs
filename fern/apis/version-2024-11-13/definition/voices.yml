@@ -311,7 +311,7 @@ service:
               docs: |
                 Tradeoff between similarity and stability. Similarity clones sound more like the source clip, but may reproduce background noise. Stability clones always sound like a studio recording, but may not sound as similar to the source clip.
             enhance:
-              type: boolean
+              type: optional<boolean>
               docs: |
                 Whether to enhance the clip to improve its quality before cloning. Useful if the clip has background noise.
             transcript:
