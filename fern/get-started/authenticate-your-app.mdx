@@ -1,24 +1,17 @@
 ---
-title: Authenticate your client-applications
+title: Authenticate your client apps
 subtitle: Secure client access to Cartesia APIs using Access Tokens
 ---
 
 Access Tokens provide secure client-side authentication for Cartesia's APIs without exposing your API key.
 
-## Overview
-
-- **Server-side Generation**: Tokens must be generated on your backend server
-- **Short-lived Security**: Configurable lifetime up to 1 hour
-- **Granular Permissions**: Control access to specific Cartesia services
-
 ## Prerequisites
 
 Before implementing Access Tokens:
 
-1. Set up a secure backend server
-2. Configure your server with a Cartesia API key
-3. Implement user authentication in your application
-4. Establish secure client-server communication
+1. Configure your server with a Cartesia API key
+2. Implement user authentication in your application
+3. Establish secure client-server communication
 
 ### Available Grants
 
@@ -36,26 +29,54 @@ Currently supported endpoints per grant:
 
 ### 1. Token Generation (Server-side)
 
-Make a POST request to generate a new access token:
+Make a request to generate a new access token:
 
-```typescript
-POST https://api.cartesia.ai/access-token
+<Tabs>
+  <Tab title="cURL">
+  ```bash
+  curl --location 'https://api.cartesia.ai/access-token' \
+    -H 'Cartesia-Version: 2025-04-16' \
+    -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer sk_car_...' \
+    -d '{ "grants": {"tts": true}, "expires_in": 60}'
+  ```
+</Tab>
+<Tab title="JavaScript">
+```javascript
+import { CartesiaClient } from "@cartesia/cartesia-js";
 
-// Headers
-{
-  "Content-Type": "application/json",
-  "Cartesia-Version": "2025-04-16",
-  Authorization: "Bearer <your_api_key>"
-}
+const client = new CartesiaClient({ apiKey: "YOUR_API_KEY" });
 
-// Body
-{
-  "grants": {
-    "tts": boolean
+await client.auth.accessToken({
+  grants: {
+    tts: true
   },
-  "expiresIn": number  // seconds
-}
-```
+  expiresIn: 60
+});
+
+````
+</Tab>
+<Tab title="Python">
+```python
+from cartesia import Cartesia
+
+client = Cartesia(
+  token="YOUR_API_KEY"
+)
+
+response = client.auth.access_token(
+  grants={"tts": True}, # Grant TTS permissions
+  expires_in=60 # Token expires in 60 seconds
+)
+
+# The response will contain the access token
+
+print(f"Access Token: {response.token}")
+
+````
+
+</Tab>
+</Tabs>
 
 #### Example Implementation
 
@@ -121,55 +142,6 @@ Implement proactive token refresh in your application.
 2. Implement automatic refresh before expiration
 3. Revoke tokens on user logout
 4. Handle token expiration gracefully
-
-## SDK Support
-
-<Tabs>
-  <Tab title="cURL">
-  ```bash
-  curl --location 'https://api.cartesia.ai/access-token' \
-    -H 'Cartesia-Version: 2025-04-16' \
-    -H 'Content-Type: application/json' \
-    -H 'Authorization: Bearer sk_car_...' \
-    -d '{ "grants": {"tts": true}, "expires_in": 60}'
-  ```
-</Tab>
-<Tab title="JavaScript">
-```javascript
-import { CartesiaClient } from "@cartesia/cartesia-js";
-
-const client = new CartesiaClient({ apiKey: "YOUR_API_KEY" });
-
-await client.auth.accessToken({
-  grants: {
-    tts: true
-  },
-  expiresIn: 60
-});
-
-````
-</Tab>
-<Tab title="Python">
-```python
-from cartesia import Cartesia
-
-client = Cartesia(
-  token="YOUR_API_KEY"
-)
-
-response = client.auth.access_token(
-  grants={"tts": True}, # Grant TTS permissions
-  expires_in=60 # Token expires in 60 seconds
-)
-
-# The response will contain the access token
-
-print(f"Access Token: {response.token}")
-
-````
-
-</Tab>
-</Tabs>
 
 ## Additional Resources
 
