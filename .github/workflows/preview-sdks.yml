@@ -23,7 +23,7 @@ jobs:
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
         run: |
-          fern generate --group ts-sdk --preview --log-level debug --api version-2024-11-13
+          fern generate --group ts-sdk --preview --log-level debug --api version-2024-06-10
 
       - name: Compile
         env:
