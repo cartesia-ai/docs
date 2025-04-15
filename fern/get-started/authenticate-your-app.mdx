@@ -134,8 +134,41 @@ Implement proactive token refresh in your application.
     -d '{ "grants": {"tts": true}, "expires_in": 60}'
   ```
 </Tab>
-<Tab title="Python"></Tab>
-<Tab title="JavaScript"></Tab>
+<Tab title="JavaScript">
+```javascript
+import { CartesiaClient } from "@cartesia/cartesia-js";
+
+const client = new CartesiaClient({ apiKey: "YOUR_API_KEY" });
+
+await client.auth.accessToken({
+  grants: {
+    tts: true
+  },
+  expiresIn: 60
+});
+
+````
+</Tab>
+<Tab title="Python">
+```python
+from cartesia import Cartesia
+
+client = Cartesia(
+  token="YOUR_API_KEY"
+)
+
+response = client.auth.access_token(
+  grants={"tts": True}, # Grant TTS permissions
+  expires_in=60 # Token expires in 60 seconds
+)
+
+# The response will contain the access token
+
+print(f"Access Token: {response.token}")
+
+````
+
+</Tab>
 </Tabs>
 
 ## Additional Resources
