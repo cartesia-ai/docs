@@ -16,17 +16,21 @@ If you exceed your concurrency limit, you will receive a `429 Too Many Requests`
 
 How you interpret your concurrency limit depends on how you're using the Sonic model family.
 
-### Conversational use cases
+<AccordionGroup>
+  <Accordion title="Conversational use cases">
+    For real-time conversational use cases, such as powering voice agents, we've found that the number of parallel conversations you can support is effectively 4X your concurrency limit. This is just a rule of thumb, and depends on the types of conversations you're supporting. You can reach out to us to discuss your specific use case.
 
-For real-time conversational use cases, such as powering voice agents, we've found that the number of parallel conversations you can support is effectively 4X your concurrency limit. This is just a rule of thumb, and depends on the types of conversations you're supporting. You can reach out to us to discuss your specific use case.
+    For example, if you have a concurrency limit of 15, you can typically support 60 parallel conversations.
 
-For example, if you have a concurrency limit of 15, you can typically support 60 parallel conversations.
+  </Accordion>
+  <Accordion title="Non-conversational use cases">
 
-### Non-conversational use cases
+    For non-conversational use cases, such as generating speech in batch jobs, there is a more direct relationship between your concurrency limit and the number of parallel generations you can support.
 
-For non-conversational use cases, such as generating speech in batch jobs, there is a more direct relationship between your concurrency limit and the number of parallel generations you can support.
+    For example, if you have a concurrency limit of 15, you can typically support 15 parallel generations. You can use a connection pool to ensure you don't exceed your concurrency limit.
 
-For example, if you have a concurrency limit of 15, you can typically support 15 parallel generations. You can use a connection pool to ensure you don't exceed your concurrency limit.
+  </Accordion>
+</AccordionGroup>
 
 ## WebSocket limits
 
