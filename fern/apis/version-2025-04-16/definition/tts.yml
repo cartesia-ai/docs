@@ -304,7 +304,7 @@ types:
         type: unknown
         docs: |
           The transcript to generate speech for. This can be a string or an iterator over strings.
-      voice: TTSRequestIdSpecifier
+      voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
       output_format: WebSocketRawOutputFormat
       duration:
@@ -359,7 +359,7 @@ types:
           The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
       output_format: optional<OutputFormat>
       transcript: optional<string>
-      voice: TTSRequestIdSpecifier
+      voice: TTSRequestVoiceSpecifier
       duration: optional<integer>
       language: optional<string>
       add_timestamps: optional<boolean>
@@ -375,7 +375,7 @@ types:
         docs: |
           The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
       transcript: string
-      voice: TTSRequestIdSpecifier
+      voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
       output_format: OutputFormat
       duration:
@@ -438,11 +438,6 @@ types:
           The bit rate of the audio in bits per second. Supported bit rates are 32000, 64000, 96000, 128000, 192000.
 
   TTSRequestVoiceSpecifier:
-    discriminated: false
-    union:
-      - TTSRequestIdSpecifier
-
-  TTSRequestIdSpecifier:
     properties:
       mode: literal<"id">
       id: voices.VoiceId

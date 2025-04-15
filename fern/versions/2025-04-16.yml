@@ -18,7 +18,7 @@ navigation:
             path: ../get-started/overview.mdx
             icon: fa-browser
           - page: Make an API request
-            path: ../get-started/make-an-api-request-2025-04-16.mdx
+            path: ../apis/version-2025-04-16/make-an-api-request-2025-04-16.mdx
             icon: fa-paper-plane
           - page: Authenticate your client-applications
             path: ../get-started/authenticate-your-app.mdx
@@ -41,7 +41,7 @@ navigation:
             icon: fa-cubes
             contents:
               - page: Clone Voices
-                path: ../build-with-sonic/capabilities/clone-voices-2025-04-16.mdx
+                path: ../apis/version-2025-04-16/clone-voices-2025-04-16.mdx
                 icon: fa-clone
               - page: Specify Custom Pronunciations
                 path: ../build-with-sonic/capabilities/custom-pronunciations.mdx
@@ -92,7 +92,7 @@ navigation:
         contents:
           - page: API Conventions
             icon: fa-ruler
-            path: ../api-reference/api-conventions-2025-04-16.mdx
+            path: ../apis/version-2025-04-16/api-conventions-2025-04-16.mdx
           - page: Concurrency Limits and Timeouts
             path: ../api-reference/concurrency-limits-and-timeouts.mdx
             icon: fa-traffic-light

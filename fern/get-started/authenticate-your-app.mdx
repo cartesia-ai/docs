@@ -124,7 +124,7 @@ Implement proactive token refresh in your application.
 ### Essential Guidelines
 
 - ✅ Generate tokens server-side only
-- ✅ Use short token lifetimes (minutes rather than hours)
+- ✅ Use short token lifetimes (minutes)
 - ✅ Implement automatic token refresh
 - ✅ Store tokens in HTTP-only cookies
 - ✅ Enable secure and SameSite cookie flags
@@ -132,7 +132,6 @@ Implement proactive token refresh in your application.
 ### Security Don'ts
 
 - ❌ Never store tokens in localStorage/sessionStorage
-- ❌ Never expose tokens in URLs
 - ❌ Never log tokens or display them in the UI
 - ❌ Never transmit tokens over non-HTTPS connections
 
@@ -145,4 +144,4 @@ Implement proactive token refresh in your application.
 
 ## Additional Resources
 
-- [API Reference](/2025-04-16/api-reference/auth/access-token) - Complete API documentation
+- [API Reference](/2025-04-16/api-reference/auth/access-token) - Access Token generation endpoint documentation

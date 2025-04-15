@@ -18,7 +18,7 @@ service:
             expires_in: 60
           response:
             body:
-              token: "eyJhbGciOiJIUzI1NiIsImtpZCI6InNzaWRfYmFmM2ViZDlhNTY0YWRjZmRlZTRlMGYifQ.eyJncmFudHMiOnsidHRzIjp0cnVlfSwianRpIjoiaWF0IiwidW5kZWZpbmVkIjoxNzQzNTMwNTY3LCJpc3MiOiJodHRwczovL2FwaS5jYXJ0ZXNpYS5haSIsInN1YiI6InVzZXJfYmFmM2ViZDlhNTY0YWRjZmRlZTRlMGYiLCJleHAiOjE3NDM1MzQxNjd9.9SI-d6azyelW4QiIOMDON_EX9Yb0qybu71W_fbnM9TQ"
+              token: "eyJhbGciOiJIUzI1NiIsImtpZCI6InNzaWRfeU1uQ0NxRUZXTmJ5ZmFqdUFCVWhaTCJ9.eyJncmFudHMiOnsidHRzIjp0cnVlfSwianRpIjoiTCtHcHdWdUFqc01DIiwiaWF0IjoxNzQ0NzQ5NTU0LCJpc3MiOiJodHRwczovL2FwaS5jYXJ0ZXNpYS5haSIsImV4cCI6MTc0NDc0OTYxNH0.GtdqNH0aBtAtkrOMjvsDumshPiNFk8ZM-zwAtqfgmiI"
 
 types:
   TokenGrant:
