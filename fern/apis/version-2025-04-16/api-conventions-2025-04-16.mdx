@@ -1,7 +1,3 @@
----
-title: API Conventions
----
-
 <Warning>
   All endpoints use HTTPS. HTTP is not supported. API keys that call the API
   over HTTP may be subject to automatic rotation.
@@ -28,9 +24,13 @@ Our versioning scheme is inspired by the [Anthropic API](https://docs.anthropic.
 
 Authentication is handled using API keys. You can create a new API key from [play.cartesia.ai/keys](https://play.cartesia.ai/keys).
 
-- To use your API keys in HTTP request, add `Authorization: Bearer <your_api_key>` in the headers.
-- For client-side HTTP requests using Access Tokens, include `Authorization: Bearer <access_token>` in the HTTP headers. Access Tokens are only accepted for `/tts` endpoints at this time.
-- For WebSocket connections, authentication is handled by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection.
+For server-side API connections, you can use your API key directly by authenticating your requests with `Authorization: Bearer <your_api_key>` in the headers.
+Use your API key directly only in secure environments to prevent malicious actors from intercepting your key.
+
+To make Cartesia API requests from your client app without exposing your API key, we have Access Tokens. After generating an Access Token, include `Authorization: Bearer <access_token>` in the HTTP headers of Cartesia API requests.
+Visit [Access Token API Reference](/2025-04-16/api-reference/auth/access-token) for more info.
+
+For WebSocket connections, authentication is handled by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection.
 
 ### Check response codes
 

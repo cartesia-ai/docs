@@ -3,7 +3,7 @@ title: Authenticate your client apps
 subtitle: Secure client access to Cartesia APIs using Access Tokens
 ---
 
-You may want too make Cartesia API requests directly from your client application. However, shipping your API key to the app is not secure and should be avoided at all costs.
+You may want to make Cartesia API requests directly from your client application. However, shipping your API key to the app is not secure, as a malicious user could extract your API key and issue API requests billed to your account.
 
 Access Tokens provide a secure way to authenticate client-side requests to Cartesia's APIs without exposing your API key.
 
@@ -17,11 +17,9 @@ Before implementing Access Tokens:
 
 ### Available Grants
 
-Currently supported endpoints per grant:
+Currently we only support one grant, `tts`. With `grants: { tts: true }`, clients have access to:
 
-#### TTS Grant
-
-- `/tts/bytes` - Synchronous TTS generation
+- `/tts/bytes` - Synchronous TTS generation streamed with chunked encoding
 - `/tts/sse` - Server-sent events for streaming
 - `/tts/websocket` - WebSocket-based streaming
 
@@ -50,10 +48,10 @@ import { CartesiaClient } from "@cartesia/cartesia-js";
 const client = new CartesiaClient({ apiKey: "YOUR_API_KEY" });
 
 await client.auth.accessToken({
-grants: {
-tts: true
-},
-expiresIn: 60
+  grants: {
+    tts: true
+  },
+  expiresIn: 60
 });
 
 ````
@@ -103,7 +101,7 @@ For detailed API specifications, see the [Token API Reference](/2025-04-16/api-r
 
 ### 2. Token Storage (Client-side)
 
-Implement secure token storage, such as setting HTTP-only cookie with matching token expiration. The cookie should be `httpOnly`, `secure`, and `sameSite: "strict"`.
+Store the token securely, such as setting HTTP-only cookie with matching token expiration. The cookie should be `httpOnly`, `secure`, and `sameSite: "strict"`.
 
 ### 3. Making Authenticated Requests
 
@@ -119,7 +117,7 @@ const response = await fetch("https://api.cartesia.ai/tts/bytes", {
 
 ### 4. Token Refresh Strategy
 
-Implement proactive token refresh in your application.
+Proactively refresh the token in your app before they expire.
 
 ## Security Best Practices
 
@@ -141,8 +139,7 @@ Implement proactive token refresh in your application.
 
 1. Generate new token upon user authentication
 2. Implement automatic refresh before expiration
-3. Revoke tokens on user logout
-4. Handle token expiration gracefully
+3. Handle token expiration gracefully
 
 ## Additional Resources
 
