@@ -189,10 +189,6 @@ types:
       id: VoiceId
       weight: Weight
 
-  CloneMode:
-    enum:
-      - similarity
-
 service:
   base-path: /voices
   auth: true
@@ -246,9 +242,7 @@ service:
       method: POST
       display-name: Clone Voice
       docs: |
-        Clone a high similarity voice from an audio clip.
-
-        Similarity mode clones are more similar to the source clip, but may reproduce background noise. For these, use an audio clip about 5 seconds long.
+        Clone a high similarity voice from an audio clip. Clones are more similar to the source clip, but may reproduce background noise. For these, use an audio clip about 5 seconds long.
       request:
         name: CloneVoiceRequest
         body:
@@ -269,10 +263,6 @@ service:
               type: tts.SupportedLanguage
               docs: |
                 The language of the voice.
-            mode:
-              type: CloneMode
-              docs: |
-                Similarity clones sound more like the source clip, but may reproduce background noise.
             enhance:
               type: boolean
               docs: |
@@ -280,7 +270,7 @@ service:
             transcript:
               type: optional<string>
               docs: |
-                Optional transcript of the words spoken in the audio clip. Only used for similarity mode.
+                Optional transcript of the words spoken in the audio clip.
       response: VoiceMetadata
       examples:
         - name: Similarity
@@ -288,7 +278,6 @@ service:
             # clip: file
             name: "A high-similarity cloned voice"
             description: "Copied from Cartesia docs"
-            mode: similarity
             language: en
             transcript: "A transcript of the words spoken in the audio clip."
             enhance: false
