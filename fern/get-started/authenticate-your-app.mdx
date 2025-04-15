@@ -3,7 +3,9 @@ title: Authenticate your client apps
 subtitle: Secure client access to Cartesia APIs using Access Tokens
 ---
 
-Access Tokens provide secure client-side authentication for Cartesia's APIs without exposing your API key.
+You may want too make Cartesia API requests directly from your client application. However, shipping your API key to the app is not secure and should be avoided at all costs.
+
+Access Tokens provide a secure way to authenticate client-side requests to Cartesia's APIs without exposing your API key.
 
 ## Prerequisites
 
@@ -48,10 +50,10 @@ import { CartesiaClient } from "@cartesia/cartesia-js";
 const client = new CartesiaClient({ apiKey: "YOUR_API_KEY" });
 
 await client.auth.accessToken({
-  grants: {
-    tts: true
-  },
-  expiresIn: 60
+grants: {
+tts: true
+},
+expiresIn: 60
 });
 
 ````
