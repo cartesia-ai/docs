@@ -99,7 +99,7 @@ channel:
     1. **Each turn in a conversation should correspond to a context:** For example, if you are using Sonic to power a voice agent, each turn in the conversation should be a new context.
     2. **Start a new context for interruptions:** If the user interrupts the agent, start a new context for the agent's response.
 
-    To learn more about managing concurrent generations and WebSocket connection limits, see the [concurrency limits and timeouts](/api-reference/concurrency-limits-and-timeouts) page.
+    To learn more about managing concurrent generations and WebSocket connection limits, see the [concurrency limits and timeouts](/use-the-api/concurrency-limits-and-timeouts) page.
 
   auth: true
 
