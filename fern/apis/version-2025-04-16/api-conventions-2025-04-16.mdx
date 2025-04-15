@@ -24,13 +24,10 @@ Our versioning scheme is inspired by the [Anthropic API](https://docs.anthropic.
 
 Authentication is handled using API keys. You can create a new API key from [play.cartesia.ai/keys](https://play.cartesia.ai/keys).
 
-For server-side API connections, you can use your API key directly by authenticating your requests with `Authorization: Bearer <your_api_key>` in the headers.
-Use your API key directly only in secure environments to prevent malicious actors from intercepting your key.
+Client apps making Cartesia API requests should use Access Tokens, to avoid exposing your API Key. Your server generates an Access Token and sends it to your client, which in turn includes `Authorization: Bearer <access_token>` in the HTTP headers of Cartesia API requests.
+Read the full documentation for this at [Access Token API Reference](/2025-04-16/api-reference/auth/access-token) for more info.
 
-To make Cartesia API requests from your client app without exposing your API key, we have Access Tokens. After generating an Access Token, include `Authorization: Bearer <access_token>` in the HTTP headers of Cartesia API requests.
-Visit [Access Token API Reference](/2025-04-16/api-reference/auth/access-token) for more info.
-
-For WebSocket connections, authentication is handled by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection.
+For WebSocket connections, authenticate by passing in the field `?api_key=<your_api_key>` when creating the WebSocket connection from the server, and passing in `?access_token=<access_token>` when creating from the client.
 
 ### Check response codes
 
