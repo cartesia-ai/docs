@@ -1,24 +1,28 @@
 Cartesia provides a family of state-of-the-art models, including our highly-accurate, low-latency Sonic TTS model family.
 
 - <span style="color: green;">●</span> the latest **stable** snapshot of the model
-{/* - <span style="color: orange;">●</span> the **preview** snapshot (if available) */}
+  {/* - <span style="color: orange;">●</span> the **preview** snapshot (if available) */}
 
 To use the stable version of the model, we recommend using the base model name (e.g. `sonic-2`).
 In many cases the stable and preview snapshots are the same, but in some cases the preview snapshot may have additional features or improvements.
 
 ## `sonic-2`
 
-Sonic-2 is the new and improved version of Sonic, with a whole new set of capabilities around generative speech.
-Like its predecessor, it produces high-accuracy, expressive speech, and is optimized for efficiency to achieve low latency.
+Sonic-2 is our most capable text to speech model. It provides ultra-realistic speech with accurate transcript following, minimal hallucinations, and best in class voice cloning. It's latency optimized and achieves 90ms model latency.
 
-Capabilities:
-- Higher fidelity voice cloning 
+Additional Capabilities:
+
+- Higher fidelity voice cloning
 - Timestamps for all 15 languages
-- [Infill](/definition/infill) support
+- [Infill](/api-reference/infill/bytes) support
 
-| Snapshot | Release Date | Languages | Status |
-|----------|--------------|-----------|--------|
-| <span style="color: green;">●</span>`sonic-2-2025-03-07` | March 7, 2025 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | Stable |
+| Snapshot                                                  | Release Date   | Languages                                                  | Status |
+| --------------------------------------------------------- | -------------- | ---------------------------------------------------------- | ------ |
+| <span style="color: green;">●</span> `sonic-2-2025-04-16` | April 16, 2025 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | Stable |
+| `sonic-2-2025-03-07`                                      | March 7, 2025  | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | Stable |
+
+Note: For versions after `sonic-2-2025-03-07`, `_experimental_controls` is not supported.
+If the latest model does not meet your needs, and you would like to use the controls, please make requests to `sonic-2-2025-03-07`.
 
 To learn how to use the Sonic TTS family, see [Make an API request](/get-started/make-an-api-request).
 
@@ -26,18 +30,18 @@ To learn how to use the Sonic TTS family, see [Make an API request](/get-started
 
 All the power of Sonic, with half the latency (as low as 40ms).
 
-| Snapshot | Release Date | Languages | Status |
-|----------|--------------|-----------|--------|
-| <span style="color: green;">●</span>`sonic-turbo-2025-03-07`| March 7, 2025 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | Stable |
+| Snapshot                                                      | Release Date  | Languages                                                  | Status |
+| ------------------------------------------------------------- | ------------- | ---------------------------------------------------------- | ------ |
+| <span style="color: green;">●</span> `sonic-turbo-2025-03-07` | March 7, 2025 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | Stable |
 
 ## `sonic`
 
 The first version of our flagship text-to-speech model. It produces high-accuracy, expressive speech, and is optimized for efficiency to achieve low latency.
 
-| Snapshot | Release Date | Languages | Status |
-|----------|--------------|-----------|--------|
+| Snapshot                                                | Release Date      | Languages                                                  | Status |
+| ------------------------------------------------------- | ----------------- | ---------------------------------------------------------- | ------ |
 | <span style="color: green;">●</span> `sonic-2024-12-12` | December 12, 2024 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | Stable |
-| `sonic-2024-10-19` | October 19, 2024 | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr | |
+| `sonic-2024-10-19`                                      | October 19, 2024  | en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr |        |
 
 ## Selecting a Model
 
@@ -55,7 +59,6 @@ const model = "sonic-2-2025-03-07";
 
 All models have a base model name (e.g. `sonic-2`, `sonic-turbo`, `sonic`).
 We recommend using these for prototyping and development, then switching to a date-versioned model for production use cases to ensure stability.
-
 
 ## Language Support
 
