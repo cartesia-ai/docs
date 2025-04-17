@@ -1,0 +1,104 @@
+---
+title: Set up an organization
+---
+
+<Tip>
+
+Organizations are currently in private beta. If you'd like to participate, please contact us at [support@cartesia.ai](mailto:support@cartesia.ai) or in your dedicated Cartesia Slack channel.
+
+Please let us know if you have any feedback or suggestions!
+
+</Tip>
+
+We support organizations for customers on the Startup plan and above.
+
+<Steps>
+
+### Request access to organizations
+
+To request access to organizations, please share an email address for your organization's admin with us. This email address will go through the organization creation flow and invite your team to join.
+
+### Create an organization
+
+Once we grant access to organizations, you can create an organization by going to the playground at [https://play.cartesia.ai](https://play.cartesia.ai), selecting the organization switcher, and clicking **Create organization**.
+
+<Frame background="subtle">
+  <img src="../assets/images/orgs_step_1.png" alt="Create organization" />
+</Frame>
+
+This will bring up a dialog where you can name your organization, upload a logo, and invite your team. You can invite unlimited users to your organization at no additional charge.
+
+<Frame background="subtle">
+  <img src="../assets/images/orgs_step_2.png" alt="Organization creation dialog" />
+</Frame>
+
+<Frame background="subtle">
+  <img src="../assets/images/orgs_step_3.png" alt="Invite team members" />
+</Frame>
+
+### Let team members know to accept the invitation
+
+Once you invite a team member, they will receive an email with a link to accept the invitation. They can also directly go to the playground and select the organization switcher (pictured above) to accept the invitation.
+
+### Create voices, API keys, and other resources in your organization
+
+Once you create an organization, you can create voices, API keys, and more in the organization. They will be available to all users in the organization. The only exceptions are playground generation history and starred voices, which are per-user in the organization.
+
+</Steps>
+
+## Migrating from a single account with multiple linked emails to an organization
+
+<Tip>
+
+This migration path is mainly for users who have already created voices and API keys in a multi-email account and are using them in production. If this does not apply to you, we can directly migrate your voices to your organization.
+
+</Tip>
+
+Prior to organizations, we recommended linking each team member's email to a single Cartesia account to share resources like voices and API keys. This will continue to be supported, but we recommend migrating to organizations as it makes access control easier.
+
+Because voices from multi-email accounts are not accessible with your organization's API keys, you cannot simply change your production API key to use your organization's API key. Instead, we recommend working with us to migrate your voices to your organization. Here's what the migration process looks like:
+
+<Steps>
+
+### Follow the guide above to create an organization and invite your team
+
+### We temporarily allow your voices to be accessible with your organization's API key
+
+Let us know that you've created an organization, and we'll temporarily allow your voices to be accessible using your organization's API key.
+
+Note that these voices will _not_ be visible on the playground, but they will be accessible to your organization via the API.
+
+### Test that you can access your voices using your organization's API key
+
+We recommend testing that you can access your voices using your organization's API key using the following script:
+
+```python
+from cartesia import Cartesia  # pip install cartesia
+import os
+
+client = Cartesia(api_key=os.getenv("CARTESIA_API_KEY"))  # your *organization* API key (not the multi-email account's API key!)
+
+voice_ids = [
+    # list of voice IDs you're using in production
+]
+
+for voice_id in voice_ids:
+    voice = client.voices.get(id=voice_id)
+    print(voice.name)
+```
+
+If this script runs successfully, proceed to the next step.
+
+### Change your production API key to use your organization's API key
+
+Once you've tested that you can access your voices using your organization's API key, you can change your production API key to use your organization's API key.
+
+### We transfer the voices to your organization
+
+We will fully transfer the voices to your organization, rendering them inaccessible to you via the old multi-email account's API key.
+
+### Remove extra emails from the multi-email account
+
+Once the migration is complete, you can remove the extra emails from the multi-email account.
+
+</Steps>
