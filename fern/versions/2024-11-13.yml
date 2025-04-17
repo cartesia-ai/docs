@@ -86,6 +86,9 @@ navigation:
           - page: Set up SSO
             path: ../enterprise/sso.mdx
             icon: fa-shield-halved
+          - page: Set up an organization
+            path: ../enterprise/organizations.mdx
+            icon: fa-users
       - section: Peek Behind the Scenes
         contents:
           - page: Embeddings and Voice Mixing
