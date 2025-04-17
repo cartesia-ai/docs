@@ -6,7 +6,7 @@
 
 **New authentication**
 
-Check `API Conventions` and `Authenticate your app` pages for more info.
+Check [API Conventions](/2025-04-16/use-the-api/api-conventions) and [Authenticate your app](/2025-04-16/get-started/authenticate-your-client-applications) pages for more info.
 
 - Deprecated `X-API-Key`. Authorization is expected to be via the `Authorization: Bearer {apiKey}` or `Authorization: Bearer {token}` header in HTTP request.
 - Support client-facing authentication using `/access-token` to generate temporary tokens without exposing your API key
@@ -16,6 +16,6 @@ Check `API Conventions` and `Authenticate your app` pages for more info.
 - Experimental controls are not compatible with `sonic-2` voices and are not supported in TTS generations
 - Voice cloning only supports `similarity` clones -- this technique performs the best across-the-board on the `sonic-2` model.
 - Removed `embeddings` from all endpoints.
-  - `/tts` generations cannot be called with voice embeddings
   - Voices may only be specified by Voice ID
+    - `/tts` endpoints can no longer be called with embeddings
   - Deprecated `/voices/create` and `/voices/mix`
