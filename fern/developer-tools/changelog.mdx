@@ -3,14 +3,24 @@ Updates to existing APIs for `sonic-2-2025-04-16`
 Starting with `sonic-2-2025-04-16`, we're removing support for:
 
 - Embeddings
-- `stability` clones
+- `stability` cloning mode
 - Experimental controls for adjusting speed and emotion.
 
-We found that these controls negatively affect model stability. We're working on releasing these features in future model versions in a way that is more controllable and stable.
+In our latest models, the `similarity` cloning mode is dramatically better than `stability` cloning,
+and we've solved the stability issues, so it's no longer worth using `stability` mode at all.
 
-To use these features stably with the new model, we recommend using instant voice cloning to create new voices with the modifications you're looking for. For example, you can speed up or slow down voices with `FFMPEG`, use Voice Changer to create emotive versions of voices, and make instant clones of voices generated with embeddings on `sonic-2-2025-03-07`.
+The experimental controls for speed and emotion negatively affect model stability, we've found.
+We're working on releasing these features in future model versions in a way that is more
+controllable and stable.
 
-If you still need these features, please use `sonic-2-2025-03-07` as the model ID for the previous version of the model and `2024-11-13` for the previous version of the API. Please be aware that these features could lead to reduced model stability even with that model.
+To use these features stably with the new model, we recommend using instant voice cloning to create
+new voices with the modifications you're looking for. For example, you can speed up or slow down
+voices with `FFMPEG`, use Voice Changer to create emotive versions of voices, and make instant
+clones of voices generated with embeddings on `sonic-2-2025-03-07`.
+
+If you still need these features, please use `sonic-2-2025-03-07` as the model ID for the previous
+version of the model and `2024-11-13` for the previous version of the API. Please be aware that
+these features could lead to reduced model stability even with that model.
 
 Specific API changes:
 
