@@ -11,7 +11,7 @@ Your account is subject to two types of rate limits: WebSocket limits and genera
 We measure generation concurrency in terms of the number of unique contexts active at a given time.
 
 - For HTTP endpoints, each request is treated as a separate context and counts toward your concurrency limit. 
-- For WebSockets, a unique <code>context_id</code> defines a context—sending additional messages with the same <code>context_id</code> does not increase your concurrency usage. Messages within the same context are processed sequentially, not in parallel.
+- For WebSockets, a unique <code>context_id</code> defines a context—sending additional requests with the same <code>context_id</code> does not increase your concurrency usage. This is because requests to the same context are processed sequentially.
 
 If you exceed your concurrency limit, you will receive a `429 Too Many Requests` error. You can check your concurrency limit and upgrade it on the playground at [play.cartesia.ai](https://play.cartesia.ai).
 
