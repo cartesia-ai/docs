@@ -1,0 +1,17 @@
+name: cartesia
+display-name: Cartesia API
+auth: Bearer
+auth-schemes:
+  Bearer:
+    scheme: bearer
+    token:
+      env: CARTESIA_API_KEY
+    docs: |
+      Either an API Key (eg, `Bearer sk_car_...`) or Access Token (eg, `Bearer eyF9...`). For more details, see [API Conventions](https://docs.cartesia.ai/2025-04-16/use-the-api/api-conventions).
+      (Note: Access Tokens are only accepted for `/tts` endpoints at this time.)
+headers:
+  Cartesia-Version:
+    type: literal<"2025-04-16">
+environments:
+  Production: https://api.cartesia.ai
+default-environment: Production

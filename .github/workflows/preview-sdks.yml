@@ -3,8 +3,8 @@ name: Preview SDKs
 on:
   pull_request:
     paths:
-      - 'fern/definition/**'
-      - 'fern/generators.yml'
+      - "fern/definition/**"
+      - "fern/generators.yml"
 
 jobs:
   preview-typescript:
@@ -32,7 +32,6 @@ jobs:
           cd fern/apis/version-2024-06-10/.preview/fern-typescript-node-sdk
           yarn install
           yarn build
-
 
   preview-python:
     runs-on: ubuntu-latest

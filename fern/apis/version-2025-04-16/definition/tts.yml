@@ -2,7 +2,6 @@
 
 imports:
   voices: ./voices.yml
-  embedding: ./embedding.yml
 
 service:
   base-path: /tts
@@ -439,104 +438,6 @@ types:
           The bit rate of the audio in bits per second. Supported bit rates are 32000, 64000, 96000, 128000, 192000.
 
   TTSRequestVoiceSpecifier:
-    discriminated: false
-    union:
-      - TTSRequestIdSpecifier
-      - TTSRequestEmbeddingSpecifier
-
-  TTSRequestIdSpecifier:
     properties:
       mode: literal<"id">
       id: voices.VoiceId
-      __experimental_controls: optional<Controls>
-
-  TTSRequestEmbeddingSpecifier:
-    properties:
-      mode: literal<"embedding">
-      embedding: embedding.Embedding
-      __experimental_controls: optional<Controls>
-
-  Controls:
-    properties:
-      speed: Speed
-      emotion: list<Emotion>
-
-  Speed:
-    docs: |
-      Either a number between -1.0 and 1.0 or a natural language description of speed.
-
-      If you specify a number, 0.0 is the default speed, -1.0 is the slowest speed, and 1.0 is the fastest speed.
-    discriminated: false
-    union:
-      - NumericalSpecifier
-      - NaturalSpecifier
-
-  NumericalSpecifier:
-    type: double
-
-  NaturalSpecifier:
-    enum:
-      - slowest
-      - slow
-      - normal
-      - fast
-      - fastest
-
-  Emotion:
-    docs: |
-      An array of emotion:level tags.
-
-      Supported emotions are: anger, positivity, surprise, sadness, and curiosity.
-
-      Supported levels are: lowest, low, (omit), high, highest.
-    enum:
-      - value: anger:lowest
-        name: ANGER_LOWEST
-      - value: anger:low
-        name: ANGER_LOW
-      - value: anger
-        name: ANGER
-      - value: anger:high
-        name: ANGER_HIGH
-      - value: anger:highest
-        name: ANGER_HIGHEST
-      - value: positivity:lowest
-        name: POSITIVITY_LOWEST
-      - value: positivity:low
-        name: POSITIVITY_LOW
-      - value: positivity
-        name: POSITIVITY
-      - value: positivity:high
-        name: POSITIVITY_HIGH
-      - value: positivity:highest
-        name: POSITIVITY_HIGHEST
-      - value: surprise:lowest
-        name: SURPRISE_LOWEST
-      - value: surprise:low
-        name: SURPRISE_LOW
-      - value: surprise
-        name: SURPRISE
-      - value: surprise:high
-        name: SURPRISE_HIGH
-      - value: surprise:highest
-        name: SURPRISE_HIGHEST
-      - value: sadness:lowest
-        name: SADNESS_LOWEST
-      - value: sadness:low
-        name: SADNESS_LOW
-      - value: sadness
-        name: SADNESS
-      - value: sadness:high
-        name: SADNESS_HIGH
-      - value: sadness:highest
-        name: SADNESS_HIGHEST
-      - value: curiosity:lowest
-        name: CURIOSITY_LOWEST
-      - value: curiosity:low
-        name: CURIOSITY_LOW
-      - value: curiosity
-        name: CURIOSITY
-      - value: curiosity:high
-        name: CURIOSITY_HIGH
-      - value: curiosity:highest
-        name: CURIOSITY_HIGHEST
