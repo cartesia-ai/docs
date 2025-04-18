@@ -90,14 +90,16 @@ channel:
     Read the guide on [working with contexts](/api-reference/tts/working-with-web-sockets/contexts) to learn more.
 
     For the best performance, we recommend the following usage pattern:
-
     1. **Do many generations over a single WebSocket.** Just use a separate context for each generation. The WebSocket scales up to dozens of concurrent generations.
     2. **Set up the WebSocket before the first generation.** This ensures you don't incur latency when you start generating speech.
     3. **Buffer the first input on a context** to at least 3 or 4 words for optimizing both latency and prosody.
     4. **Split inputs into sentences:** Sending inputs in sentences allows Sonic to generate speech more accurately and with better prosody. Include necessary spaces and punctuation.
+    
     For conversational agent use cases, we recommend the following usage pattern:
     1. **Each turn in a conversation should correspond to a context:** For example, if you are using Sonic to power a voice agent, each turn in the conversation should be a new context.
     2. **Start a new context for interruptions:** If the user interrupts the agent, start a new context for the agent's response.
+
+    To learn more about managing concurrent generations and WebSocket connection limits, see the [concurrency limits and timeouts](/use-the-api/concurrency-limits-and-timeouts) page.
 
   auth: true
 
