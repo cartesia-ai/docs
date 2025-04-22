@@ -1,7 +1,16 @@
 ---
 title: Professional Voice Cloning
-subtitle: Learn how to create higher fidelity voice clones by leveraging more of your data.
+subtitle: Learn how to improve voice cloning by leveraging more of your data.
 ---
+
+## Pricing
+
+| Feature               | Cost                      |
+| --------------------- | ------------------------- |
+| Training              | 1M credits on success     |
+| PVC Voice Text-to-Speech | 1.5 credits per character |
+
+## Overview
 
 Professional Voice Cloning is available in the [playground](https://play.cartesia.ai/pro-voice-cloning) for select enterprise tier users. It allows you to create voice clones from a larger amount of data compared to instant cloning.
 
@@ -10,60 +19,56 @@ We'll first fine-tune a model on your data, then create Voices from selected cli
 Click on the `Create` button to get started.
 
 <Frame background="subtle">
-    <img src="/assets/images/pvc/create.png"/>
+    <img src="/assets/images/pvc/list.png" />
 </Frame>
 
 Read through the best practices and click `Create` again to proceed to the workflow.
 
 <Frame background="subtle">
-    <img src="/assets/images/pvc/disclaimer.png"/>
+    <img src="/assets/images/pvc/disclaimer.png" />
 </Frame>
 
 ## PVC Workflow
 
 <Steps>
-    ### 1. Prepare Data
+    ### Prepare Data
 
-    Provide a **Name** and **Description** for your voice model. Select the **Language** of your audio data.
-
-    <Frame background="subtle">
-      <img src="/assets/images/pvc/create.png" alt="Name, Description, and Language fields"/>
-    </Frame>
-
-    Next, you'll create a dataset. Upload your audio files using the **Upload samples** button or by dragging them onto the designated area. Alternatively, use the **Record audio** function to capture audio directly. Aim for 30 minutes to 2 hours of high-quality audio for optimal results.
+    Fill out the form with the requested info for the Voices you are about to create.
 
     <Frame background="subtle">
-        <img src="/assets/images/pvc/ds-empty.png" alt="Provide audio samples for PVC" />
+      <img src="/assets/images/pvc/create.png" />
     </Frame>
 
-    The interface will show the total duration of the uploaded audio.
+    Next, you'll create a dataset to upload your audio data. Click the `Create Dataset` button to initialize a new dataset.
 
     <Frame background="subtle">
-      <img src="/assets/images/pvc/ds-full.png" alt="View feedback regarding sample duration" />
+        <img src="/assets/images/pvc/ds-empty.png" />
     </Frame>
 
-    ### 2. Train Model
-
-    Before training, you must verify your voice by reading a short consent statement aloud. Use similar recording conditions to your training samples for reliable verification.
-
-     <Frame background="subtle">
-      <img src="/assets/images/pvc/train.png" alt="Confirm your voice identity and start training" />
-    </Frame>
-
-    Click the **Train Pro Voice Clone** button to start the fine-tuning process. Training time depends on the amount of data submitted. You can monitor the progress in your **Voices** inventory and will be notified upon completion.
-
-     <Frame background="subtle">
-      <img src="/assets/images/pvc/list.png" alt="Voice inventory displaying training status" />
-    </Frame>
-
-    ### 3. Test Voices
-
-    Once training is complete, several Voices derived from clips of your data will appear, linked to your fine-tuned model.
-
-    Select a Voice and use the text box and **Speak** button to test its generation quality. You can specify the `model_id` of your fine-tuned model when using the API or playground to generate speech with these voices.
+    Then, upload all of the audio files you want to use for training using the `Upload samples` button or by dragging them onto the designated area. You can upload multiple files at once.
 
     <Frame background="subtle">
-      <img src="/assets/images/pvc/test.png" alt="Evaluate your generated voice clone" />
+      <img src="/assets/images/pvc/ds-full.png" />
+    </Frame>
+
+    Accept the disclaimer and click the `Train Pro Voice Clone` button to kick off training.
+
+    <Frame background="subtle">
+      <img src="/assets/images/pvc/train.png" />
+    </Frame>
+
+    ### Train Model
+
+    Training should take up to 1 hour to complete. You'll only be charged if the training is successful. If training fails, you can click the `Retry` button to try again or contact support if the failures persist.
+
+    ### Test Voices
+
+    Once training is complete, we'll automatically create 4 Voices based on different source audio clips from your dataset. These Voices are internally linked to your fine-tuned model, which will be used when you specify the  model id or alias listed below in your requests.
+
+    The Voices are also available in your Library and can be used through the API.
+
+    <Frame background="subtle">
+      <img src="/assets/images/pvc/test.png" />
     </Frame>
 
 </Steps>
