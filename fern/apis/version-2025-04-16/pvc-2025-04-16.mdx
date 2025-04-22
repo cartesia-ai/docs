@@ -7,134 +7,63 @@ Professional Voice Cloning is available in the [playground](https://play.cartesi
 
 We'll first fine-tune a model on your data, then create Voices from selected clips of your data. These Voices are tied to the fine-tuned model and will be automatically routed to it for TTS generation.
 
-## Step-by-Step Process
+Click on the `Create` button to get started.
+
+<Frame background="subtle">
+    <img src="/assets/images/pvc/create.png"/>
+</Frame>
+
+Read through the best practices and click `Create` again to proceed to the workflow.
+
+<Frame background="subtle">
+    <img src="/assets/images/pvc/disclaimer.png"/>
+</Frame>
+
+## PVC Workflow
 
 <Steps>
-    ### Access the Professional Voice Cloning Feature
+    ### 1. Prepare Data
 
-    Within the Cartesia playground, go to the **Voices** area. Click **Add Voice**, then opt for **Professional Voice Clone**.
+    Provide a **Name** and **Description** for your voice model. Select the **Language** of your audio data.
 
     <Frame background="subtle">
-      <img src="/assets/images/pvc/create.png"/>
+      <img src="/assets/images/pvc/create.png" alt="Name, Description, and Language fields"/>
     </Frame>
 
-    ### Supply Your Audio Data
-
-    Add your audio files using the **Upload samples** button or by dragging files onto the designated area.
+    Next, you'll create a dataset. Upload your audio files using the **Upload samples** button or by dragging them onto the designated area. Alternatively, use the **Record audio** function to capture audio directly. Aim for 30 minutes to 2 hours of high-quality audio for optimal results.
 
     <Frame background="subtle">
         <img src="/assets/images/pvc/ds-empty.png" alt="Provide audio samples for PVC" />
     </Frame>
 
-    Alternatively, if you lack pre-existing recordings, utilize the **Record audio** function to capture audio directly. Crafting a script that reflects your desired vocal style is advisable.
-
-    ### Review Audio Duration Feedback
-
-    After uploading, the interface displays the cumulative duration of your provided audio. Achieving optimal fidelity typically requires a minimum of 30 minutes of high-caliber audio, with 1-2 hours being the ideal range.
+    The interface will show the total duration of the uploaded audio.
 
     <Frame background="subtle">
       <img src="/assets/images/pvc/ds-full.png" alt="View feedback regarding sample duration" />
     </Frame>
 
-    ### Complete Voice Verification
+    ### 2. Train Model
 
-    Prior to submission, you'll need to verify your voice by reading a brief statement aloud. This step confirms your consent for cloning. For reliable verification, aim to use recording conditions (equipment, room, tone) similar to your training samples.
-
-     <Frame background="subtle">
-      <img src="/assets/images/pvc/disclaimer.png" alt="Confirm your voice identity" />
-    </Frame>
-
-    ### Await Training Completion
-
-    Your custom voice requires processing before it's usable. Monitor the training progress in your **Voices** inventory. You will receive a notification upon completion. The duration of training depends on the volume of submitted data.
+    Before training, you must verify your voice by reading a short consent statement aloud. Use similar recording conditions to your training samples for reliable verification.
 
      <Frame background="subtle">
-      <img src="/assets/images/pvc/train.png" alt="Monitor training progress" />
+      <img src="/assets/images/pvc/train.png" alt="Confirm your voice identity and start training" />
     </Frame>
+
+    Click the **Train Pro Voice Clone** button to start the fine-tuning process. Training time depends on the amount of data submitted. You can monitor the progress in your **Voices** inventory and will be notified upon completion.
+
      <Frame background="subtle">
-      <img src="/assets/images/pvc/list.png" alt="Voice inventory displaying status" />
+      <img src="/assets/images/pvc/list.png" alt="Voice inventory displaying training status" />
     </Frame>
 
-    ### Utilize Your Cloned Voice
+    ### 3. Test Voices
 
-    Once the training finishes, locate your new voice in the **Voices** list. Select **Use** to begin generating speech with it, either within the playground or through API calls.
+    Once training is complete, several Voices derived from clips of your data will appear, linked to your fine-tuned model.
+
+    Select a Voice and use the text box and **Speak** button to test its generation quality. You can specify the `model_id` of your fine-tuned model when using the API or playground to generate speech with these voices.
 
     <Frame background="subtle">
       <img src="/assets/images/pvc/test.png" alt="Evaluate your generated voice clone" />
     </Frame>
 
 </Steps>
-
-## Recommendations for Superior Clones
-
-Professional Voice Cloning technology mirrors the input audio's qualities, including flaws like noise. Adhere to these guidelines for the best outcomes:
-
-<Steps>
-  ### Prioritize High-Quality Recordings
-
-  The final clone's fidelity is directly linked to the input audio's quality. Subpar recordings containing ambient noise, echo, or other sonic defects will degrade the clone. Employ the highest quality recording methods accessible to you.
-
-### Isolate the Speaker
-
-Submit audio samples featuring only the target voice. The presence of other speakers, music, or substantial ambient sound can confuse the AI model, resulting in diminished cloning accuracy.
-
-### Furnish Ample Audio Data
-
-Although 30 minutes serves as a baseline, supplying 1-2 hours of audio generally produces markedly better results. A larger volume of clean, consistent data enables the creation of a more precise and adaptable voice clone.
-
-### Maintain Stylistic Consistency
-
-The vocal delivery style (e.g., storytelling, conversational, animated) present in your source audio will be carried over to the clone. Ensure your training recordings align with the intended application's vocal style. Avoid mixing significantly different delivery styles within the training set.
-
-### Record in the Intended Language
-
-For optimal pronunciation and intonation, provide training recordings primarily in the language you plan to generate. While Cartesia's models handle multiple languages, generating speech in a language different from the training data might introduce an accent or slight mispronunciations. Verify that your recording language is supported by Cartesia.
-
-</Steps>
-
-## Helpful Hints and Suggestions
-
-<AccordionGroup>
-  <Accordion title="Recording Gear">
-    #### Recording Gear
-
-    Employ the best microphone and audio interface you have access to. Although any clear recording can suffice, professional-grade equipment (e.g., an XLR mic connected to an interface) used in a controlled acoustic space is advised for top-tier results. Better input yields better output.
-
-  </Accordion>
-  <Accordion title="Employ a Pop Shield">
-    #### Employ a Pop Shield
-
-    Using a pop filter helps reduce harsh plosive consonants (like "p" and "b"), which can create distracting pops in the audio.
-
-  </Accordion>
-  <Accordion title="Mic Placement">
-    #### Mic Placement
-
-    Keep a steady distance between the speaker and the microphone (a common guideline is 6-12 inches, roughly two fist-widths). Getting too close can cause unnatural bassiness (proximity effect), while being too distant increases the capture of room reflections.
-
-  </Accordion>
-  <Accordion title="Quiet Recording Location">
-    #### Quiet Recording Location
-
-    Select a recording space with minimal ambient sound (HVAC, outside traffic, computer noise) and limited echo or reverberation. Acoustic panels or makeshift solutions like thick blankets can absorb sound reflections.
-
-  </Accordion>
-  <Accordion title="Audio Preparation">
-    #### Audio Preparation
-
-    Edit your recordings before uploading. Excise extended silences, frequent filler sounds ("uh," "um"), coughs, and other extraneous noises. Normalize volume levels across different recordings. Enhancing clarity and consistency in the source material benefits the final clone.
-
-  </Accordion>
-  <Accordion title="Audio Levels">
-    #### Audio Levels
-
-    Record at consistent volume levels, ensuring the signal is strong enough for clarity without causing digital clipping (distortion). A common target is to have average levels between -18dBFS and -12dBFS, with peak levels not surpassing -3dBFS.
-
-  </Accordion>
-  <Accordion title="Data Volume and File Management">
-    #### Data Volume and File Management
-
-    Submit a minimum of 30 minutes, and preferably 1-2 hours, of high-standard audio. The overall duration is more crucial than the file count. For extensive recordings (like audiobooks), consider segmenting them into smaller files (e.g., 15-30 minutes each) to simplify the upload and processing stages.
-
-  </Accordion>
-</AccordionGroup>
