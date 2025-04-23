@@ -94,7 +94,7 @@ channel:
     2. **Set up the WebSocket before the first generation.** This ensures you don't incur latency when you start generating speech.
     3. **Buffer the first input on a context** to at least 3 or 4 words for optimizing both latency and prosody.
     4. **Split inputs into sentences:** Sending inputs in sentences allows Sonic to generate speech more accurately and with better prosody. Include necessary spaces and punctuation.
-    
+
     For conversational agent use cases, we recommend the following usage pattern:
     1. **Each turn in a conversation should correspond to a context:** For example, if you are using Sonic to power a voice agent, each turn in the conversation should be a new context.
     2. **Start a new context for interruptions:** If the user interrupts the agent, start a new context for the agent's response.
@@ -207,7 +207,7 @@ types:
       A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
 
       Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
-  
+
   FlushID:
     type: integer
     docs: |
@@ -314,6 +314,10 @@ types:
         docs: |
           The maximum duration of the audio in seconds. You do not usually need to specify this.
           If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+      text_cfg:
+        type: optional<double>
+        docs: |
+          The text [classifier-free guidance](https://arxiv.org/abs/2207.12598) value for the request. Supports values between `1.0` and `5.0`. Defaults to `3.0` if not specified. Lower values reduce the speaking rate, but increase the risk of hallucinations.
       context_id: optional<ContextID>
       continue:
         type: optional<boolean>
@@ -369,6 +373,7 @@ types:
       use_original_timestamps: optional<boolean>
       continue: optional<boolean>
       context_id: optional<string>
+      text_cfg: optional<double>
 
   TTSRequest:
     properties:
@@ -385,6 +390,10 @@ types:
         docs: |
           The maximum duration of the audio in seconds. You do not usually need to specify this.
           If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+      text_cfg:
+        type: optional<double>
+        docs: |
+          The text [classifier-free guidance](https://arxiv.org/abs/2207.12598) value for the request. Supports values between `1.0` and `5.0`. Defaults to `3.0` if not specified. Lower values reduce the speaking rate, but increase the risk of hallucinations.
 
   SupportedLanguage:
     docs: |
