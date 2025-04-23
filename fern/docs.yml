@@ -170,3 +170,6 @@ redirects:
   - source: /reference/api-reference/rest/api-status-and-version
     destination: /api-reference/api-status/get
     permanent: true
+  - source: /build-with-sonic/capability-guides/localize-voices
+    destination: /build-with-cartesia/capability-guides/localize-voices
+    permanent: true
