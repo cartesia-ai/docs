@@ -43,7 +43,7 @@ navigation:
               - page: Clone Voices
                 path: ../apis/version-2025-04-16/clone-voices-2025-04-16.mdx
                 icon: fa-clone
-              - page: Clone Voices (Professional)
+              - page: Clone Voices (Pro)
                 path: ../apis/version-2025-04-16/pvc-2025-04-16.mdx
                 icon: fa-microchip
               - page: Specify Custom Pronunciations
