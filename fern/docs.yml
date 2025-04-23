@@ -173,3 +173,12 @@ redirects:
   - source: /build-with-sonic/capability-guides/localize-voices
     destination: /build-with-cartesia/capability-guides/localize-voices
     permanent: true
+  - source: /build-with-sonic/capability-guides/clone-voices
+    destination: /build-with-cartesia/capability-guides/clone-voices
+    permanent: true
+  - source: /build-with-sonic/capability-guides/specify-custom-pronunciations
+    destination: /build-with-cartesia/capability-guides/specify-custom-pronunciations
+    permanent: true
+  - source: /build-with-sonic/capability-guides/stream-inputs-using-continuations
+    destination: /build-with-cartesia/capability-guides/stream-inputs-using-continuations
+    permanent: true
