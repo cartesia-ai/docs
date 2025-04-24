@@ -315,7 +315,7 @@ types:
       text_cfg:
         type: optional<double>
         docs: |
-          The text [classifier-free guidance](https://arxiv.org/abs/2207.12598) value for the request. Supports values between `1.0` and `5.0`. Defaults to `3.0` if not specified. Lower values reduce the speaking rate, but increase the risk of hallucinations.
+          The text [classifier-free guidance](https://arxiv.org/abs/2207.12598) value for the request. Higher values causes the model to attend more to the text but speed up the generation. Lower values reduce the speaking rate but can increase the risk of hallucinations. The default value is `3.0`. For a slower speaking rate, we recommend values between `2.0` and `3.0`. Values are supported between `1.5` and `3.0`.
       context_id: optional<ContextID>
       continue:
         type: optional<boolean>
@@ -390,7 +390,7 @@ types:
       text_cfg:
         type: optional<double>
         docs: |
-          The text [classifier-free guidance](https://arxiv.org/abs/2207.12598) value for the request. Supports values between `1.0` and `5.0`. Defaults to `3.0` if not specified. Lower values reduce the speaking rate, but increase the risk of hallucinations.
+          The text [classifier-free guidance](https://arxiv.org/abs/2207.12598) value for the request. Higher values causes the model to attend more to the text but speed up the generation. Lower values reduce the speaking rate but can increase the risk of hallucinations. The default value is `3.0`. For a slower speaking rate, we recommend values between `2.0` and `3.0`. Values are supported between `1.5` and `3.0`.
 
   SupportedLanguage:
     docs: |
