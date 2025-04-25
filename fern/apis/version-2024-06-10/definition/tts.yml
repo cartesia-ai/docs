@@ -327,7 +327,7 @@ types:
         type: optional<boolean>
         docs: |
           Whether this input may be followed by more inputs.
-          If not specified, this defaults to `false`.q
+          If not specified, this defaults to `false`.
       max_buffer_delay_ms:
         type: optional<integer>
         docs: |
