@@ -327,7 +327,15 @@ types:
         type: optional<boolean>
         docs: |
           Whether this input may be followed by more inputs.
-          If not specified, this defaults to `false`.
+          If not specified, this defaults to `false`.q
+      max_buffer_delay_ms:
+        type: optional<integer>
+        docs: |
+          The maximum time in milliseconds to buffer text before starting generation. Values between [0, 1000]ms are supported. Defaults to 0 (no buffering).
+          
+          When set, the server will buffer incoming text chunks until the model has enough context to kick off generation, or the buffer delay elapses.
+          
+          Use this to balance responsiveness with higher quality speech generation, which often benefits from having more context.
       flush:
         type: optional<boolean>
         docs: |
@@ -377,6 +385,7 @@ types:
       use_original_timestamps: optional<boolean>
       continue: optional<boolean>
       context_id: optional<string>
+      max_buffer_delay_ms: optional<integer>
       text_cfg: optional<double>
 
   TTSRequest:
