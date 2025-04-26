@@ -55,14 +55,22 @@ As you can hear, this output sounds seamless and natural.
 You can scale up continuations to any number of inputs. There is no limit.
 </Check>
 
-## Automatic buffering with max_buffer_delay_ms
+## Caveat: Streamed inputs should form a valid transcript when joined
+
+This means that `Hello, world!` can be followed by ` How are you?` (note the leading space) but not `How are you?`, since when joined they form the invalid transcript `Hello, world!How are you?`.
+
+In practice, this means you should maintain spacing and punctuation in your streamed inputs.
+
+## Automatic buffering with `max_buffer_delay_ms`
+
+> **TL;DR:** For optimal word-level streaming, use `max_buffer_delay_ms` to let the server intelligently manage buffering up to the specified maximum delay.
 
 When streaming inputs from LLMs word-by-word or token-by-token, we strongly recommend using the `max_buffer_delay_ms` parameter. It allows the server to intelligently buffer incoming text until there's enough context for high-quality speech generation, or the maximum buffer delay has elapsed. 
 
 You can tune this parameter based on your latency and quality requirements: lower values optimize for responsiveness, while higher values produce better prosody. This parameter effectively sets the upper bound on additional buffering latency to your Time To First Audio (TTFA).
 
 ```js
-// Example WebSocket request with max_buffer_delay_ms
+// Example WebSocket request with `max_buffer_delay_ms`
 {
   "model_id": "sonic-2",
   "transcript": "Hello",  // First word/token
@@ -76,16 +84,8 @@ You can tune this parameter based on your latency and quality requirements: lowe
 }
 ```
 
-> **TL;DR:** If you want to stream the input in word-by-word, your code should buffer the first sentence of the input upfront. Then you can stream the remaining input text word-by-word.
-
 Let's try the following transcripts with continuations and `max_buffer_delay_ms=250`: `['Hello', 'my name', 'is Sonic.', "It's ", 'very ', 'nice ', 'to ', 'meet ', 'you.']`
 
 <audio controls src="https://cartesia-docs-public.s3.us-east-2.amazonaws.com/concepts/continuations/with_continuations_many_inputs.wav">
   Your browser does not support the audio element.
 </audio>
-
-## Caveat: Streamed inputs should form a valid transcript when joined
-
-This means that `Hello, world!` can be followed by ` How are you?` (note the leading space) but not `How are you?`, since when joined they form the invalid transcript `Hello, world!How are you?`.
-
-In practice, this means you should maintain spacing and punctuation in your streamed inputs.
