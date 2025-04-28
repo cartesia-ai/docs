@@ -61,13 +61,39 @@ This means that `Hello, world!` can be followed by ` How are you?` (note the lea
 
 In practice, this means you should maintain spacing and punctuation in your streamed inputs.
 
-## Caveat: Word-by-word or token-by-token inputs
+## Automatic buffering with `max_buffer_delay_ms`
 
-> **TL;DR:** If you want to stream the input in word-by-word, your code should buffer the first sentence of the input upfront. Then you can stream the remaining input text word-by-word.
+When streaming inputs from LLMs word-by-word or token-by-token, we strongly recommend using the `max_buffer_delay_ms` parameter. This parameter sets the maximum time (in milliseconds) the model will wait and buffer text before starting generation.
 
-![](/assets/images/concepts_continuations_multiple_inputs.png)
+### How it works
 
-Let's try the following transcripts with continuations: `['Hello, my name is Sonic.', "It's ", 'very ', 'nice ', 'to ', 'meet ', 'you.']`
+When set, the model will buffer incoming text chunks until it's confident it has enough context to generate high-quality speech, or the buffer delay elapses, whichever comes first.
+
+Without this parameter (or when set to 0), the model immediately starts generating with each input, which can result in choppy audio or unnatural prosody when inputs are very small (like single words or tokens).
+
+### Configuration
+
+- **Range**: Values between 0-1000ms are supported
+- **Default**: 0 (no buffering)
+
+Use this to balance responsiveness with higher quality speech generation, which often benefits from having more context.
+
+```js
+// Example WebSocket request with `max_buffer_delay_ms`
+{
+  "model_id": "sonic-2",
+  "transcript": "Hello",  // First word/token
+  "voice": {
+    "mode": "id",
+    "id": "a0e99841-438c-4a64-b679-ae501e7d6091"
+  },
+  "context_id": "my-conversation-123",
+  "continue": true,
+  "max_buffer_delay_ms": 1000  // Buffer up to 1000ms
+}
+```
+
+Let's try the following transcripts with continuations and `max_buffer_delay_ms=500`: `['Hello', 'my name', 'is Sonic.', "It's ", 'very ', 'nice ', 'to ', 'meet ', 'you.']`
 
 <audio controls src="https://cartesia-docs-public.s3.us-east-2.amazonaws.com/concepts/continuations/with_continuations_many_inputs.wav">
   Your browser does not support the audio element.

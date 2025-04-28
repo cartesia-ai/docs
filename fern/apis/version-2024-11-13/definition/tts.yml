@@ -92,8 +92,8 @@ channel:
     For the best performance, we recommend the following usage pattern:
     1. **Do many generations over a single WebSocket.** Just use a separate context for each generation. The WebSocket scales up to dozens of concurrent generations.
     2. **Set up the WebSocket before the first generation.** This ensures you don't incur latency when you start generating speech.
-    3. **Buffer the first input on a context** to at least 3 or 4 words for optimizing both latency and prosody.
-    4. **Split inputs into sentences:** Sending inputs in sentences allows Sonic to generate speech more accurately and with better prosody. Include necessary spaces and punctuation.
+    3. **Include necessary spaces and punctuation:** This allows Sonic to generate speech more accurately and with better prosody.
+    4. **Use `max_buffer_delay_ms`** to let the model intelligently manage buffering up to the specified maximum delay.
 
     For conversational agent use cases, we recommend the following usage pattern:
     1. **Each turn in a conversation should correspond to a context:** For example, if you are using Sonic to power a voice agent, each turn in the conversation should be a new context.
@@ -329,6 +329,14 @@ types:
         docs: |
           Whether this input may be followed by more inputs.
           If not specified, this defaults to `false`.
+      max_buffer_delay_ms:
+        type: optional<integer>
+        docs: |
+          The maximum time in milliseconds to buffer text before starting generation. Values between [0, 1000]ms are supported. Defaults to 0 (no buffering).
+          
+          When set, the model will buffer incoming text chunks until it's confident it has enough context to generate high-quality speech, or the buffer delay elapses, whichever comes first. Without this option set, the model will kick off generations immediately, ceding control of buffering to the user.
+          
+          Use this to balance responsiveness with higher quality speech generation, which often benefits from having more context.
       flush:
         type: optional<boolean>
         docs: |
@@ -378,6 +386,7 @@ types:
       add_phoneme_timestamps: optional<boolean>
       continue: optional<boolean>
       context_id: optional<string>
+      max_buffer_delay_ms: optional<integer>
       text_cfg: optional<double>
 
   TTSRequest:
