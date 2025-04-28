@@ -92,7 +92,7 @@ channel:
 
     1. **Do many generations over a single WebSocket.** Just use a separate context for each generation. The WebSocket scales up to dozens of concurrent generations.
     2. **Set up the WebSocket before the first generation.** This ensures you don't incur latency when you start generating speech.
-    3. **Include necessary spaces and punctuation:** Sending inputs in sentences allows Sonic to generate speech more accurately and with better prosody.
+    3. **Include necessary spaces and punctuation:** This allows Sonic to generate speech more accurately and with better prosody.
     4. **Use `max_buffer_delay_ms`** to let the model intelligently manage buffering up to the specified maximum delay.
 
     For conversational agent use cases, we recommend the following usage pattern:
