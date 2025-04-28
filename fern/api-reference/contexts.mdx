@@ -36,7 +36,9 @@ Let's say you're trying to generate speech for "Hello, Sonic! I'm streaming inpu
 ```
 
 <Tip>
-If [streaming in input tokens](/build-with-cartesia/capability-guides/stream-inputs-using-continuations), we recommend using `max_buffer_delay_ms`, which sets the maximum time the model will buffer text before starting generation. Without this option set, the model will start generating immediately on the first request, giving you full control over buffering of inputs.
+If [streaming in input tokens](/build-with-cartesia/capability-guides/stream-inputs-using-continuations), we recommend using `max_buffer_delay_ms`, which sets the maximum time the model will buffer text before starting generation.
+
+Without this option set, the model will start generating immediately on the first request, giving you full control over buffering of inputs.
 </Tip>
 
 If you don't know the last transcript in advance, you can send an input with an empty transcript and `continue` set to `false`:
