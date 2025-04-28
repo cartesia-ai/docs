@@ -63,11 +63,20 @@ In practice, this means you should maintain spacing and punctuation in your stre
 
 ## Automatic buffering with `max_buffer_delay_ms`
 
-> **TL;DR:** For optimal word-level streaming, use `max_buffer_delay_ms` to let the server intelligently manage buffering up to the specified maximum delay.
+When streaming inputs from LLMs word-by-word or token-by-token, we strongly recommend using the `max_buffer_delay_ms` parameter. This parameter sets the maximum time (in milliseconds) the model will wait and buffer text before starting generation.
 
-When streaming inputs from LLMs word-by-word or token-by-token, we strongly recommend using the `max_buffer_delay_ms` parameter. It allows the server to intelligently buffer incoming text until there's enough context for high-quality speech generation, or the maximum buffer delay has elapsed. 
+### How it works
 
-You can tune this parameter based on your latency and quality requirements: lower values optimize for responsiveness, while higher values produce better prosody. This parameter effectively sets the upper bound on additional buffering latency to your Time To First Audio (TTFA).
+When set, the model will buffer incoming text chunks until it's confident it has enough context to generate high-quality speech, or the buffer delay elapses, whichever comes first.
+
+Without this parameter (or when set to 0), the model immediately starts generating with each input, which can result in choppy audio or unnatural prosody when inputs are very small (like single words or tokens).
+
+### Configuration
+
+- **Range**: Values between 0-1000ms are supported
+- **Default**: 0 (no buffering)
+
+Use this to balance responsiveness with higher quality speech generation, which often benefits from having more context.
 
 ```js
 // Example WebSocket request with `max_buffer_delay_ms`
@@ -84,7 +93,7 @@ You can tune this parameter based on your latency and quality requirements: lowe
 }
 ```
 
-Let's try the following transcripts with continuations and `max_buffer_delay_ms=250`: `['Hello', 'my name', 'is Sonic.', "It's ", 'very ', 'nice ', 'to ', 'meet ', 'you.']`
+Let's try the following transcripts with continuations and `max_buffer_delay_ms=500`: `['Hello', 'my name', 'is Sonic.', "It's ", 'very ', 'nice ', 'to ', 'meet ', 'you.']`
 
 <audio controls src="https://cartesia-docs-public.s3.us-east-2.amazonaws.com/concepts/continuations/with_continuations_many_inputs.wav">
   Your browser does not support the audio element.
