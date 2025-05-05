@@ -250,7 +250,7 @@ service:
             enhance:
               type: optional<boolean>
               docs: |
-                Whether to apply AI enhancements to the clip to reduce background noise. This leads to cleaner audio generation at the cost of reduced similarity to the source clip.
+                Whether to apply AI enhancements to the clip to reduce background noise. This leads to cleaner generated speech at the cost of reduced similarity to the source clip.
             base_voice_id:
               type: optional<VoiceId>
               docs: |
