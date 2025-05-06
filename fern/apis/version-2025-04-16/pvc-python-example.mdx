@@ -1,0 +1,136 @@
+---
+title: End-to-end Pro Voice Cloning (Python)
+subtitle: Use Cartesia's REST API to train a Pro Voice Clone and fetch its voices.
+---
+
+> **Prerequisites**
+> 1. You have a **Cartesia API token** (export it as `CARTESIA_API_TOKEN`).
+> 2. You have at least 1 M credits on your account.
+> 3. You have a folder called `samples/` with one or more `.wav` files.
+
+```python
+"""
+End-to-end Pro Voice Cloning example.
+
+Steps
+-----
+1. Create a dataset.
+2. Upload audio files.
+3. Add each file to the dataset.
+4. Kick off a fine-tune from that dataset.
+5. Poll until fine-tune is completed.
+6. Get the voices produced by the fine-tune.
+"""
+
+import json
+import os
+import time
+from pathlib import Path
+
+import requests
+
+API_BASE = "https://api.cartesia.ai"
+API_HEADERS = {
+    "Cartesia-Version": "2025-04-16",
+    "Authorization": f"Bearer {os.environ['CARTESIA_API_TOKEN']}",
+}
+
+
+def create_dataset(name: str, description: str) -> str:
+    """POST /datasets → dataset id"""
+    res = requests.post(
+        f"{API_BASE}/datasets",
+        headers=API_HEADERS,
+        json={"name": name, "description": description},
+    )
+    res.raise_for_status()
+    return res.json()["id"]
+
+
+def upload_file(path: Path) -> str:
+    """POST /files (multipart/form-data) → file id"""
+    with path.open("rb") as fp:
+        res = requests.post(f"{API_BASE}/files", headers=API_HEADERS, files={"file": fp})
+    res.raise_for_status()
+    return res.json()["id"]
+
+
+def add_file_to_dataset(dataset_id: str, file_id: str) -> None:
+    """POST /datasets/{id}/files/{file_id} (no body)"""
+    res = requests.post(f"{API_BASE}/datasets/{dataset_id}/files/{file_id}", headers=API_HEADERS)
+    res.raise_for_status()
+
+
+def create_fine_tune(dataset_id: str, *, name: str, language: str, model_id: str) -> str:
+    """POST /fine-tunes → fine-tune id"""
+    body = {
+        "name": name,
+        "description": "Pro Voice Clone demo",
+        "language": language,
+        "model_id": model_id,
+        "dataset": dataset_id,
+        "type": "voice",
+    }
+    res = requests.post(f"{API_BASE}/fine-tunes", headers=API_HEADERS, json=body)
+    res.raise_for_status()
+    return res.json()["fine_tune"]["id"]
+
+
+def wait_for_fine_tune(ft_id: str, every: float = 30.0) -> None:
+    """Poll GET /fine-tunes/{id} until status == completed"""
+    while True:
+        res = requests.get(f"{API_BASE}/fine-tunes/{ft_id}", headers=API_HEADERS)
+        res.raise_for_status()
+        status = res.json()["fine_tune"]["status"]
+        print(f"fine-tune {ft_id} -> {status}")
+        if status == "completed":
+            return
+        if status in {"failed", "cancelled"}:
+            raise RuntimeError(f"fine-tune ended with status={status}")
+        time.sleep(every)
+
+
+def list_voices(ft_id: str) -> list[dict]:
+    """GET /fine-tunes/{id}/checkpoints"""
+    res = requests.get(f"{API_BASE}/fine-tunes/{ft_id}/checkpoints", headers=API_HEADERS)
+    res.raise_for_status()
+    return res.json()["data"]
+
+
+if __name__ == "__main__":
+    # 1️⃣  Create the dataset
+    DATASET_ID = create_dataset("PVC demo dataset", "Samples for a Pro Voice Clone")
+    print("Created dataset:", DATASET_ID)
+
+    # 2️⃣  Upload .wav files in samples/ directory
+    FILE_IDS: list[str] = []
+    for wav in Path("samples").glob("*.wav"):
+        fid = upload_file(wav)
+        FILE_IDS.append(fid)
+        print("Uploaded", wav.name, "→", fid)
+
+    # 3️⃣  Attach files to the dataset
+    for fid in FILE_IDS:
+        add_file_to_dataset(DATASET_ID, fid)
+        print("Attached", fid, "to", DATASET_ID)
+
+    # 4️⃣  Kick off the fine-tune
+    FINE_TUNE_ID = create_fine_tune(
+        DATASET_ID,
+        name="PVC example",
+        language="en",
+        model_id="tts-2025-04-16",  # replace with current base model id
+    )
+    print("Started fine-tune:", FINE_TUNE_ID)
+
+    # 5️⃣  Wait for training to finish
+    wait_for_fine_tune(FINE_TUNE_ID)
+    print("Fine-tune completed!")
+
+    # 6️⃣  Fetch the voices created by the fine-tune
+    checkpoints = list_checkpoints(FINE_TUNE_ID)
+    print("Voices:")
+    for cp in checkpoints:
+        voice = cp["voice"]
+        print(f" • {voice['name']}   id={voice['id']}")
+```
