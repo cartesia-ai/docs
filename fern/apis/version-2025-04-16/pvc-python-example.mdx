@@ -99,7 +99,7 @@ def list_voices(ft_id: str) -> list[dict]:
 
 if __name__ == "__main__":
     # 1️⃣  Create the dataset
-    DATASET_ID = create_dataset("PVC demo dataset", "Samples for a Pro Voice Clone")
+    DATASET_ID = create_dataset("PVC demo", "Samples for a Pro Voice Clone")
     print("Created dataset:", DATASET_ID)
 
     # 2️⃣  Upload .wav files in samples/ directory
@@ -107,30 +107,29 @@ if __name__ == "__main__":
     for wav in Path("samples").glob("*.wav"):
         fid = upload_file(wav)
         FILE_IDS.append(fid)
-        print("Uploaded", wav.name, "→", fid)
+        print(f"Uploaded {wav.name} as {fid}")
 
-    # 3️⃣  Attach files to the dataset
+    # 3️⃣  Add files to the dataset
     for fid in FILE_IDS:
         add_file_to_dataset(DATASET_ID, fid)
-        print("Attached", fid, "to", DATASET_ID)
+        print(f"Added {fid} to {DATASET_ID}")
 
     # 4️⃣  Kick off the fine-tune
     FINE_TUNE_ID = create_fine_tune(
         DATASET_ID,
-        name="PVC example",
+        name="PVC demo",
         language="en",
-        model_id="tts-2025-04-16",  # replace with current base model id
+        model_id="sonic-2",
     )
-    print("Started fine-tune:", FINE_TUNE_ID)
+    print(f"Started fine-tune: {FINE_TUNE_ID}")
 
     # 5️⃣  Wait for training to finish
     wait_for_fine_tune(FINE_TUNE_ID)
     print("Fine-tune completed!")
 
     # 6️⃣  Fetch the voices created by the fine-tune
-    checkpoints = list_checkpoints(FINE_TUNE_ID)
+    voices = list_voices(FINE_TUNE_ID)
     print("Voices:")
-    for cp in checkpoints:
-        voice = cp["voice"]
-        print(f" • {voice['name']}   id={voice['id']}")
+    for voice in voices:
+        print(f" • {voice['voice']['id']}")
 ```
