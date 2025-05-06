@@ -250,11 +250,11 @@ service:
             enhance:
               type: optional<boolean>
               docs: |
-                Whether to enhance the clip to improve its quality before cloning. Useful if the clip has background noise.
-            transcript:
-              type: optional<string>
+                Whether to apply AI enhancements to the clip to reduce background noise. This leads to cleaner generated speech at the cost of reduced similarity to the source clip.
+            base_voice_id:
+              type: optional<VoiceId>
               docs: |
-                Optional transcript of the words spoken in the audio clip. Only used for similarity mode.
+                Optional base voice ID that the cloned voice is derived from.
       response: VoiceMetadata
       examples:
         - name: Stability
@@ -264,7 +264,6 @@ service:
             description: "Copied from Cartesia docs"
             mode: stability
             language: en
-            enhance: true
           response:
             body:
               id: "df076429-66c6-4f3e-b98b-aee4e2c925ab"
@@ -281,8 +280,6 @@ service:
             description: "Copied from Cartesia docs"
             mode: similarity
             language: en
-            transcript: "A transcript of the words spoken in the audio clip."
-            enhance: false
           response:
             body:
               id: "40248dd5-bfe9-48e2-93f7-ea3f9d5c7f72"
