@@ -15,7 +15,7 @@ End-to-end Pro Voice Cloning example.
 Steps
 -----
 1. Create a dataset.
-2. Upload audio files to the dataset.
+2. Upload audio files from samples/ to the dataset.
 3. Kick off a fine-tune from that dataset.
 4. Poll until fine-tune is completed.
 5. Get the voices produced by the fine-tune.
@@ -64,7 +64,6 @@ def create_fine_tune(dataset_id: str, *, name: str, language: str, model_id: str
         "language": language,
         "model_id": model_id,
         "dataset": dataset_id,
-        "type": "voice",
     }
     res = requests.post(f"{API_BASE}/fine-tunes", headers=API_HEADERS, json=body, timeout=60)
     res.raise_for_status()
@@ -81,14 +80,14 @@ def wait_for_fine_tune(ft_id: str, every: float = 10.0) -> None:
         print(f"fine-tune {ft_id} -> {status}. Elapsed: {time.monotonic() - start:.0f}s")
         if status == "completed":
             return
-        if status in {"failed", "cancelled"}:
+        if status == "failed":
             raise RuntimeError(f"fine-tune ended with status={status}")
         time.sleep(every)
 
 
 def list_voices(ft_id: str) -> list[dict]:
-    """GET /fine-tunes/{id}/checkpoints → list of voices."""
-    res = requests.get(f"{API_BASE}/fine-tunes/{ft_id}/checkpoints", headers=API_HEADERS)
+    """GET /fine-tunes/{id}/voices → list of voices."""
+    res = requests.get(f"{API_BASE}/fine-tunes/{ft_id}/voices", headers=API_HEADERS)
     res.raise_for_status()
     return res.json()["data"]
 
@@ -96,7 +95,7 @@ def list_voices(ft_id: str) -> list[dict]:
 if __name__ == "__main__":
     # Create the dataset
     DATASET_ID = create_dataset("PVC demo", "Samples for a Pro Voice Clone")
-    print(f"Created dataset: {DATASET_ID}")
+    print("Created dataset:", DATASET_ID)
 
     # Upload .wav files to the dataset
     for wav_path in Path("samples").glob("*.wav"):
@@ -104,7 +103,9 @@ if __name__ == "__main__":
         print(f"Uploaded {wav_path.name} to dataset {DATASET_ID}")
 
     # Ask for confirmation before kicking off the fine-tune
-    confirmation = input("Are you sure you want to start the fine-tune? It will cost 1M credits upon successful completion (yes/no): ")
+    confirmation = input(
+        "Are you sure you want to start the fine-tune? It will cost 1M credits upon successful completion (yes/no): "
+    )
     if confirmation.lower() != "yes":
         print("Fine-tuning cancelled by user.")
         exit()
@@ -120,11 +121,12 @@ if __name__ == "__main__":
 
     # Wait for training to finish
     wait_for_fine_tune(FINE_TUNE_ID)
-    print(f"Fine-tune {FINE_TUNE_ID} completed!")
+    print("Fine-tune completed!")
 
     # Fetch the voices created by the fine-tune
+    FINE_TUNE_ID = "fine_tune_5YoCXHgSEyadGrZraMJWwf"
     voices = list_voices(FINE_TUNE_ID)
     print("Voices IDs:")
     for voice in voices:
-        print(voice["voice"]["id"])
+        print(voice["id"])
 ```
