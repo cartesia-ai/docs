@@ -1,66 +1,214 @@
 types:
   Dataset:
+    docs: A collection of files used for fine-tuning models
     properties:
-      id: string
-      name: string
-      created_at: string
+      id:
+        type: string
+        docs: Unique identifier for the dataset
+      name:
+        type: string
+        docs: Name of the dataset
+      created_at:
+        type: string
+        docs: Timestamp when the dataset was created
+      description:
+        type: string
+        docs: Optional description of the dataset
 
   CreateDatasetRequest:
+    docs: Request to create a new dataset
     properties:
-      name: string
+      name:
+        type: string
+        docs: Name for the new dataset
+      description:
+        type: string
+        docs: Optional description for the dataset
+
+  UpdateDatasetRequest:
+    docs: Request to update an existing dataset
+    properties:
+      name:
+        type: string
+        docs: New name for the dataset
+      description:
+        type: string
+        docs: New description for the dataset
 
   DatasetFile:
+    docs: File stored in a dataset
     properties:
-      id: string
-      filename: string
-      created_at: string
-
-  FilePurpose:
-    enum:
-      - fine_tune
+      id:
+        type: string
+        docs: Unique identifier for the file
+      filename:
+        type: string
+        docs: Original filename
+      created_at:
+        type: string
+        docs: Timestamp when the file was created
+      size:
+        type: integer
+        docs: Size of the file in bytes
 
   PaginatedDatasets:
+    docs: Paginated list of datasets
     properties:
-      data: list<Dataset>
-      has_more: boolean
+      data:
+        type: list<Dataset>
+        docs: List of dataset objects
+      has_more:
+        type: boolean
+        docs: Whether there are more datasets available
 
   PaginatedDatasetFiles:
+    docs: Paginated list of files in a dataset
     properties:
-      data: list<DatasetFile>
-      has_more: boolean
-# Commented these out since they're not used outside of PVCs, which are not yet GA. -Noah
-# service:
-#   base-path: /datasets
-#   auth: true
-#   endpoints:
-#     list:
-#       path: /
-#       method: GET
-#       response: PaginatedDatasets
+      data:
+        type: list<DatasetFile>
+        docs: List of file objects
+      has_more:
+        type: boolean
+        docs: Whether there are more files available
 
-#     create:
-#       path: /
-#       method: POST
-#       request: CreateDatasetRequest
-#       response: Dataset
+  S3UploadParamsResponse:
+    docs: Parameters for direct upload to S3 storage
+    properties:
+      url:
+        type: string
+        docs: Pre-signed URL for upload
+      method:
+        type: string
+        docs: HTTP method to use for upload
+      fields:
+        type: map<string, string>
+        docs: Additional fields required for the upload
 
-#     listFiles:
-#       path: /{id}/files
-#       method: GET
-#       path-parameters:
-#         id: string
-#       response: PaginatedDatasetFiles
+service:
+  base-path: /datasets
+  auth: true
+  endpoints:
+    list:
+      docs: Paginated list of datasets
+      path: /
+      method: GET
+      request:
+        name: ListDatasetsRequest
+        query-parameters:
+          limit:
+            type: optional<integer>
+            default: 10
+            docs: The number of Datasets to return per page, ranging between 1 and 100.
+          starting_after:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `starting_after` is a Dataset ID that defines your
+              place in the list. For example, if you make a /datasets request and receive 20
+              objects, ending with `dataset_abc123`, your subsequent call can include
+              `starting_after=dataset_abc123` to fetch the next page of the list.
+          ending_before:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `ending_before` is a Dataset ID that defines your
+              place in the list. For example, if you make a /datasets request and receive 20
+              objects, starting with `dataset_abc123`, your subsequent call can include
+              `ending_before=dataset_abc123` to fetch the previous page of the list.
+      response: PaginatedDatasets
 
-#     uploadFile:
-#       path: /{id}/files
-#       method: POST
-#       path-parameters:
-#         id: string
-#       request:
-#         name: UploadDatasetFileRequest
-#         body:
-#           properties:
-#             file:
-#               type: file
-#             purpose:
-#               type: FilePurpose
+    create:
+      docs: Create a new dataset
+      path: /
+      method: POST
+      request: CreateDatasetRequest
+      response: Dataset
+
+    get:
+      docs: Retrieve a specific dataset by ID
+      path: /{id}
+      method: GET
+      path-parameters:
+        id:
+          type: string
+          docs: ID of the dataset to retrieve
+      response: Dataset
+
+    update:
+      docs: Update an existing dataset
+      path: /{id}
+      method: PATCH
+      path-parameters:
+        id:
+          type: string
+          docs: ID of the dataset to update
+      request: UpdateDatasetRequest
+
+    delete:
+      docs: Delete a dataset
+      path: /{id}
+      method: DELETE
+      path-parameters:
+        id:
+          type: string
+          docs: ID of the dataset to delete
+
+    listFiles:
+      docs: Paginated list of files in a dataset
+      path: /{id}/files
+      method: GET
+      path-parameters:
+        id:
+          type: string
+          docs: ID of the dataset to list files from
+      request:
+        name: ListDatasetFilesRequest
+        query-parameters:
+          limit:
+            type: optional<integer>
+            default: 10
+            docs: The number of files to return per page, ranging between 1 and 100.
+          starting_after:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `starting_after` is a file ID that defines your
+              place in the list. For example, if you make a dataset files request and receive 20
+              objects, ending with `file_abc123`, your subsequent call can include
+              `starting_after=file_abc123` to fetch the next page of the list.
+          ending_before:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `ending_before` is a file ID that defines your
+              place in the list. For example, if you make a dataset files request and receive 20
+              objects, starting with `file_abc123`, your subsequent call can include
+              `ending_before=file_abc123` to fetch the previous page of the list.
+      response: PaginatedDatasetFiles
+
+    uploadFile:
+      docs: Upload a new file to a dataset
+      path: /{id}/files
+      method: POST
+      path-parameters:
+        id:
+          type: string
+          docs: ID of the dataset to upload to
+      request:
+        name: UploadDatasetFileRequest
+        body:
+          properties:
+            file:
+              type: file
+              docs: File to upload
+            purpose:
+              type: string
+              docs: Purpose of the file (e.g., fine_tune)
+
+    deleteFile:
+      docs: Remove a file from a dataset
+      path: /{id}/files/{fileID}
+      method: DELETE
+      path-parameters:
+        id:
+          type: string
+          docs: ID of the dataset containing the file
+        fileID:
+          type: string
+          docs: ID of the file to remove
