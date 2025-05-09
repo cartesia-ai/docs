@@ -1,0 +1,163 @@
+types:
+  FineTuneStatus:
+    docs: Status of a fine-tune
+    enum:
+      - created
+      - training
+      - completed
+      - failed
+
+  FineTune:
+    docs: Information about a fine-tune
+    properties:
+      id:
+        type: string
+        docs: Unique identifier for the fine-tune
+      name:
+        type: string
+        docs: Name of the fine-tune
+      description:
+        type: string
+        docs: Description of the fine-tune
+      language:
+        type: string
+        docs: Language code of the fine-tune
+      model_id:
+        type: string
+        docs: Base model identifier to fine-tune from
+      dataset:
+        type: string
+        docs: ID of the dataset used for fine-tuning
+      status:
+        type: FineTuneStatus
+        docs: Current status of the fine-tune
+
+  CreateFineTuneRequest:
+    docs: Request to create a new fine-tune
+    properties:
+      name:
+        type: string
+        docs: Name for the new fine-tune
+      description:
+        type: string
+        docs: Description for the fine-tune
+      language:
+        type: string
+        docs: Language code for the fine-tune
+      model_id:
+        type: string
+        docs: Base model ID to fine-tune from
+      dataset:
+        type: string
+        docs: Dataset ID containing training files
+
+  PaginatedFineTunes:
+    docs: Paginated list of fine-tunes
+    properties:
+      data:
+        type: list<FineTune>
+        docs: List of fine-tune objects
+      has_more:
+        type: boolean
+        docs: Whether there are more fine-tunes available
+
+  PaginatedVoices:
+    docs: Paginated list of voices created from a fine-tune
+    properties:
+      data:
+        type: list<voices.Voice>
+        docs: List of voice objects
+      has_more:
+        type: boolean
+        docs: Whether there are more voices available
+
+imports:
+  voices: ./voices.yml
+
+service:
+  base-path: /fine-tunes
+  auth: true
+  endpoints:
+    list:
+      docs: Paginated list of all fine-tunes for the authenticated user
+      path: /
+      method: GET
+      request:
+        name: ListFineTunesRequest
+        query-parameters:
+          limit:
+            type: optional<integer>
+            default: 10
+            docs: The number of fine-tunes to return per page, ranging between 1 and 100.
+          starting_after:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `starting_after` is a fine-tune ID that defines your
+              place in the list. For example, if you make a /fine-tunes request and receive 20
+              objects, ending with `fine_tune_abc123`, your subsequent call can include
+              `starting_after=fine_tune_abc123` to fetch the next page of the list.
+          ending_before:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `ending_before` is a fine-tune ID that defines your
+              place in the list. For example, if you make a /fine-tunes request and receive 20
+              objects, starting with `fine_tune_abc123`, your subsequent call can include
+              `ending_before=fine_tune_abc123` to fetch the previous page of the list.
+      response: PaginatedFineTunes
+
+    create:
+      docs: Create a new fine-tune
+      path: /
+      method: POST
+      request: CreateFineTuneRequest
+      response: FineTune
+
+    get:
+      docs: Retrieve a specific fine-tune by ID
+      path: /{id}
+      method: GET
+      path-parameters:
+        id:
+          type: string
+          docs: ID of the fine-tune to retrieve
+      response: FineTune
+
+    delete:
+      docs: Delete a fine-tune
+      path: /{id}
+      method: DELETE
+      path-parameters:
+        id:
+          type: string
+          docs: ID of the fine-tune to delete
+
+    listVoices:
+      docs: List all voices created from a fine-tune
+      path: /{id}/voices
+      method: GET
+      path-parameters:
+        id:
+          type: string
+          docs: ID of the fine-tune to list voices from
+      request:
+        name: ListVoicesRequest
+        query-parameters:
+          limit:
+            type: optional<integer>
+            default: 10
+            docs: The number of voices to return per page, ranging between 1 and 100.
+          starting_after:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `starting_after` is a voice ID that defines your
+              place in the list. For example, if you make a fine-tune voices request and receive 20
+              objects, ending with `voice_abc123`, your subsequent call can include
+              `starting_after=voice_abc123` to fetch the next page of the list.
+          ending_before:
+            type: optional<string>
+            docs: |
+              A cursor to use in pagination. `ending_before` is a voice ID that defines your
+              place in the list. For example, if you make a fine-tune voices request and receive 20
+              objects, starting with `voice_abc123`, your subsequent call can include
+              `ending_before=voice_abc123` to fetch the previous page of the list.
+      response: PaginatedVoices
