@@ -43,9 +43,15 @@ navigation:
               - page: Clone Voices
                 path: ../apis/version-2025-04-16/clone-voices-2025-04-16.mdx
                 icon: fa-clone
-              - page: Clone Voices (Pro)
-                path: ../apis/version-2025-04-16/pvc-2025-04-16.mdx
+              - section: Clone Voices (Pro)
                 icon: fa-microchip
+                contents:
+                  - page: Playground
+                    path: ../apis/version-2025-04-16/pvc-2025-04-16.mdx
+                    icon: fa-browser
+                  - page: API
+                    path: ../apis/version-2025-04-16/pvc-python-example.mdx
+                    icon: fa-code
               - page: Specify Custom Pronunciations
                 path: ../build-with-sonic/capabilities/custom-pronunciations.mdx
                 icon: fa-microphone
