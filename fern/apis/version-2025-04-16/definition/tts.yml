@@ -398,7 +398,7 @@ types:
       pronunciation_dict_ids:
         type: optional<list<string>>
         docs: |
-          A list of pronunciation dictionary IDs to use for the generation.
+          A list of pronunciation dict IDs to use for the generation.
 
   TTSRequest:
     properties:
@@ -419,7 +419,7 @@ types:
       pronunciation_dict_ids:
         type: optional<list<string>>
         docs: |
-          A list of pronunciation dictionary IDs to use for the generation.
+          A list of pronunciation dict IDs to use for the generation.
 
   SupportedLanguage:
     docs: |
