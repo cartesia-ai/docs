@@ -1,16 +1,16 @@
 types:
   PronunciationDictItem:
-    docs: A pronunciation dictionary item mapping text to an alternative pronunciation
+    docs: A pronunciation dictionary item mapping text to a custom pronunciation
     properties:
       text:
         type: string
         docs: The original text to be replaced
       alias:
         type: string
-        docs: The phonetic representation or alternative pronunciation of the text
+        docs: A phonetic representation or text to be said in place of the original text
 
   PronunciationDict:
-    docs: A dictionary of text-to-pronunciation mappings
+    docs: A dictionary of text-to-alias mappings
     properties:
       id:
         type: string
