@@ -75,6 +75,9 @@ navigation:
                 icon: fa-spell-check
       - section: Integrate with Sonic
         contents:
+          - page: MCP
+            path: ../integrate-with-sonic/mcp.mdx
+            icon: fa-circle
           - page: LiveKit
             path: ../integrate-with-sonic/livekit.mdx
             icon: fa-circle
