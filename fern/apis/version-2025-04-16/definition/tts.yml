@@ -356,6 +356,10 @@ types:
         type: optional<boolean>
         docs: |
           Whether to use the original transcript for timestamps.
+      pronunciation_dict_ids:
+        type: optional<list<string>>
+        docs: |
+          A list of pronunciation dict IDs to use for the generation.
 
   WebSocketRawOutputFormat:
     properties:
@@ -391,6 +395,10 @@ types:
       context_id: optional<string>
       max_buffer_delay_ms: optional<integer>
       speed: optional<ModelSpeed>
+      pronunciation_dict_ids:
+        type: optional<list<string>>
+        docs: |
+          A list of pronunciation dict IDs to use for the generation.
 
   TTSRequest:
     properties:
@@ -408,6 +416,10 @@ types:
           The maximum duration of the audio in seconds. You do not usually need to specify this.
           If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
       speed: optional<ModelSpeed>
+      pronunciation_dict_ids:
+        type: optional<list<string>>
+        docs: |
+          A list of pronunciation dict IDs to use for the generation.
 
   SupportedLanguage:
     docs: |
