@@ -77,7 +77,7 @@ navigation:
         contents:
           - page: MCP
             path: ../integrate-with-sonic/mcp.mdx
-            icon: fa-circle
+            icon: fa-comment
           - page: LiveKit
             path: ../integrate-with-sonic/livekit.mdx
             icon: fa-circle
