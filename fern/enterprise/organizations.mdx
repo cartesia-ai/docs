@@ -80,11 +80,15 @@ Because voices from multi-email accounts are not accessible with your organizati
 
 The guide will help you create an organization and invite your team.
 
-### We temporarily allow your voices to be accessible with your organization's API key
+### We temporarily allow your voices to be accessible with your organization's API key _for TTS endpoints only_
 
 Let us know that you've created an organization, and we'll temporarily allow your voices to be accessible using your organization's API key.
 
-Note that these voices will _not_ be visible on the playground, but they will be accessible to your organization via the API.
+Note that these voices will _not_ be visible on the playground, and they will _only_ be accessible on the following endpoints:
+
+- `/tts/bytes`
+- `/tts/websocket`
+- `/tts/sse`
 
 ### Test that you can access your voices using your organization's API key
 
@@ -131,7 +135,7 @@ Once you've tested that you can access your voices using your organization's API
 
 We will fully transfer the voices to your organization, rendering them inaccessible to you via the old multi-email account's API key.
 
-## We downgrade your old account
+### We downgrade your old account
 
 <Warning>
 	This will immediately cause requests from API keys made in your personal account workspace to be subject to free tier limits.
