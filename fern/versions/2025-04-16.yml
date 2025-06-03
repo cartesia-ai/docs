@@ -144,7 +144,7 @@ navigation:
           - stt:
               - stt.transcribe
               - stt.stt
-              - page: OpenAI Compatibility
+              - page: OpenAI Compatibility (Batch)
                 path: ../api-reference/stt-openai-compatibility.mdx
                 icon: fa-arrows-left-right
           - voices: []
