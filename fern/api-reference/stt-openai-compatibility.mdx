@@ -1,0 +1,131 @@
+---
+title: "OpenAI SDK Compatibility (Batch)"
+description: "Use Cartesia's Batch Speech-to-Text API with OpenAI's client libraries"
+---
+
+<Info>
+**Batch STT Only**: This documentation covers OpenAI SDK compatibility for Cartesia's Batch Speech-to-Text transcription. For real-time transcription, use our [Streaming STT endpoint](/api-reference/stt/channel) which doesn't have OpenAI SDK compatibility.
+</Info>
+
+Cartesia's Batch Speech-to-Text API provides full compatibility with OpenAI's client libraries through the `/audio/transcriptions` endpoint. This allows for seamless migration from OpenAI's Whisper API to Cartesia's STT service.
+
+## Endpoint Options
+
+You have two ways to access Cartesia's Batch STT functionality:
+
+- **Cartesia Native**: `/stt` - Our primary endpoint with full feature support
+- **OpenAI Compatible**: `/audio/transcriptions` - OpenAI's existing endpoint with identical functionality for seamless migration
+
+## OpenAI SDK Usage
+
+For OpenAI SDK users, use the `/audio/transcriptions` endpoint which is fully compatible with OpenAI client libraries:
+
+### Parameter Compatibility
+
+<Warning>
+**Important**: While the `/audio/transcriptions` endpoint accepts OpenAI-style parameters for compatibility, only specific parameters actually affect Cartesia's STT model output.
+</Warning>
+
+**Supported Parameters** (affect transcription output):
+- `file` - The audio file to transcribe
+- `model` - Use `whisper-large-v3-turbo` for Cartesia's latest model
+- `language` - Input audio language (ISO-639-1 format)
+- `response_format` - Output format (`json` or `text`)
+- `timestamp_granularities` - Timestamp granularity (only `word` level supported)
+
+**Ignored Parameters** (accepted but have no effect):
+- `prompt` - Not used by Cartesia's model
+- `temperature` - Not applicable to Cartesia's deterministic model
+- Other OpenAI-specific parameters
+
+For the complete parameter reference, see our [Batch STT API documentation](/api-reference/stt/transcribe).
+
+### Python Example
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="your-cartesia-api-key",
+    base_url="https://api.cartesia.ai",
+    default_headers={"Cartesia-Version": "2025-04-16"}
+)
+
+with open("audio.wav", "rb") as audio_file:
+    transcript = client.audio.transcriptions.create(
+        file=audio_file,
+        model="whisper-large-v3-turbo",
+        language="en",
+        response_format="json",
+        timestamp_granularities=["word"]
+    )
+    
+print(transcript.text)
+```
+
+### Node.js Example
+
+```typescript
+import OpenAI from 'openai';
+import fs from 'fs';
+
+const client = new OpenAI({
+  apiKey: 'your-cartesia-api-key',
+  baseURL: 'https://api.cartesia.ai',
+  defaultHeaders: {
+    'Cartesia-Version': '2025-04-16'
+  }
+});
+
+const transcription = await client.audio.transcriptions.create({
+  file: fs.createReadStream('audio.wav'),
+  model: 'whisper-large-v3-turbo',
+  language: 'en',
+  response_format: 'json',
+  timestamp_granularities: ['word']
+});
+
+console.log(transcription.text);
+```
+
+## Direct API Usage
+
+Both endpoints accept identical parameters and return the same response format:
+
+### Cartesia Native Endpoint
+
+```bash
+curl -X POST https://api.cartesia.ai/stt \
+  -H "X-API-Key: your-cartesia-api-key" \
+  -H "Cartesia-Version: 2025-04-16" \
+  -F "file=@audio.wav" \
+  -F "model=whisper-large-v3-turbo" \
+  -F "language=en" \
+  -F "response_format=json" \
+  -F "timestamp_granularities[]=word"
+```
+
+### OpenAI-Compatible Endpoint
+
+```bash
+curl -X POST https://api.cartesia.ai/audio/transcriptions \
+  -H "X-API-Key: your-cartesia-api-key" \
+  -H "Cartesia-Version: 2025-04-16" \
+  -F "file=@audio.wav" \
+  -F "model=whisper-large-v3-turbo" \
+  -F "language=en" \
+  -F "response_format=json" \
+  -F "timestamp_granularities[]=word"
+```
+
+## Migration from OpenAI
+
+To migrate from OpenAI's Whisper API to Cartesia:
+
+1. **Update the base URL**: Change from `https://api.openai.com/v1` to `https://api.cartesia.ai`
+2. **Update authentication**: Replace your OpenAI API key with your Cartesia API key
+3. **Add version header**: Include `Cartesia-Version: 2025-04-16` in requests
+4. **Update model names**: Use `whisper-large-v3-turbo` instead of OpenAI's model names
+5. **Keep the same endpoint**: Continue using `/audio/transcriptions`
+
+The response format and parameters remain identical, making migration seamless. 

@@ -1,0 +1,282 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+service:
+  base-path: /stt
+  auth: true
+  endpoints:
+    transcribe:
+      path: ""
+      method: POST
+      display-name: Speech to Text (Batch)
+      docs: |
+        Transcribes audio into the input language using Cartesia's Speech-to-Text API.
+        
+        The audio file is uploaded as a multipart form and processed completely before returning the full transcription.
+
+
+        <Note>
+        For OpenAI SDK compatibility and migration guide, see our [OpenAI Compatibility](/api-reference/stt/openai-compatibility) documentation.
+        </Note>
+      request:
+        name: TranscriptionRequest
+        body:
+          properties:
+            file:
+              type: file
+              docs: |
+                The audio file object (not file name) to transcribe, in one of these formats: flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, or webm.
+            model:
+              type: string
+              docs: |
+                ID of the model to use. Use `whisper-large-v3-turbo` for the latest Cartesia Whisper model.
+            language:
+              type: optional<string>
+              docs: |
+                The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency. Defaults to "en".
+            response_format:
+              type: optional<ResponseFormat>
+              docs: |
+                The format of the transcript output. Defaults to "json".
+            timestamp_granularities:
+              type: optional<list<TimestampGranularity>>
+              docs: |
+                The timestamp granularities to populate for this transcription. Currently only "word" level timestamps are supported. Cannot be used with response_format "text".
+      response: TranscriptionResponse
+      examples:
+        - name: Basic Transcription
+          request:
+            # file: <audio file>
+            model: "whisper-large-v3-turbo"
+            language: "en"
+            response_format: "json"
+          response:
+            body:
+              text: "Hello, this is a test transcription."
+              language: "en"
+              duration: 2.5
+        - name: With Word Timestamps
+          request:
+            # file: <audio file>
+            model: "whisper-large-v3-turbo"
+            language: "en"
+            response_format: "json"
+            timestamp_granularities: ["word"]
+          response:
+            body:
+              text: "Hello world"
+              language: "en" 
+              duration: 1.2
+              words:
+                - word: "Hello"
+                  start: 0.0
+                  end: 0.5
+                - word: "world"
+                  start: 0.6
+                  end: 1.0
+
+channel:
+  path: /stt/websocket
+  display-name: Speech to Text (Streaming)
+  docs: |
+    This endpoint creates a bidirectional WebSocket connection for real-time speech transcription.
+    
+    Send audio data as binary messages and receive transcription results as they become available. The API supports both interim results and final transcriptions with intelligent endpointing.
+    
+    **Usage Pattern:**
+    1. Connect to the WebSocket with appropriate query parameters
+    2. Send audio chunks as binary WebSocket messages (PCM 16-bit little-endian at specified sample rate)
+    3. Receive transcription messages as JSON
+    4. Send "finalize" text message to flush any remaining audio and close cleanly
+    
+    **Audio Requirements:**
+    - Format: PCM 16-bit little-endian (`pcm_s16le`)
+    - Recommended sample rate: 16000 Hz
+    - Send audio in small chunks (e.g., 100ms intervals) for best latency
+
+  auth: true
+  
+  query-parameters:
+    model:
+      type: string
+      docs: |
+        ID of the model to use for transcription. Use `whisper-large-v3-turbo` for the latest Cartesia Whisper model.
+    language: 
+      type: optional<string>
+      docs: |
+        The language of the input audio in ISO-639-1 format. Defaults to "en".
+    detect_language:
+      type: optional<boolean>
+      docs: |
+        Whether to detect the language automatically. Defaults to false.
+    interim_results:
+      type: optional<boolean>
+      docs: |
+        Whether to return interim transcription results before the final result. Defaults to false.
+    encoding:
+      type: optional<string>
+      docs: |
+        The encoding format of the audio data. Currently only "pcm_s16le" (16-bit PCM little-endian) is supported. Defaults to "pcm_s16le".
+    sample_rate:
+      type: optional<integer>
+      docs: |
+        The sample rate of the audio in Hz. Recommended: 16000. Defaults to 16000.
+    endpointing:
+      type: optional<string>
+      docs: |
+        Endpointing strategy for detecting when the user has stopped speaking. Can be a boolean or silence detection configuration.
+    cartesia_version:
+      type: optional<string>
+      docs: |
+        You can specify this instead of the `Cartesia-Version` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
+
+        You do not need to specify this if you are passing the header.
+    api_key:
+      type: optional<string>
+      docs: |
+        You can specify this instead of the `X-API-Key` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
+
+        You do not need to specify this if you are passing the header.
+
+  messages:
+    send:
+      display-name: "Send Audio"
+      origin: client
+      body: string
+      docs: |
+        Send either binary audio data (as base64 encoded string) or text commands like "finalize" to the WebSocket.
+        
+        For audio data: Send PCM 16-bit little-endian audio encoded as base64 string.
+        For commands: Send plain text commands like "finalize" to flush remaining audio.
+
+    receive:
+      display-name: "Receive Transcription" 
+      origin: server
+      body: StreamingTranscriptionResponse
+      docs: |
+        The server will send transcription results as they become available. Messages can be of type `transcript` or `error`.
+
+  examples:
+    - name: Streaming Transcription
+      messages:
+        - type: send
+          body: "aSDinaTvuI8gbWludGxpZnk="
+        - type: receive
+          body:
+            type: "transcript"
+            request_id: "req_123"
+            text: "Hello"
+            is_final: false
+            duration: 0.5
+            language: "en"
+        - type: send
+          body: "bXVjaGJldHRlcmF1ZGlv"
+        - type: receive  
+          body:
+            type: "transcript"
+            request_id: "req_123"
+            text: "Hello world"
+            is_final: true
+            duration: 1.2
+            language: "en"
+            words:
+              - word: "Hello"
+                start: 0.0
+                end: 0.5
+                probability: 0.95
+              - word: "world"
+                start: 0.6
+                end: 1.0
+                probability: 0.92
+            probability: 0.93
+        - type: send
+          body: "finalize"
+
+types:
+  ResponseFormat:
+    enum:
+      - json
+      - text
+    docs: |
+      The format of the transcript output:
+      - `json`: Returns a JSON object with the transcription and metadata
+      - `text`: Returns only the raw text of the transcription
+
+  TimestampGranularity:
+    enum:
+      - word
+    docs: |
+      The granularity of timestamps to include in the transcription:
+      - `word`: Include start and end timestamps for each word
+      
+      Note: Segment-level timestamps are not currently supported.
+
+  TranscriptionWord:
+    properties:
+      word:
+        type: string
+        docs: The transcribed word.
+      start:
+        type: double
+        docs: Start time of the word in seconds.
+      end:
+        type: double  
+        docs: End time of the word in seconds.
+      probability:
+        type: optional<double>
+        docs: Confidence score for this word (0.0 to 1.0).
+
+  TranscriptionResponse:
+    properties:
+      text:
+        type: string
+        docs: The transcribed text.
+      language:
+        type: optional<string>
+        docs: The detected or specified language of the input audio.
+      duration:
+        type: optional<double>
+        docs: The duration of the input audio in seconds.
+      words:
+        type: optional<list<TranscriptionWord>>
+        docs: Word-level timestamps, if requested via timestamp_granularities.
+
+  StreamingTranscriptionResponse:
+    discriminant: type
+    union:
+      transcript: TranscriptMessage
+      error: ErrorMessage
+    docs: |
+      The server sends transcription results or error messages. Each message has a `type` field to distinguish between transcript results and errors.
+
+  TranscriptMessage:
+    properties:
+      request_id:
+        type: string
+        docs: Unique identifier for this transcription session.
+      text:
+        type: string
+        docs: The transcribed text. May be partial or final depending on is_final.
+      is_final:
+        type: boolean
+        docs: Whether this is a final transcription result or an interim result.
+      duration:
+        type: optional<double>
+        docs: The duration of the audio transcribed so far, in seconds.
+      language:
+        type: optional<string>
+        docs: The detected or specified language of the input audio.
+      words:
+        type: optional<list<TranscriptionWord>>
+        docs: Word-level timestamps for the current transcription segment.
+      probability:
+        type: optional<double>
+        docs: Confidence score for the transcription (0.0 to 1.0).
+
+  ErrorMessage:
+    properties:
+      request_id:
+        type: optional<string>
+        docs: The request ID associated with the error, if applicable.
+      message:
+        type: string
+        docs: Human-readable error message describing what went wrong.
