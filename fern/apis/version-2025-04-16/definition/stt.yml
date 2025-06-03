@@ -84,14 +84,18 @@ channel:
     
     **Usage Pattern:**
     1. Connect to the WebSocket with appropriate query parameters
-    2. Send audio chunks as binary WebSocket messages (PCM 16-bit little-endian at specified sample rate)
+    2. Send audio chunks as **binary WebSocket messages** (PCM 16-bit little-endian at specified sample rate)
     3. Receive transcription messages as JSON
-    4. Send "finalize" text message to flush any remaining audio and close cleanly
+    4. Send "finalize" as a **text message** to flush any remaining audio and close cleanly
     
     **Audio Requirements:**
     - Format: PCM 16-bit little-endian (`pcm_s16le`)
     - Recommended sample rate: 16000 Hz
     - Send audio in small chunks (e.g., 100ms intervals) for best latency
+
+    **Message Types:**
+    - **Binary messages**: Raw audio data (PCM 16-bit little-endian)
+    - **Text messages**: Commands like "finalize" to end the session
 
   auth: true
   
@@ -125,13 +129,13 @@ channel:
       docs: |
         Endpointing strategy for detecting when the user has stopped speaking. Can be a boolean or silence detection configuration.
     cartesia_version:
-      type: optional<string>
+      type: <string>
       docs: |
         You can specify this instead of the `Cartesia-Version` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
 
         You do not need to specify this if you are passing the header.
     api_key:
-      type: optional<string>
+      type: <string>
       docs: |
         You can specify this instead of the `X-API-Key` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
 
@@ -139,17 +143,22 @@ channel:
 
   messages:
     send:
-      display-name: "Send Audio or Command"
+      display-name: "Send Audio Data or Commands"
       origin: client
       body: string
       docs: |
-        Send binary audio data or text commands to the WebSocket.
+        The WebSocket accepts two types of messages:
         
-        **For audio data**: Send PCM 16-bit little-endian audio as binary WebSocket messages.
-        **For commands**: Send text commands like "finalize" to flush remaining audio and complete transcription.
+        **Binary Messages (Audio Data)**:
+        Send raw PCM 16-bit little-endian audio data as binary WebSocket messages.
+        This is the primary way to send audio for transcription.
         
-        The WebSocket accepts both binary messages (audio data) and text messages (commands).
-        Note: While the schema shows 'string', this endpoint accepts binary data directly when sending audio.
+        **Text Messages (Commands)**:
+        Send text commands to control the transcription session:
+        - `"finalize"` - Flush any remaining audio and complete the transcription session
+        
+        **Important**: While the schema shows 'string' for compatibility with documentation tools, 
+        this endpoint primarily expects binary audio data. Text messages are only used for commands.
 
     receive:
       display-name: "Receive Transcription" 
@@ -159,10 +168,10 @@ channel:
         The server will send transcription results as they become available. Messages can be of type `transcript` or `error`.
 
   examples:
-    - name: Streaming Transcription with Audio
+    - name: Streaming Transcription Session
       messages:
         - type: send
-          body: "<binary audio chunk 1>"
+          body: "UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAB7f35+"
         - type: receive
           body:
             type: "transcript"
@@ -172,7 +181,7 @@ channel:
             duration: 0.5
             language: "en"
         - type: send
-          body: "<binary audio chunk 2>"
+          body: "aSDinaTvuI8gbWludGxpZnk8IAB9fn1+fX19fX19fX19fX19fX19fX19fX19fX19"
         - type: receive  
           body:
             type: "transcript"
@@ -191,17 +200,15 @@ channel:
                 end: 1.0
                 probability: 0.92
             probability: 0.93
-    - name: Finalizing Session
-      messages:
         - type: send
           body: "finalize"
         - type: receive
           body:
             type: "transcript"
             request_id: "req_123"
-            text: "Final transcript text"
+            text: "Hello world"
             is_final: true
-            duration: 2.0
+            duration: 1.2
             language: "en"
 
 types:
