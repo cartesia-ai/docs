@@ -146,6 +146,7 @@ navigation:
               - stt.stt
               - page: OpenAI Compatibility (Batch)
                 path: ../api-reference/stt-openai-compatibility.mdx
+                slug: stt-openai-compatibility
                 icon: fa-arrows-left-right
           - voices: []
           - voice-changer: []
