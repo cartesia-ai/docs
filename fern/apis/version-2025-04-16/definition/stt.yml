@@ -15,7 +15,7 @@ service:
 
 
         <Note>
-        For OpenAI SDK compatibility and migration guide, see our [OpenAI Compatibility](/api-reference/stt/stt-openai-compatibility) documentation.
+        For OpenAI SDK compatibility and migration guide, see our [OpenAI Compatibility](/api-reference/stt-openai-compatibility) documentation.
         </Note>
       request:
         name: TranscriptionRequest
@@ -141,7 +141,7 @@ channel:
     send:
       display-name: "Send Audio or Command"
       origin: client
-      body: bytes
+      body: string
       docs: |
         Send binary audio data or text commands to the WebSocket.
         
@@ -149,6 +149,7 @@ channel:
         **For commands**: Send text commands like "finalize" to flush remaining audio and complete transcription.
         
         The WebSocket accepts both binary messages (audio data) and text messages (commands).
+        Note: While the schema shows 'string', this endpoint accepts binary data directly when sending audio.
 
     receive:
       display-name: "Receive Transcription" 
