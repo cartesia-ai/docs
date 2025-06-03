@@ -139,14 +139,16 @@ channel:
 
   messages:
     send:
-      display-name: "Send Audio"
+      display-name: "Send Audio or Command"
       origin: client
-      body: string
+      body: bytes
       docs: |
-        Send either binary audio data (as base64 encoded string) or text commands like "finalize" to the WebSocket.
+        Send binary audio data or text commands to the WebSocket.
         
-        For audio data: Send PCM 16-bit little-endian audio encoded as base64 string.
-        For commands: Send plain text commands like "finalize" to flush remaining audio.
+        **For audio data**: Send PCM 16-bit little-endian audio as binary WebSocket messages.
+        **For commands**: Send text commands like "finalize" to flush remaining audio and complete transcription.
+        
+        The WebSocket accepts both binary messages (audio data) and text messages (commands).
 
     receive:
       display-name: "Receive Transcription" 
@@ -156,10 +158,10 @@ channel:
         The server will send transcription results as they become available. Messages can be of type `transcript` or `error`.
 
   examples:
-    - name: Streaming Transcription
+    - name: Streaming Transcription with Audio
       messages:
         - type: send
-          body: "aSDinaTvuI8gbWludGxpZnk="
+          body: "<binary audio chunk 1>"
         - type: receive
           body:
             type: "transcript"
@@ -169,7 +171,7 @@ channel:
             duration: 0.5
             language: "en"
         - type: send
-          body: "bXVjaGJldHRlcmF1ZGlv"
+          body: "<binary audio chunk 2>"
         - type: receive  
           body:
             type: "transcript"
@@ -188,8 +190,18 @@ channel:
                 end: 1.0
                 probability: 0.92
             probability: 0.93
+    - name: Finalizing Session
+      messages:
         - type: send
           body: "finalize"
+        - type: receive
+          body:
+            type: "transcript"
+            request_id: "req_123"
+            text: "Final transcript text"
+            is_final: true
+            duration: 2.0
+            language: "en"
 
 types:
   ResponseFormat:
