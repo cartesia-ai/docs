@@ -15,7 +15,7 @@ service:
 
 
         <Note>
-        For OpenAI SDK compatibility and migration guide, see our [OpenAI Compatibility](/api-reference/stt-openai-compatibility) documentation.
+        For OpenAI SDK compatibility and migration guide, see our [OpenAI Compatibility](/api-reference/stt/stt-openai-compatibility) documentation.
         </Note>
       request:
         name: TranscriptionRequest
