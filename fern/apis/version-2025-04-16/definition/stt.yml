@@ -123,7 +123,7 @@ channel:
         
         Currently supported: `pcm_s16le` - 16-bit signed integer PCM, little-endian (default)
     sample_rate:
-      type: <integer>
+      type: integer
       docs: |
         The sample rate of the audio in Hz. Must match the actual sample rate of your audio data. Defaults to 16000.
     endpointing:
@@ -131,13 +131,13 @@ channel:
       docs: |
         Endpointing strategy for detecting when the user has stopped speaking. Can be a boolean or silence detection configuration.
     cartesia_version:
-      type: <string>
+      type: string
       docs: |
         You can specify this instead of the `Cartesia-Version` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
 
         You do not need to specify this if you are passing the header.
     api_key:
-      type: <string>
+      type: string
       docs: |
         You can specify this instead of the `X-API-Key` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
 
