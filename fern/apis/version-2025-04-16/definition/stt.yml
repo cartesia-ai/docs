@@ -117,7 +117,7 @@ channel:
       docs: |
         Whether to return interim transcription results before the final result. Defaults to false.
     encoding:
-      type: optional<string>
+      type: optional<STTEncoding>
       docs: |
         The encoding format of the audio data. This determines how the server interprets the raw binary audio data you send.
         
@@ -291,3 +291,17 @@ types:
       message:
         type: string
         docs: Human-readable error message describing what went wrong.
+
+  STTEncoding:
+    enum:
+      - pcm_s16le
+      # - pcm_f32le
+      # - pcm_mulaw
+      # - pcm_alaw
+    docs: |
+      The encoding format for audio data sent to the STT WebSocket.
+      
+      Currently supported:
+      - `pcm_s16le` - 16-bit signed integer PCM, little-endian
+      
+      Future formats may include pcm_f32le, pcm_mulaw, etc.
