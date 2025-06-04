@@ -14,7 +14,7 @@ To stream in inputs on a context, just pass a `continue` flag (set to `true`) fo
 
 To finish a context, just set `continue` to `false`. If you do not know the last transcript in advance, you can send an input with an empty transcript and `continue` set to `false`.
 
-<Note>Contexts automatically expire 1 second after the last audio output is streamed out. Attempting to send another input on the same context ID immediately after expiry has undefined behavior.</Note>
+<Note>Contexts automatically expire 1 second after the last audio output is streamed out. Attempting to send another input on the same context ID after expiry is not supported.</Note>
 
 <ParamField body="continue" type="boolean" default={false}>
     Whether this input may be followed by more inputs.
