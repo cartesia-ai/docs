@@ -84,17 +84,17 @@ channel:
     
     **Usage Pattern:**
     1. Connect to the WebSocket with appropriate query parameters
-    2. Send audio chunks as **binary WebSocket messages** (PCM 16-bit little-endian at specified sample rate)
+    2. Send audio chunks as **binary WebSocket messages** in the format specified by the `encoding` parameter
     3. Receive transcription messages as JSON
     4. Send "finalize" as a **text message** to flush any remaining audio and close cleanly
     
     **Audio Requirements:**
-    - Format: PCM 16-bit little-endian (`pcm_s16le`)
-    - Recommended sample rate: 16000 Hz
+    - Format: Determined by the `encoding` parameter (currently supports `pcm_s16le`)
+    - Sample rate: Specified by the `sample_rate` parameter
     - Send audio in small chunks (e.g., 100ms intervals) for best latency
 
     **Message Types:**
-    - **Binary messages**: Raw audio data (PCM 16-bit little-endian)
+    - **Binary messages**: Raw audio data in the specified encoding format
     - **Text messages**: Commands like "finalize" to end the session
 
   auth: true
@@ -119,11 +119,13 @@ channel:
     encoding:
       type: optional<string>
       docs: |
-        The encoding format of the audio data. Currently only "pcm_s16le" (16-bit PCM little-endian) is supported. Defaults to "pcm_s16le".
+        The encoding format of the audio data. This determines how the server interprets the raw binary audio data you send.
+        
+        Currently supported: `pcm_s16le` - 16-bit signed integer PCM, little-endian (default)
     sample_rate:
-      type: optional<integer>
+      type: <integer>
       docs: |
-        The sample rate of the audio in Hz. Recommended: 16000. Defaults to 16000.
+        The sample rate of the audio in Hz. Must match the actual sample rate of your audio data. Defaults to 16000.
     endpointing:
       type: optional<string>
       docs: |
@@ -147,18 +149,17 @@ channel:
       origin: client
       body: string
       docs: |
-        The WebSocket accepts two types of messages:
+        **Important**: The WebSocket accepts binary and text messages differently than shown here.
         
-        **Binary Messages (Audio Data)**:
-        Send raw PCM 16-bit little-endian audio data as binary WebSocket messages.
-        This is the primary way to send audio for transcription.
+        **For Audio Data (Binary Messages)**:
+        Send raw audio data as binary WebSocket messages in the format specified by your `encoding` parameter.
+        The server will interpret the binary data according to the encoding format you specified.
         
-        **Text Messages (Commands)**:
-        Send text commands to control the transcription session:
-        - `"finalize"` - Flush any remaining audio and complete the transcription session
+        **For Commands (Text Messages)**:
+        Send text commands like "finalize" to control the session.
         
-        **Important**: While the schema shows 'string' for compatibility with documentation tools, 
-        this endpoint primarily expects binary audio data. Text messages are only used for commands.
+        **Note**: The examples below use placeholders. In practice, you send raw binary audio data 
+        in your chosen encoding format for audio, and plain text for commands.
 
     receive:
       display-name: "Receive Transcription" 
@@ -171,44 +172,34 @@ channel:
     - name: Streaming Transcription Session
       messages:
         - type: send
-          body: "UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAB7f35+"
+          body: "<raw audio bytes in specified encoding>"
         - type: receive
           body:
             type: "transcript"
-            request_id: "req_123"
-            text: "Hello"
+            request_id: "58dfa4d4-91c5-410c-8529-6824c8f7aedc"
+            text: "How are you doing today?"
             is_final: false
             duration: 0.5
             language: "en"
         - type: send
-          body: "aSDinaTvuI8gbWludGxpZnk8IAB9fn1+fX19fX19fX19fX19fX19fX19fX19fX19"
+          body: "<raw audio bytes in specified encoding>"
         - type: receive  
           body:
             type: "transcript"
-            request_id: "req_123"
-            text: "Hello world"
-            is_final: true
+            request_id: "00d8bde7-3b9d-493c-b1d9-c67e6d49859c"
+            text: "I'm planning to visit the museum this weekend."
+            is_final: false
             duration: 1.2
             language: "en"
-            words:
-              - word: "Hello"
-                start: 0.0
-                end: 0.5
-                probability: 0.95
-              - word: "world"
-                start: 0.6
-                end: 1.0
-                probability: 0.92
-            probability: 0.93
         - type: send
           body: "finalize"
         - type: receive
           body:
             type: "transcript"
-            request_id: "req_123"
-            text: "Hello world"
+            request_id: "b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8"
+            text: "How are you doing today? I'm planning to visit the museum this weekend."
             is_final: true
-            duration: 1.2
+            duration: 1.7
             language: "en"
 
 types:
