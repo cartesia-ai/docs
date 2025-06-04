@@ -12,6 +12,7 @@ groups:
         github:
           repository: cartesia-ai/cartesia-python
         config:
+          should_generate_websocket_clients: true
           client:
             class_name: BaseCartesia
             filename: base_client.py
@@ -39,6 +40,7 @@ groups:
         github:
           repository: cartesia-ai/cartesia-js
         config:
+          shouldGenerateWebsocketClients: true
           namespaceExport: Cartesia
           allowCustomFetcher: true
           skipResponseValidation: true

@@ -149,17 +149,17 @@ channel:
       origin: client
       body: string
       docs: |
-        **Important**: The WebSocket accepts binary and text messages differently than shown here.
+        **Important**: The actual WebSocket implementation differs from this schema representation.
         
-        **For Audio Data (Binary Messages)**:
-        Send raw audio data as binary WebSocket messages in the format specified by your `encoding` parameter.
-        The server will interpret the binary data according to the encoding format you specified.
+        **In Practice:**
+        - Send **binary WebSocket messages** containing raw audio data in the format specified by `encoding` parameter
+        - Send **text WebSocket messages** with the string "finalize" to end the session
         
-        **For Commands (Text Messages)**:
-        Send text commands like "finalize" to control the session.
+        **This schema shows text for compatibility, but clients must send binary data for audio.**
         
-        **Note**: The examples below use placeholders. In practice, you send raw binary audio data 
-        in your chosen encoding format for audio, and plain text for commands.
+        **Audio Requirements:**
+        - Send audio in small chunks (e.g., 100ms intervals) for optimal latency
+        - Audio format must match the `encoding` and `sample_rate` parameters
 
     receive:
       display-name: "Receive Transcription" 
@@ -172,7 +172,7 @@ channel:
     - name: Streaming Transcription Session
       messages:
         - type: send
-          body: "<raw audio bytes in specified encoding>"
+          body: "<binary audio data - send as binary WebSocket message>"
         - type: receive
           body:
             type: "transcript"
@@ -182,7 +182,7 @@ channel:
             duration: 0.5
             language: "en"
         - type: send
-          body: "<raw audio bytes in specified encoding>"
+          body: "<binary audio data - send as binary WebSocket message>"
         - type: receive  
           body:
             type: "transcript"
@@ -266,7 +266,10 @@ types:
         docs: Unique identifier for this transcription session.
       text:
         type: string
-        docs: The transcribed text. May be partial or final depending on is_final.
+        docs: |
+          The transcribed text. May be partial or final depending on is_final.
+          
+          **Note**: Text may be empty in initial responses while the system accumulates sufficient audio for transcription. This is normal behavior - wait for responses with non-empty text or monitor is_final for completion status.
       is_final:
         type: boolean
         docs: Whether this is a final transcription result or an interim result.
