@@ -4,7 +4,7 @@ groups:
   python-sdk:
     generators:
       - name: fernapi/fern-python-sdk
-        version: 4.3.13
+        version: 4.21.3
         output:
           location: pypi
           package-name: "cartesia"
@@ -12,6 +12,7 @@ groups:
         github:
           repository: cartesia-ai/cartesia-python
         config:
+          should_generate_websocket_clients: true
           client:
             class_name: BaseCartesia
             filename: base_client.py
@@ -31,7 +32,7 @@ groups:
   ts-sdk:
     generators:
       - name: fernapi/fern-typescript-node-sdk
-        version: 0.48.4
+        version: 0.51.7
         output:
           location: npm
           package-name: "@cartesia/cartesia-js"
@@ -39,6 +40,7 @@ groups:
         github:
           repository: cartesia-ai/cartesia-js
         config:
+          shouldGenerateWebsocketClients: true
           namespaceExport: Cartesia
           allowCustomFetcher: true
           skipResponseValidation: true
