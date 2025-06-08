@@ -18,7 +18,7 @@ service:
         body:
           properties:
             clip: file
-            voice[id]: 
+            voice_id:
               name: voice_id
               type: string
             output_format[container]:
