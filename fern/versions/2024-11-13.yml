@@ -31,9 +31,15 @@ navigation:
             icon: fa-code
       - section: Build with Cartesia
         contents:
-          - page: Models
-            path: ../build-with-sonic/models.mdx
+          - section: Models
             icon: fa-microchip
+            contents:
+              - page: TTS
+                path: ../build-with-sonic/models-tts.mdx
+                icon: fa-volume-high
+              - page: STT
+                path: ../build-with-sonic/models-stt.mdx
+                icon: fa-microphone
           - section: Capability Guides
             icon: fa-cubes
             contents:
@@ -129,5 +135,6 @@ navigation:
                   - page: Context Flushing and Flush IDs
                     path: ../api-reference/context-flushing-and-flush-ids.mdx
                     icon: fa-cube
+          - stt
           - voices: []
           - voice-changer: []
