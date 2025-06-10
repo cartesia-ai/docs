@@ -1,0 +1,198 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+channel:
+  path: /stt/websocket
+  display-name: Speech to Text (Streaming)
+  docs: |
+    This endpoint creates a bidirectional WebSocket connection for real-time speech transcription.
+
+    Our STT endpoint enables sending in a stream of audio as bytes encoded as PCM 16K samples, and provides transcription results as they become available.
+    
+    **Usage Pattern:**
+    1. Connect to the WebSocket with appropriate query parameters
+    2. Send audio chunks as **binary WebSocket messages** in pcm_s16le format at 16K sample rate
+    3. Receive transcription messages as JSON
+    4. Send `finalize` as a **text message** to flush any remaining audio (receives `flush_done` acknowledgment)
+    5. Send `done` as a **text message** to close the session cleanly (receives `done` acknowledgment and closes)
+
+  auth: true
+  
+  query-parameters:
+    model:
+      type: string
+      docs: |
+        ID of the model to use for transcription. Use `ink-whisper` for the latest Cartesia Whisper model.
+    language: 
+      type: optional<string>
+      docs: |
+        The language of the input audio in ISO-639-1 format. Defaults to `en`.
+    encoding:
+      type: optional<STTEncoding>
+      docs: |
+        The encoding format of the audio data. This determines how the server interprets the raw binary audio data you send.
+        
+        Currently supported: `pcm_s16le` - 16-bit signed integer PCM, little-endian (default)
+    sample_rate:
+      type: integer
+      docs: |
+        The sample rate of the audio in Hz, only `16000` is supported (default). Must match the actual sample rate of your audio data.
+    api_key:
+      type: string
+      docs: |
+        You can specify this instead of the `X-API-Key` header. This is particularly useful for use in the browser, where WebSockets do not support headers.
+
+        You do not need to specify this if you are passing the header.
+
+  messages:
+    send:
+      display-name: "Send Audio Data or Commands"
+      origin: client
+      body: string
+      docs: |        
+        **In Practice:**
+        - Send **binary WebSocket messages** containing raw audio data in the format specified by `encoding` parameter
+        - Send **text WebSocket messages** with commands:
+          - `finalize` - Flush any remaining audio and receive flush_done acknowledgment
+          - `done` - Flush remaining audio, close session, and receive done acknowledgment
+                
+        **Timeout Behavior:**
+        - If no audio data is sent for 20 seconds, the WebSocket will automatically disconnect
+        - The timeout resets with each message (audio data or text command) sent to the server
+        
+        **Audio Requirements:**
+        - Send audio in small chunks (e.g., 100ms intervals) for optimal latency
+        - Audio format must match the `encoding` and `sample_rate` parameters
+
+    receive:
+      display-name: "Receive Transcription" 
+      origin: server
+      body: StreamingTranscriptionResponse
+      docs: |
+        The server will send transcription results as they become available. Messages can be of type `transcript`, `flush_done`, `done`, or `error`.
+
+  examples:
+    - name: Streaming Transcription Session
+      messages:
+        - type: send
+          body: "<binary audio data - send as binary WebSocket message>"
+        - type: receive
+          body:
+            type: "transcript"
+            request_id: "58dfa4d4-91c5-410c-8529-6824c8f7aedc"
+            text: "How are you doing today?"
+            is_final: false
+            duration: 0.5
+            language: "en"
+        - type: send
+          body: "<binary audio data - send as binary WebSocket message>"
+        - type: receive  
+          body:
+            type: "transcript"
+            request_id: "00d8bde7-3b9d-493c-b1d9-c67e6d49859c"
+            text: "I'm planning to visit the museum this weekend."
+            is_final: false
+            duration: 1.2
+            language: "en"
+        - type: send
+          body: "finalize"
+        - type: receive
+          body:
+            type: "flush_done"
+            request_id: "b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8"
+        - type: receive
+          body:
+            type: "transcript"
+            request_id: "b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8"
+            text: "How are you doing today? I'm planning to visit the museum this weekend."
+            is_final: true
+            duration: 1.7
+            language: "en"
+        - type: send
+          body: "done"
+        - type: receive
+          body:
+            type: "done"
+            request_id: "b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8"
+
+types:
+  TranscriptionResponse:
+    properties:
+      text:
+        type: string
+        docs: The transcribed text.
+      language:
+        type: optional<string>
+        docs: The detected or specified language of the input audio.
+      duration:
+        type: optional<double>
+        docs: The duration of the input audio in seconds.
+
+  StreamingTranscriptionResponse:
+    discriminant: type
+    union:
+      transcript: TranscriptMessage
+      flush_done: FlushDoneMessage
+      done: DoneMessage
+      error: ErrorMessage
+    docs: |
+      The server sends transcription results, control messages, or error messages. Each message has a `type` field to distinguish between different message types.
+
+  TranscriptMessage:
+    properties:
+      request_id:
+        type: string
+        docs: Unique identifier for this transcription session.
+      text:
+        type: string
+        docs: |
+          The transcribed text. May be partial or final depending on is_final.
+          
+          **Note**: Text may be empty in initial responses while the system accumulates sufficient audio for transcription. This is normal behavior - wait for responses with non-empty text or monitor is_final for completion status.
+      is_final:
+        type: boolean
+        docs: Whether this is a final transcription result or an interim result.
+      duration:
+        type: optional<double>
+        docs: The duration of the audio transcribed so far, in seconds.
+      language:
+        type: optional<string>
+        docs: The detected or specified language of the input audio.
+
+  FlushDoneMessage:
+    properties:
+      request_id:
+        type: string
+        docs: Unique identifier for this transcription session.
+    docs: |
+      Acknowledgment message sent in response to a `finalize` command, indicating that all buffered audio has been flushed and processed.
+
+  DoneMessage:
+    properties:
+      request_id:
+        type: string
+        docs: Unique identifier for this transcription session.
+    docs: |
+      Acknowledgment message sent in response to a `done` command, indicating that the session is complete and the WebSocket will close.
+
+  ErrorMessage:
+    properties:
+      request_id:
+        type: optional<string>
+        docs: The request ID associated with the error, if applicable.
+      message:
+        type: string
+        docs: Human-readable error message describing what went wrong.
+
+  STTEncoding:
+    enum:
+      - pcm_s16le
+      # - pcm_f32le
+      # - pcm_mulaw
+      # - pcm_alaw
+    docs: |
+      The encoding format for audio data sent to the STT WebSocket.
+      
+      Currently supported:
+      - `pcm_s16le` - 16-bit signed integer PCM, little-endian
+      
+      Support for other formats will be added in the future.

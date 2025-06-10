@@ -6,6 +6,7 @@ instances:
         owner: cartesia-ai
         repo: docs
         branch: main
+
 title: Cartesia
 versions:
   - display-name: "2025-04-16"
@@ -96,7 +97,7 @@ redirects:
     destination: /get-started/make-an-api-request
     permanent: true
   - source: /getting-started/available-models
-    destination: /build-with-cartesia/models
+    destination: /build-with-cartesia/models-tts
     permanent: true
   - source: /getting-started/dev-quickstart
     destination: /get-started/make-an-api-request
@@ -181,4 +182,7 @@ redirects:
     permanent: true
   - source: /build-with-sonic/capability-guides/stream-inputs-using-continuations
     destination: /build-with-cartesia/capability-guides/stream-inputs-using-continuations
+    permanent: true
+  - source: /build-with-cartesia/models
+    destination: /build-with-cartesia/models-tts
     permanent: true
