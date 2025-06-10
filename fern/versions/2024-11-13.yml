@@ -70,22 +70,25 @@ navigation:
               - page: Spelling out Input Text
                 path: ../build-with-sonic/formatting-text-for-sonic/spelling-out-input-text.mdx
                 icon: fa-spell-check
-      - section: Integrate with Sonic
+      - section: Integrations
         contents:
+          - page: MCP
+            path: ../integrations/mcp.mdx
+            icon: fa-comment
           - page: LiveKit
-            path: ../integrate-with-sonic/livekit.mdx
+            path: ../integrations/livekit.mdx
             icon: fa-circle
           - page: Pipecat
-            path: ../integrate-with-sonic/pipecat.mdx
+            path: ../integrations/pipecat.mdx
             icon: fa-cat
           - page: Rasa
-            path: ../integrate-with-sonic/rasa.mdx
+            path: ../integrations/rasa.mdx
             icon: fa-robot
           - page: Thoughtly
-            path: ../integrate-with-sonic/thoughtly.mdx
+            path: ../integrations/thoughtly.mdx
             icon: fa-phone
           - page: Twilio
-            path: ../integrate-with-sonic/twilio.mdx
+            path: ../integrations/twilio.mdx
             icon: fa-phone
       - section: Enterprise
         contents:
