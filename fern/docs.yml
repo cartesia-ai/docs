@@ -1,5 +1,11 @@
 instances:
-  - url: https://cartesia-private.docs.buildwithfern.com
+  - url: https://cartesia.docs.buildwithfern.com
+    custom-domain: docs.cartesia.ai
+    edit-this-page:
+      github:
+        owner: cartesia-ai
+        repo: docs
+        branch: main
 
 title: Cartesia
 versions:
