@@ -16,7 +16,7 @@ types:
     properties:
       id: VoiceId
       is_owner:
-        type: boolean
+        type: optional<boolean>
         docs: |
           Whether the current user is the owner of the voice.
       name: &name
