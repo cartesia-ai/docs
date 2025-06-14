@@ -6,14 +6,23 @@ channel:
   docs: |
     This endpoint creates a bidirectional WebSocket connection for real-time speech transcription.
 
-    Our STT endpoint enables sending in a stream of audio as bytes encoded as PCM 16K samples, and provides transcription results as they become available.
+    Our STT endpoint enables sending in a stream of audio as bytes in various encoding formats, and provides transcription results as they become available. The API supports both interim results and final transcriptions with intelligent endpointing.
     
     **Usage Pattern:**
     1. Connect to the WebSocket with appropriate query parameters
-    2. Send audio chunks as **binary WebSocket messages** in pcm_s16le format at 16K sample rate
-    3. Receive transcription messages as JSON
+    2. Send audio chunks as **binary WebSocket messages** in the specified encoding format
+    3. Receive transcription messages as JSON with word-level timestamps
     4. Send `finalize` as a **text message** to flush any remaining audio (receives `flush_done` acknowledgment)
     5. Send `done` as a **text message** to close the session cleanly (receives `done` acknowledgment and closes)
+    
+    **Performance Recommendation:**
+    For best performance, it is recommended to resample audio before streaming and send audio chunks in `pcm_s16le` format at 16kHz sample rate. This removes processing overhead on our backend.
+
+    **Pricing:**
+    Speech-to-text streaming is priced at **1 credit per 1 minute** of audio streamed in.
+
+    **Concurrency:**
+    STT has separate concurrency limits from TTS. The number of active WebSocket connections allowed is 10x your rate limit. Any new connections beyond this limit will be rejected with 429 errors. WebSocket connections are automatically closed after 20 seconds of idle time (no audio being streamed).
 
   auth: true
   
@@ -27,15 +36,34 @@ channel:
       docs: |
         The language of the input audio in ISO-639-1 format. Defaults to `en`.
     encoding:
-      type: optional<STTEncoding>
+      type: STTEncoding
       docs: |
         The encoding format of the audio data. This determines how the server interprets the raw binary audio data you send.
         
-        Currently supported: `pcm_s16le` - 16-bit signed integer PCM, little-endian (default)
+        **Required field** - you must specify the encoding format that matches your audio data. We recommend using `pcm_s16le` for best performance.
     sample_rate:
       type: integer
       docs: |
-        The sample rate of the audio in Hz, only `16000` is supported (default). Must match the actual sample rate of your audio data.
+        The sample rate of the audio in Hz. **Required field** - must match the actual sample rate of your audio data. We recommend using `16000` for best performance.
+        
+        Supported sample rates: 8000, 16000, 24000, 32000, 44100, 48000
+    endpointing:
+      type: optional<string>
+      docs: |
+        Endpointing configuration for detecting when utterances end. Endpointing is always enabled in the backend.
+        
+        **VAD Configuration (JSON object as string):**
+        ```json
+        {"min_volume": 0.3, "min_confidence": 0.5, "speech_start_secs": 0.2, "speech_end_secs": 0.5}
+        ```
+
+        **VAD Parameters:**
+        - `min_volume` (0.0-1.0): Volume threshold for voice detection. Higher values = more aggressive filtering
+        - `min_confidence` (0.0-1.0): Confidence threshold for voice detection. Higher values = more aggressive filtering  
+        - `speech_start_secs`: Duration (seconds) to confirm speech has started
+        - `speech_end_secs`: Duration (seconds) to confirm speech has ended
+        
+        Higher `min_volume` and `min_confidence` values make the system more aggressive in filtering out background noise but may miss quieter speech.
     api_key:
       type: string
       docs: |
@@ -68,7 +96,7 @@ channel:
       origin: server
       body: StreamingTranscriptionResponse
       docs: |
-        The server will send transcription results as they become available. Messages can be of type `transcript`, `flush_done`, `done`, or `error`.
+        The server will send transcription results as they become available. Messages can be of type `transcript`, `flush_done`, `done`, or `error`. Each transcript response includes word-level timestamps.
 
   examples:
     - name: Streaming Transcription Session
@@ -83,6 +111,22 @@ channel:
             is_final: false
             duration: 0.5
             language: "en"
+            words:
+              - word: "How"
+                start: 0.0
+                end: 0.12
+              - word: "are"
+                start: 0.15
+                end: 0.25
+              - word: "you"
+                start: 0.28
+                end: 0.35
+              - word: "doing"
+                start: 0.38
+                end: 0.55
+              - word: "today?"
+                start: 0.58
+                end: 0.78
         - type: send
           body: "<binary audio data - send as binary WebSocket message>"
         - type: receive  
@@ -93,6 +137,31 @@ channel:
             is_final: false
             duration: 1.2
             language: "en"
+            words:
+              - word: "I'm"
+                start: 0.8
+                end: 0.92
+              - word: "planning"
+                start: 0.95
+                end: 1.25
+              - word: "to"
+                start: 1.28
+                end: 1.35
+              - word: "visit"
+                start: 1.38
+                end: 1.58
+              - word: "the"
+                start: 1.61
+                end: 1.68
+              - word: "museum"
+                start: 1.71
+                end: 1.98
+              - word: "this"
+                start: 2.01
+                end: 2.15
+              - word: "weekend."
+                start: 2.18
+                end: 2.45
         - type: send
           body: "finalize"
         - type: receive
@@ -105,8 +174,48 @@ channel:
             request_id: "b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8"
             text: "How are you doing today? I'm planning to visit the museum this weekend."
             is_final: true
-            duration: 1.7
+            duration: 2.5
             language: "en"
+            words:
+              - word: "How"
+                start: 0.0
+                end: 0.12
+              - word: "are"
+                start: 0.15
+                end: 0.25
+              - word: "you"
+                start: 0.28
+                end: 0.35
+              - word: "doing"
+                start: 0.38
+                end: 0.55
+              - word: "today?"
+                start: 0.58
+                end: 0.78
+              - word: "I'm"
+                start: 0.8
+                end: 0.92
+              - word: "planning"
+                start: 0.95
+                end: 1.25
+              - word: "to"
+                start: 1.28
+                end: 1.35
+              - word: "visit"
+                start: 1.38
+                end: 1.58
+              - word: "the"
+                start: 1.61
+                end: 1.68
+              - word: "museum"
+                start: 1.71
+                end: 1.98
+              - word: "this"
+                start: 2.01
+                end: 2.15
+              - word: "weekend."
+                start: 2.18
+                end: 2.45
         - type: send
           body: "done"
         - type: receive
@@ -115,6 +224,18 @@ channel:
             request_id: "b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8"
 
 types:
+  TranscriptionWord:
+    properties:
+      word:
+        type: string
+        docs: The transcribed word.
+      start:
+        type: double
+        docs: Start time of the word in seconds.
+      end:
+        type: double  
+        docs: End time of the word in seconds.
+
   TranscriptionResponse:
     properties:
       text:
@@ -126,6 +247,9 @@ types:
       duration:
         type: optional<double>
         docs: The duration of the input audio in seconds.
+      words:
+        type: optional<list<TranscriptionWord>>
+        docs: Word-level timestamps for batch transcription responses.
 
   StreamingTranscriptionResponse:
     discriminant: type
@@ -157,6 +281,9 @@ types:
       language:
         type: optional<string>
         docs: The detected or specified language of the input audio.
+      words:
+        type: optional<list<TranscriptionWord>>
+        docs: Word-level timestamps showing the start and end time of each word in seconds. Always included in streaming responses.
 
   FlushDoneMessage:
     properties:
@@ -186,13 +313,18 @@ types:
   STTEncoding:
     enum:
       - pcm_s16le
-      # - pcm_f32le
-      # - pcm_mulaw
-      # - pcm_alaw
+      - pcm_s32le
+      - pcm_f16le
+      - pcm_f32le
+      - pcm_mulaw
+      - pcm_alaw
     docs: |
       The encoding format for audio data sent to the STT WebSocket.
       
-      Currently supported:
-      - `pcm_s16le` - 16-bit signed integer PCM, little-endian
-      
-      Support for other formats will be added in the future.
+      **Supported formats:**
+      - `pcm_s16le` - 16-bit signed integer PCM, little-endian (recommended for best performance)
+      - `pcm_s32le` - 32-bit signed integer PCM, little-endian
+      - `pcm_f16le` - 16-bit floating point PCM, little-endian
+      - `pcm_f32le` - 32-bit floating point PCM, little-endian
+      - `pcm_mulaw` - 8-bit μ-law encoded PCM
+      - `pcm_alaw` - 8-bit A-law encoded PCM
