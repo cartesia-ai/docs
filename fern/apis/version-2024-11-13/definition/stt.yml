@@ -6,7 +6,7 @@ channel:
   docs: |
     This endpoint creates a bidirectional WebSocket connection for real-time speech transcription.
 
-    Our STT endpoint enables sending in a stream of audio as bytes in various encoding formats, and provides transcription results as they become available.
+    Our STT endpoint enables sending in a stream of audio as bytes in various encoding formats and sample rates, and provides transcription results as they become available.
     
     **Usage Pattern:**
     1. Connect to the WebSocket with appropriate query parameters
