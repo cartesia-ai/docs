@@ -16,7 +16,7 @@ channel:
     5. Send `done` as a **text message** to close the session cleanly (receives `done` acknowledgment and closes)
     
     **Performance Recommendation:**
-    For best performance, it is recommended to resample audio before streaming and send audio chunks in `pcm_s16le` format at 16kHz sample rate. This removes processing overhead on our backend.
+    For best performance, it is recommended to resample audio before streaming and send audio chunks in `pcm_s16le` format at 16kHz sample rate.
 
     **Pricing:**
     Speech-to-text streaming is priced at **1 credit per 1 minute** of audio streamed in.
@@ -47,23 +47,6 @@ channel:
         The sample rate of the audio in Hz. **Required field** - must match the actual sample rate of your audio data. We recommend using `16000` for best performance.
         
         Supported sample rates: 8000, 16000, 24000, 32000, 44100, 48000
-    endpointing:
-      type: optional<string>
-      docs: |
-        Endpointing configuration for detecting when utterances end. Endpointing is always enabled in the backend.
-        
-        **VAD Configuration (JSON object as string):**
-        ```json
-        {"min_volume": 0.3, "min_confidence": 0.5, "speech_start_secs": 0.2, "speech_end_secs": 0.5}
-        ```
-
-        **VAD Parameters:**
-        - `min_volume` (0.0-1.0): Volume threshold for voice detection. Higher values = more aggressive filtering
-        - `min_confidence` (0.0-1.0): Confidence threshold for voice detection. Higher values = more aggressive filtering  
-        - `speech_start_secs`: Duration (seconds) to confirm speech has started
-        - `speech_end_secs`: Duration (seconds) to confirm speech has ended
-        
-        Higher `min_volume` and `min_confidence` values make the system more aggressive in filtering out background noise but may miss quieter speech.
     api_key:
       type: string
       docs: |
