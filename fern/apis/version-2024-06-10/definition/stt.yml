@@ -6,7 +6,7 @@ channel:
   docs: |
     This endpoint creates a bidirectional WebSocket connection for real-time speech transcription.
 
-    Our STT endpoint enables sending in a stream of audio as bytes in various encoding formats and sample rates, and provides transcription results as they become available.
+    Our STT endpoint enables sending in a stream of audio as bytes, and provides transcription results as they become available.
     
     **Usage Pattern:**
     1. Connect to the WebSocket with appropriate query parameters
@@ -22,7 +22,7 @@ channel:
     Speech-to-text streaming is priced at **1 credit per 1 minute** of audio streamed in.
 
     **Concurrency:**
-    STT has separate concurrency limits from TTS. The number of active WebSocket connections allowed is your rate limit. Any new connections beyond this limit will be rejected with 429 errors. WebSocket connections are automatically closed after 20 seconds of idle time (no audio being streamed).
+    STT has a dedicated concurrency limit, which determines the maximum number of active WebSocket connections you can have at any time. If you exceed your concurrency limit, new connections will be rejected with a 429 error. Idle WebSocket connections are automatically closed after 20 seconds of inactivity (no audio being streamed).
 
   auth: true
   
@@ -36,7 +36,108 @@ channel:
       docs: |
         The language of the input audio in ISO-639-1 format. Defaults to `en`.
         
-        Supported languages: `en`, `de`, `es`, `fr`, `ja`, `pt`, `zh`, `hi`, `it`, `ko`, `nl`, `pl`, `ru`, `sv`, `tr`
+        <Accordion title="Supported languages">
+          - `en` (English)
+          - `zh` (Chinese)
+          - `de` (German)
+          - `es` (Spanish)
+          - `ru` (Russian)
+          - `ko` (Korean)
+          - `fr` (French)
+          - `ja` (Japanese)
+          - `pt` (Portuguese)
+          - `tr` (Turkish)
+          - `pl` (Polish)
+          - `ca` (Catalan)
+          - `nl` (Dutch)
+          - `ar` (Arabic)
+          - `sv` (Swedish)
+          - `it` (Italian)
+          - `id` (Indonesian)
+          - `hi` (Hindi)
+          - `fi` (Finnish)
+          - `vi` (Vietnamese)
+          - `he` (Hebrew)
+          - `uk` (Ukrainian)
+          - `el` (Greek)
+          - `ms` (Malay)
+          - `cs` (Czech)
+          - `ro` (Romanian)
+          - `da` (Danish)
+          - `hu` (Hungarian)
+          - `ta` (Tamil)
+          - `no` (Norwegian)
+          - `th` (Thai)
+          - `ur` (Urdu)
+          - `hr` (Croatian)
+          - `bg` (Bulgarian)
+          - `lt` (Lithuanian)
+          - `la` (Latin)
+          - `mi` (Maori)
+          - `ml` (Malayalam)
+          - `cy` (Welsh)
+          - `sk` (Slovak)
+          - `te` (Telugu)
+          - `fa` (Persian)
+          - `lv` (Latvian)
+          - `bn` (Bengali)
+          - `sr` (Serbian)
+          - `az` (Azerbaijani)
+          - `sl` (Slovenian)
+          - `kn` (Kannada)
+          - `et` (Estonian)
+          - `mk` (Macedonian)
+          - `br` (Breton)
+          - `eu` (Basque)
+          - `is` (Icelandic)
+          - `hy` (Armenian)
+          - `ne` (Nepali)
+          - `mn` (Mongolian)
+          - `bs` (Bosnian)
+          - `kk` (Kazakh)
+          - `sq` (Albanian)
+          - `sw` (Swahili)
+          - `gl` (Galician)
+          - `mr` (Marathi)
+          - `pa` (Punjabi)
+          - `si` (Sinhala)
+          - `km` (Khmer)
+          - `sn` (Shona)
+          - `yo` (Yoruba)
+          - `so` (Somali)
+          - `af` (Afrikaans)
+          - `oc` (Occitan)
+          - `ka` (Georgian)
+          - `be` (Belarusian)
+          - `tg` (Tajik)
+          - `sd` (Sindhi)
+          - `gu` (Gujarati)
+          - `am` (Amharic)
+          - `yi` (Yiddish)
+          - `lo` (Lao)
+          - `uz` (Uzbek)
+          - `fo` (Faroese)
+          - `ht` (Haitian Creole)
+          - `ps` (Pashto)
+          - `tk` (Turkmen)
+          - `nn` (Nynorsk)
+          - `mt` (Maltese)
+          - `sa` (Sanskrit)
+          - `lb` (Luxembourgish)
+          - `my` (Myanmar)
+          - `bo` (Tibetan)
+          - `tl` (Tagalog)
+          - `mg` (Malagasy)
+          - `as` (Assamese)
+          - `tt` (Tatar)
+          - `haw` (Hawaiian)
+          - `ln` (Lingala)
+          - `ha` (Hausa)
+          - `ba` (Bashkir)
+          - `jw` (Javanese)
+          - `su` (Sundanese)
+          - `yue` (Cantonese)
+        </Accordion>
     encoding:
       type: STTEncoding
       docs: |
@@ -46,9 +147,9 @@ channel:
     sample_rate:
       type: integer
       docs: |
-        The sample rate of the audio in Hz. **Required field** - must match the actual sample rate of your audio data. We recommend using `16000` for best performance.
-        
-        Supported sample rates: 8000, 16000, 24000, 32000, 44100, 48000
+        The sample rate of the audio in Hz. 
+                
+        **Required field** - must match the actual sample rate of your audio data. We recommend using `16000` for best performance.
     min_volume:
       type: optional<double>
       docs: |
@@ -315,11 +416,3 @@ types:
       - pcm_alaw
     docs: |
       The encoding format for audio data sent to the STT WebSocket.
-      
-      **Supported formats:**
-      - `pcm_s16le` - 16-bit signed integer PCM, little-endian (recommended for best performance)
-      - `pcm_s32le` - 32-bit signed integer PCM, little-endian
-      - `pcm_f16le` - 16-bit floating point PCM, little-endian
-      - `pcm_f32le` - 32-bit floating point PCM, little-endian
-      - `pcm_mulaw` - 8-bit μ-law encoded PCM
-      - `pcm_alaw` - 8-bit A-law encoded PCM
