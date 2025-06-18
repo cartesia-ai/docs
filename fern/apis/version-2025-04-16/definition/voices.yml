@@ -160,7 +160,6 @@ types:
       - masculine
       - feminine
       - gender_neutral
-      - "null"
 
   Gender:
     enum:
@@ -235,7 +234,7 @@ service:
             type: optional<boolean>
             docs: Whether to only return starred voices.
           gender:
-            type: optional<GenderPresentation>
+            type: nullable<GenderPresentation>
             docs: The gender presentation of the voices to return.
           expand[]:
             type: optional<list<VoiceExpandOptions>>
