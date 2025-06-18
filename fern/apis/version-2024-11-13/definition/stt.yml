@@ -22,7 +22,7 @@ channel:
     Speech-to-text streaming is priced at **1 credit per 1 minute** of audio streamed in.
 
     **Concurrency:**
-    STT has separate concurrency limits from TTS. The number of active WebSocket connections allowed is 10x your rate limit. Any new connections beyond this limit will be rejected with 429 errors. WebSocket connections are automatically closed after 20 seconds of idle time (no audio being streamed).
+    STT has separate concurrency limits from TTS. The number of active WebSocket connections allowed is your rate limit. Any new connections beyond this limit will be rejected with 429 errors. WebSocket connections are automatically closed after 20 seconds of idle time (no audio being streamed).
 
   auth: true
   
@@ -35,6 +35,8 @@ channel:
       type: optional<string>
       docs: |
         The language of the input audio in ISO-639-1 format. Defaults to `en`.
+        
+        Supported languages: `en`, `de`, `es`, `fr`, `ja`, `pt`, `zh`, `hi`, `it`, `ko`, `nl`, `pl`, `ru`, `sv`, `tr`
     encoding:
       type: STTEncoding
       docs: |
@@ -47,6 +49,16 @@ channel:
         The sample rate of the audio in Hz. **Required field** - must match the actual sample rate of your audio data. We recommend using `16000` for best performance.
         
         Supported sample rates: 8000, 16000, 24000, 32000, 44100, 48000
+    min_volume:
+      type: optional<double>
+      docs: |
+        Volume threshold for voice activity detection. Audio below this threshold will be considered silence. 
+        Range: 0.0-1.0. Higher values = more aggressive filtering of quiet speech.
+    max_silence_duration_secs:
+      type: optional<double>
+      docs: |
+        Maximum duration of silence (in seconds) before the system considers the utterance complete and triggers endpointing.
+        Higher values allow for longer pauses within utterances.
     api_key:
       type: string
       docs: |
