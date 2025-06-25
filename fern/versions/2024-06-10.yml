@@ -135,6 +135,11 @@ navigation:
                   - page: Context Flushing and Flush IDs
                     path: ../api-reference/context-flushing-and-flush-ids.mdx
                     icon: fa-cube
-          - stt
+          - stt:
+              - stt.transcribe
+              - stt.stt
+              - page: OpenAI Compatibility
+                path: ../api-reference/stt-openai-compatibility.mdx
+                icon: fa-arrows-left-right
           - voices: []
           - voice-changer: []
