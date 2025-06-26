@@ -51,7 +51,7 @@ types:
   TokenRequest:
     properties:
       grants:
-        type: TokenGrant
+        type: optional<TokenGrant>
         docs: |
           The permissions to be granted via the token. Both TTS and STT grants are optional - specify only the capabilities you need.
       expires_in:
