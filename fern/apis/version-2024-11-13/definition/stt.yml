@@ -158,12 +158,12 @@ service:
               - `pcm_f32le` - 32-bit floating point PCM, little-endian
               - `pcm_mulaw` - 8-bit μ-law encoded PCM
               - `pcm_alaw` - 8-bit A-law encoded PCM
-          sample_rate:
-            type: optional<integer>
-            docs: |
-              The sample rate to process the audio at. If not specified, the original sample rate will be used.
-              
-              Supported sample rates: 8000, 16000, 24000, 32000, 44100, 48000
+        sample_rate:
+          type: integer
+          docs: |
+            The sample rate of the audio in Hz. 
+                    
+            **Required field** - must match the actual sample rate of your audio data. We recommend using `16000` for best performance.
       response: TranscriptionResponse
       examples:
         - name: Basic Transcription
