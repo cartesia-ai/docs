@@ -7,25 +7,20 @@ service:
     transcribe:
       path: ""
       method: POST
-      display-name: Speech to Text (Batch)
+      display-name: Speech-to-Text (Batch)
       docs: |
         Transcribes audio files into text using Cartesia's Speech-to-Text API.
         
-        Upload an audio file and receive a complete transcription response. Supports audio files up to several hours in length with automatic intelligent chunking for longer audio.
+        Upload an audio file and receive a complete transcription response. Supports arbitrarily long audio files with automatic intelligent chunking for longer audio.
         
         **Supported audio formats:** flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, webm
         
         **Response format:** Returns JSON with transcribed text, duration, and language. Include `timestamp_granularities: ["word"]` to get word-level timestamps.
          
         **Pricing:** Batch transcription is priced at **1 credit per 1 minute** of audio processed.
-        
-        **Processing:**
-        - Audio ≤30 seconds: Processed as a single chunk
-        - Audio >30 seconds: Automatically chunked using intelligent boundary detection for optimal accuracy
-        - All audio is resampled to 16kHz PCM internally for processing
 
         <Note>
-        For OpenAI SDK compatibility and migration guide, see our [OpenAI Compatibility](/api-reference/stt/open-ai-compatibility) documentation.
+        For migrating from the OpenAI SDK, see our [OpenAI Whisper to Cartesia Ink Migration Guide](/api-reference/stt/migrate-from-open-ai).
         </Note>
       request:
         name: TranscriptionRequest
@@ -34,7 +29,7 @@ service:
             file:
               type: file
               docs: |
-                The audio file to transcribe. Supported formats: flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, webm.
+                The audio file to transcribe. The max file size we support is 2GB. Supported formats: flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, webm.
             model:
               type: string
               docs: |
@@ -150,10 +145,6 @@ service:
               type: optional<list<TimestampGranularity>>
               docs: |
                 The timestamp granularities to populate for this transcription. Currently only `word` level timestamps are supported.
-            temperature:
-              type: optional<double>
-              docs: |
-                Sampling temperature for the transcription model. Higher values make output more random. Range: 0.0-1.0. Defaults to 0.0.
         query-parameters:
           encoding:
             type: optional<STTEncoding>
@@ -216,7 +207,7 @@ service:
 
 channel:
   path: /stt/websocket
-  display-name: Speech to Text (Streaming)
+  display-name: Speech-to-Text (Streaming)
   docs: |
     This endpoint creates a bidirectional WebSocket connection for real-time speech transcription.
 
@@ -567,7 +558,7 @@ types:
         docs: The duration of the input audio in seconds.
       words:
         type: optional<list<TranscriptionWord>>
-        docs: Word-level timestamps showing the start and end time of each word. Only included when `timestamp_granularities` includes `word`.
+        docs: Word-level timestamps showing the start and end time of each word. Only included when `[word]` is passed into `timestamp_granularities`.
 
   StreamingTranscriptionResponse:
     discriminant: type

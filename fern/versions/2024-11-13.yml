@@ -141,8 +141,8 @@ navigation:
           - stt:
               - stt.transcribe
               - stt.stt
-              - page: OpenAI Compatibility
-                path: ../api-reference/stt-openai-compatibility.mdx
+              - page: Migrate from OpenAI
+                path: ../api-reference/stt-migrate-from-openai.mdx
                 icon: fa-arrows-left-right
           - voices: []
           - voice-changer: []

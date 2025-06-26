@@ -1,20 +1,22 @@
 ---
-title: "OpenAI SDK Compatibility (Batch)"
+title: "Migrating From OpenAI Whisper to Cartesia Ink"
 description: "Use Cartesia's Batch Speech-to-Text API with OpenAI's client libraries"
 ---
 
 <Info>
-**Batch STT Only**: This documentation covers OpenAI SDK compatibility for Cartesia's Batch Speech-to-Text transcription. For real-time transcription, use our [Streaming STT endpoint](/api-reference/stt/stt) which doesn't have OpenAI SDK compatibility.
+**Batch Speech-to-Text**: This documentation covers OpenAI SDK compatibility for Cartesia Ink's batched transcription endpoint.
+
+For real-time transcription, use our [Streaming STT endpoint](/api-reference/stt/stt).
 </Info>
 
-Cartesia's Batch Speech-to-Text API provides compatibility with OpenAI's client libraries through the `/audio/transcriptions` endpoint. This allows for migration from OpenAI's Whisper API to Cartesia's STT service.
+Cartesia's Batch Speech-to-Text API provides compatibility with OpenAI's client libraries through the `/audio/transcriptions` endpoint. This allows for easy migration of your use cases to Cartesia's Ink STT.
 
 ## Endpoint Options
 
 You have two ways to access Cartesia's Batch STT functionality:
 
 - **Cartesia Native**: `/stt` - Our primary endpoint with full feature support
-- **OpenAI Compatible**: `/audio/transcriptions` - OpenAI's existing endpoint for seamless migration
+- **OpenAI Compatible**: `/audio/transcriptions` - OpenAI-compatible endpoint for seamless migration
 
 ## OpenAI SDK Usage
 
