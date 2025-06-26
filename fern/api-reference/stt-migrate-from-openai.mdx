@@ -14,11 +14,11 @@ Cartesia's Batch Speech-to-Text API is compatible with OpenAI's client libraries
 ## Endpoints
 
 **Cartesia Native:** `/stt` - Full feature support  
-**OpenAI Compatible:** `/audio/transcriptions` - Drop-in replacement for OpenAI Whisper
+**OpenAI Compatible:** `/audio/transcriptions` - Drop-in replacement for Whisper on the OpenAI SDK
 
-## Migration Guide
+## Migration Guide for OpenAI SDK
 
-Replace your OpenAI base URL with Cartesia's endpoint to use the `/audio/transcriptions` compatibility layer.
+Replace your OpenAI base URL with `https://api.cartesia.ai` to use the compatibility layer for Cartesia:
 
 ### Parameter Support
 
