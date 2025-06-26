@@ -17,7 +17,7 @@ service:
         
         **Response format:** Returns JSON with transcribed text, duration, and language. Include `timestamp_granularities: ["word"]` to get word-level timestamps.
          
-        **Pricing:** Batch transcription is priced at **1 credit per 1 minute** of audio processed.
+        **Pricing:** Batch transcription is priced at **1 credit per 2 seconds** of audio processed.
 
         <Note>
         For migrating from the OpenAI SDK, see our [OpenAI Whisper to Cartesia Ink Migration Guide](/api-reference/stt/migrate-from-open-ai).
@@ -224,7 +224,7 @@ channel:
     For best performance, it is recommended to resample audio before streaming and send audio chunks in `pcm_s16le` format at 16kHz sample rate.
 
     **Pricing:**
-    Speech-to-text streaming is priced at **1 credit per 1 minute** of audio streamed in.
+    Speech-to-text streaming is priced at **1 credit per 1 second** of audio streamed in.
 
     **Concurrency:**
     STT has a dedicated concurrency limit, which determines the maximum number of active WebSocket connections you can have at any time. If you exceed your concurrency limit, new connections will be rejected with a 429 error. Idle WebSocket connections are automatically closed after 20 seconds of inactivity (no audio being streamed).
@@ -552,7 +552,7 @@ types:
         docs: The transcribed text.
       language:
         type: optional<string>
-        docs: The detected or specified language of the input audio.
+        docs: The specified language of the input audio.
       duration:
         type: optional<double>
         docs: The duration of the input audio in seconds.
@@ -589,7 +589,7 @@ types:
         docs: The duration of the audio transcribed so far, in seconds.
       language:
         type: optional<string>
-        docs: The detected or specified language of the input audio.
+        docs: The specified language of the input audio.
       words:
         type: optional<list<TranscriptionWord>>
         docs: Word-level timestamps showing the start and end time of each word in seconds. Always included in streaming responses.
