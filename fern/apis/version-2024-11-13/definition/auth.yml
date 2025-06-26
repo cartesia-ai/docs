@@ -11,7 +11,16 @@ service:
       request: TokenRequest
       response: TokenResponse
       examples:
-        - name: Generate a New Access Token
+        - name: Generate Access Token with TTS and STT Access
+          request:
+            grants:
+              tts: true
+              stt: true
+            expires_in: 60
+          response:
+            body:
+              token: "eyJhbGciOiJIUzI1NiIsImtpZCI6InNzaWRfYmFmM2ViZDlhNTY0YWRjZmRlZTRlMGYifQ.eyJncmFudHMiOnsidHRzIjp0cnVlLCJzdHQiOnRydWV9LCJqdGkiOiJpYXQiLCJ1bmRlZmluZWQiOjE3NDM1MzA1NjcsImlzcyI6Imh0dHBzOi8vYXBpLmNhcnRlc2lhLmFpIiwic3ViIjoidXNlcl9iYWYzZWJkOWE1NjRhZGNmZGVlNGUwZiIsImV4cCI6MTc0MzUzNDE2N30.example"
+        - name: Generate TTS-Only Access Token
           request:
             grants:
               tts: true
@@ -19,20 +28,32 @@ service:
           response:
             body:
               token: "eyJhbGciOiJIUzI1NiIsImtpZCI6InNzaWRfYmFmM2ViZDlhNTY0YWRjZmRlZTRlMGYifQ.eyJncmFudHMiOnsidHRzIjp0cnVlfSwianRpIjoiaWF0IiwidW5kZWZpbmVkIjoxNzQzNTMwNTY3LCJpc3MiOiJodHRwczovL2FwaS5jYXJ0ZXNpYS5haSIsInN1YiI6InVzZXJfYmFmM2ViZDlhNTY0YWRjZmRlZTRlMGYiLCJleHAiOjE3NDM1MzQxNjd9.9SI-d6azyelW4QiIOMDON_EX9Yb0qybu71W_fbnM9TQ"
+        - name: Generate STT-Only Access Token
+          request:
+            grants:
+              stt: true
+            expires_in: 60
+          response:
+            body:
+              token: "eyJhbGciOiJIUzI1NiIsImtpZCI6InNzaWRfYmFmM2ViZDlhNTY0YWRjZmRlZTRlMGYifQ.eyJncmFudHMiOnsic3R0Ijp0cnVlfSwianRpIjoiaWF0IiwidW5kZWZpbmVkIjoxNzQzNTMwNTY3LCJpc3MiOiJodHRwczovL2FwaS5jYXJ0ZXNpYS5haSIsInN1YiI6InVzZXJfYmFmM2ViZDlhNTY0YWRjZmRlZTRlMGYiLCJleHAiOjE3NDM1MzQxNjd9.example"
 
 types:
   TokenGrant:
     properties:
       tts:
-        type: boolean
+        type: optional<boolean>
         docs: |
           The `tts` grant allows the token to be used to access any TTS endpoint.
+      stt:
+        type: optional<boolean>
+        docs: |
+          The `stt` grant allows the token to be used to access any STT endpoint.
   TokenRequest:
     properties:
       grants:
-        type: TokenGrant
+        type: optional<TokenGrant>
         docs: |
-          The permissions to be granted via the token.
+          The permissions to be granted via the token. Both TTS and STT grants are optional - specify only the capabilities you need.
       expires_in:
         type: optional<integer>
         docs: |
