@@ -13,7 +13,7 @@ service:
         
         Upload an audio file and receive a complete transcription response. Supports arbitrarily long audio files with automatic intelligent chunking for longer audio.
         
-        **Supported audio formats:** flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, webm
+        **Supported audio formats:** flac, mp3, mp4, ogg, wav, webm
         
         **Response format:** Returns JSON with transcribed text, duration, and language. Include `timestamp_granularities: ["word"]` to get word-level timestamps.
          
@@ -159,11 +159,9 @@ service:
               - `pcm_mulaw` - 8-bit μ-law encoded PCM
               - `pcm_alaw` - 8-bit A-law encoded PCM
           sample_rate:
-            type: integer
+            type: optional<integer>
             docs: |
               The sample rate of the audio in Hz. 
-                      
-              **Required field** - must match the actual sample rate of your audio data. We recommend using `16000` for best performance.
       response: TranscriptionResponse
       examples:
         - name: Basic Transcription
