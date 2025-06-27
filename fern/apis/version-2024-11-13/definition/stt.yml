@@ -141,7 +141,7 @@ service:
                   - `su` (Sundanese)
                   - `yue` (Cantonese)
                 </Accordion>
-            timestamp_granularities:
+            timestamp_granularities[]:
               type: optional<list<TimestampGranularity>>
               docs: |
                 The timestamp granularities to populate for this transcription. Currently only `word` level timestamps are supported.
@@ -177,7 +177,7 @@ service:
           request:
             model: "ink-whisper"
             language: "en"
-            timestamp_granularities: ["word"]
+            timestamp_granularities[]: ["word"]
           response:
             body:
               text: "Hello, this is a test transcription."
@@ -556,7 +556,7 @@ types:
         docs: The duration of the input audio in seconds.
       words:
         type: optional<list<TranscriptionWord>>
-        docs: Word-level timestamps showing the start and end time of each word. Only included when `[word]` is passed into `timestamp_granularities`.
+        docs: Word-level timestamps showing the start and end time of each word. Only included when `[word]` is passed into `timestamp_granularities[]`.
 
   StreamingTranscriptionResponse:
     discriminant: type
