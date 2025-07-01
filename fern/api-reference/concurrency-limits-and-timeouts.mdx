@@ -6,7 +6,23 @@ subtitle: >-
 
 Your account is subject to two types of rate limits: WebSocket limits and generation concurrency limits.
 
-## Concurrency limits
+## Concurrency limits by subscription plan
+
+Your subscription plan determines how many requests can be processed simultaneously. Sonic Text-to-Speech (TTS) and Ink Speech-to-Text (STT) each have separate concurrency limits with the same values per plan.
+
+| Plan | TTS Concurrent Requests | STT Concurrent Requests |
+|------|------------------------|------------------------|
+| Free | 2 | 2 |
+| Pro | 3 | 3 |
+| Startup | 5 | 5 |
+| Scale | 15 | 15 |
+| Enterprise | Custom | Custom |
+
+<Note>
+  Sonic (Text-to-Speech) and Ink (Speech-to-Text) services have separate concurrent request limits. For example, if you're on the Scale plan, you can have up to 15 concurrent TTS requests AND 15 concurrent STT requests running simultaneously.
+</Note>
+
+## How concurrency limits work
 
 We measure generation concurrency in terms of the number of unique contexts active at a given time.
 
@@ -17,20 +33,25 @@ If you exceed your concurrency limit, you will receive a `429 Too Many Requests`
 
 ## Interpreting concurrency limits
 
-How you interpret your concurrency limit depends on how you're using the Sonic model family.
+How you interpret your concurrency limit depends on how you're using the Sonic and Ink model families.
 
 <AccordionGroup>
-  <Accordion title="Conversational use cases">
-    For real-time conversational use cases, such as powering voice agents, we've found that the number of parallel conversations you can support is effectively 4X your concurrency limit. This is just a rule of thumb, and depends on the types of conversations you're supporting. You can reach out to us to discuss your specific use case.
+  <Accordion title="Conversational use cases (TTS + STT)">
+    For real-time conversational use cases, such as powering voice agents that use both Sonic TTS and Ink STT, we've found that the number of parallel conversations you can support is effectively 4X your concurrency limit. This is just a rule of thumb, and depends on the types of conversations you're supporting. You can reach out to us to discuss your specific use case.
 
-    For example, if you have a concurrency limit of 15, you can typically support 60 parallel conversations.
+    For example, if you have a concurrency limit of 15 for each service, you can typically support 60 parallel conversations, with each conversation able to use both TTS and STT services independently.
 
   </Accordion>
-  <Accordion title="Non-conversational use cases">
+  <Accordion title="TTS-only use cases">
+    For Text-to-Speech only use cases, such as generating speech in batch jobs using Sonic, there is a more direct relationship between your concurrency limit and the number of parallel generations you can support.
 
-    For non-conversational use cases, such as generating speech in batch jobs, there is a more direct relationship between your concurrency limit and the number of parallel generations you can support.
+    For example, if you have a concurrency limit of 15, you can typically support 15 parallel TTS generations. You can use a connection pool to ensure you don't exceed your concurrency limit.
 
-    For example, if you have a concurrency limit of 15, you can typically support 15 parallel generations. You can use a connection pool to ensure you don't exceed your concurrency limit.
+  </Accordion>
+  <Accordion title="STT-only use cases">
+    For Speech-to-Text only use cases using Ink, the same direct relationship applies as with TTS-only scenarios.
+
+    For example, if you have a concurrency limit of 15, you can typically support 15 parallel STT transcriptions. You can use a connection pool to ensure you don't exceed your concurrency limit.
 
   </Accordion>
 </AccordionGroup>
