@@ -2,6 +2,7 @@
 
 imports:
   voices: ./voices.yml
+  embedding: ./embedding.yml
 
 service:
   base-path: /tts
@@ -55,7 +56,7 @@ service:
       path: /sse
       method: POST
       display-name: Text to Speech (SSE)
-      request: TTSRequest
+      request: TTSSSERequest
       response-stream:
         type: WebSocketResponse
         format: sse
@@ -72,6 +73,19 @@ service:
               container: "raw"
               sample_rate: 44100
               encoding: "pcm_f32le"
+        - name: SSE with Timestamps
+          request:
+            model_id: "sonic-2"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "raw"
+              sample_rate: 44100
+              encoding: "pcm_f32le"
+            add_timestamps: true
 
 channel:
   path: /tts/websocket
@@ -89,7 +103,6 @@ channel:
     Read the guide on [working with contexts](/api-reference/tts/working-with-web-sockets/contexts) to learn more.
 
     For the best performance, we recommend the following usage pattern:
-
     1. **Do many generations over a single WebSocket.** Just use a separate context for each generation. The WebSocket scales up to dozens of concurrent generations.
     2. **Set up the WebSocket before the first generation.** This ensures you don't incur latency when you start generating speech.
     3. **Include necessary spaces and punctuation:** This allows Sonic to generate speech more accurately and with better prosody.
@@ -98,6 +111,8 @@ channel:
     For conversational agent use cases, we recommend the following usage pattern:
     1. **Each turn in a conversation should correspond to a context:** For example, if you are using Sonic to power a voice agent, each turn in the conversation should be a new context.
     2. **Start a new context for interruptions:** If the user interrupts the agent, start a new context for the agent's response.
+
+    To learn more about managing concurrent generations and WebSocket connection limits, see the [concurrency limits and timeouts](/use-the-api/concurrency-limits-and-timeouts) page.
 
   auth: true
 
@@ -251,7 +266,6 @@ types:
     properties:
       data: base64
       step_time: double
-      flush_id: optional<FlushID>
 
   WebSocketTimestampsResponse:
     extends: WebSocketBaseResponse
@@ -347,19 +361,15 @@ types:
       add_timestamps:
         type: optional<boolean>
         docs: |
-          Whether to return word-level timestamps.
+          Whether to return word-level timestamps. If `false` (default), no word timestamps will be produced at all. If `true`, the server will return timestamp events containing word-level timing information.
       add_phoneme_timestamps:
         type: optional<boolean>
         docs: |
-          Whether to return phoneme-level timestamps.
-      use_original_timestamps:
+          Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced - if `add_timestamps` is `true`, the produced timestamps will be word timestamps instead. If `true`, the server will return timestamp events containing phoneme-level timing information.
+      use_normalized_timestamps:
         type: optional<boolean>
         docs: |
-          Whether to use the original transcript for timestamps.
-      pronunciation_dict_ids:
-        type: optional<list<string>>
-        docs: |
-          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
+          Whether to use normalized timestamps (True) or original timestamps (False).
 
   WebSocketRawOutputFormat:
     properties:
@@ -388,17 +398,19 @@ types:
       voice: TTSRequestVoiceSpecifier
       duration: optional<integer>
       language: optional<string>
-      add_timestamps: optional<boolean>
-      use_original_timestamps: optional<boolean>
-      add_phoneme_timestamps: optional<boolean>
+      add_timestamps: 
+        type: optional<boolean>
+        docs: |
+          Whether to return word-level timestamps. If `false` (default), no word timestamps will be produced at all. If `true`, the server will return timestamp events containing word-level timing information.
+      add_phoneme_timestamps: 
+        type: optional<boolean>
+        docs: |
+          Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced - if `add_timestamps` is `true`, the produced timestamps will be word timestamps instead. If `true`, the server will return timestamp events containing phoneme-level timing information.
+      use_normalized_timestamps: optional<boolean>
       continue: optional<boolean>
       context_id: optional<string>
       max_buffer_delay_ms: optional<integer>
       speed: optional<ModelSpeed>
-      pronunciation_dict_ids:
-        type: optional<list<string>>
-        docs: |
-          A list of pronunciation dict IDs to use for the generation.
 
   TTSRequest:
     properties:
@@ -416,10 +428,22 @@ types:
           The maximum duration of the audio in seconds. You do not usually need to specify this.
           If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
       speed: optional<ModelSpeed>
-      pronunciation_dict_ids:
-        type: optional<list<string>>
+
+  TTSSSERequest:
+    extends: TTSRequest
+    properties:
+      add_timestamps:
+        type: optional<boolean>
         docs: |
-          A list of pronunciation dict IDs to use for the generation.
+          Whether to return word-level timestamps. If `false` (default), no word timestamps will be produced at all. If `true`, the server will return timestamp events containing word-level timing information.
+      add_phoneme_timestamps:
+        type: optional<boolean>
+        docs: |
+          Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced - if `add_timestamps` is `true`, the produced timestamps will be word timestamps instead. If `true`, the server will return timestamp events containing phoneme-level timing information.
+      use_normalized_timestamps:
+        type: optional<boolean>
+        docs: |
+          Whether to use normalized timestamps (True) or original timestamps (False).
 
   SupportedLanguage:
     docs: |
@@ -475,6 +499,104 @@ types:
           The bit rate of the audio in bits per second. Supported bit rates are 32000, 64000, 96000, 128000, 192000.
 
   TTSRequestVoiceSpecifier:
+    discriminated: false
+    union:
+      - TTSRequestIdSpecifier
+      - TTSRequestEmbeddingSpecifier
+
+  TTSRequestIdSpecifier:
     properties:
       mode: literal<"id">
       id: voices.VoiceId
+      __experimental_controls: optional<Controls>
+
+  TTSRequestEmbeddingSpecifier:
+    properties:
+      mode: literal<"embedding">
+      embedding: embedding.Embedding
+      __experimental_controls: optional<Controls>
+
+  Controls:
+    properties:
+      speed: Speed
+      emotion: list<Emotion>
+
+  Speed:
+    docs: |
+      Either a number between -1.0 and 1.0 or a natural language description of speed.
+
+      If you specify a number, 0.0 is the default speed, -1.0 is the slowest speed, and 1.0 is the fastest speed.
+    discriminated: false
+    union:
+      - NumericalSpecifier
+      - NaturalSpecifier
+
+  NumericalSpecifier:
+    type: double
+
+  NaturalSpecifier:
+    enum:
+      - slowest
+      - slow
+      - normal
+      - fast
+      - fastest
+
+  Emotion:
+    docs: |
+      An array of emotion:level tags.
+
+      Supported emotions are: anger, positivity, surprise, sadness, and curiosity.
+
+      Supported levels are: lowest, low, (omit), high, highest.
+    enum:
+      - value: anger:lowest
+        name: ANGER_LOWEST
+      - value: anger:low
+        name: ANGER_LOW
+      - value: anger
+        name: ANGER
+      - value: anger:high
+        name: ANGER_HIGH
+      - value: anger:highest
+        name: ANGER_HIGHEST
+      - value: positivity:lowest
+        name: POSITIVITY_LOWEST
+      - value: positivity:low
+        name: POSITIVITY_LOW
+      - value: positivity
+        name: POSITIVITY
+      - value: positivity:high
+        name: POSITIVITY_HIGH
+      - value: positivity:highest
+        name: POSITIVITY_HIGHEST
+      - value: surprise:lowest
+        name: SURPRISE_LOWEST
+      - value: surprise:low
+        name: SURPRISE_LOW
+      - value: surprise
+        name: SURPRISE
+      - value: surprise:high
+        name: SURPRISE_HIGH
+      - value: surprise:highest
+        name: SURPRISE_HIGHEST
+      - value: sadness:lowest
+        name: SADNESS_LOWEST
+      - value: sadness:low
+        name: SADNESS_LOW
+      - value: sadness
+        name: SADNESS
+      - value: sadness:high
+        name: SADNESS_HIGH
+      - value: sadness:highest
+        name: SADNESS_HIGHEST
+      - value: curiosity:lowest
+        name: CURIOSITY_LOWEST
+      - value: curiosity:low
+        name: CURIOSITY_LOW
+      - value: curiosity
+        name: CURIOSITY
+      - value: curiosity:high
+        name: CURIOSITY_HIGH
+      - value: curiosity:highest
+        name: CURIOSITY_HIGHEST
