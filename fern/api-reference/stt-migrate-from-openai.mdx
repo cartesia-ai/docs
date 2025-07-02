@@ -39,8 +39,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="your-cartesia-api-key",
-    base_url="https://api.cartesia.ai",
-    default_headers={"Cartesia-Version": "2025-04-16"}
+    base_url="https://api.cartesia.ai"
 )
 
 with open("audio.wav", "rb") as audio_file:
@@ -62,10 +61,7 @@ import fs from 'fs';
 
 const client = new OpenAI({
   apiKey: 'your-cartesia-api-key',
-  baseURL: 'https://api.cartesia.ai',
-  defaultHeaders: {
-    'Cartesia-Version': '2025-04-16'
-  }
+  baseURL: 'https://api.cartesia.ai'
 });
 
 const transcription = await client.audio.transcriptions.create({
@@ -87,7 +83,6 @@ Both endpoints accept identical parameters and return the same JSON response for
 ```bash
 curl -X POST https://api.cartesia.ai/stt \
   -H "X-API-Key: your-cartesia-api-key" \
-  -H "Cartesia-Version: 2025-04-16" \
   -F "file=@audio.wav" \
   -F "model=ink-whisper" \
   -F "language=en" \
@@ -99,7 +94,6 @@ curl -X POST https://api.cartesia.ai/stt \
 ```bash
 curl -X POST https://api.cartesia.ai/audio/transcriptions \
   -H "X-API-Key: your-cartesia-api-key" \
-  -H "Cartesia-Version: 2025-04-16" \
   -F "file=@audio.wav" \
   -F "model=ink-whisper" \
   -F "language=en" \
@@ -112,10 +106,9 @@ To migrate from OpenAI's Whisper API to Cartesia:
 
 1. **Update the base URL**: Change from `https://api.openai.com/v1` to `https://api.cartesia.ai`
 2. **Update authentication**: Replace your OpenAI API key with your Cartesia API key
-3. **Add version header**: Include `Cartesia-Version: 2025-04-16` in requests
-4. **Update model names**: Use `ink-whisper` instead of OpenAI's model names
-5. **Keep the same endpoint**: Continue using `/audio/transcriptions`
-6. **Avoid unsupported parameters**: Remove `prompt`, `temperature`, and `response_format` parameters
-7. **Use timestamp_granularities (Optional)**: Add `timestamp_granularities: ["word"]` to get word-level timestamps
+3. **Update model names**: Use `ink-whisper` instead of OpenAI's model names
+4. **Keep the same endpoint**: Continue using `/audio/transcriptions`
+5. **Avoid unsupported parameters**: Remove `prompt`, `temperature`, and `response_format` parameters
+6. **Use timestamp_granularities (Optional)**: Add `timestamp_granularities: ["word"]` to get word-level timestamps
 
 The core functionality remains the same, with JSON responses containing transcribed text and optional word timestamps. 
