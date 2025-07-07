@@ -365,7 +365,7 @@ types:
       add_phoneme_timestamps:
         type: optional<boolean>
         docs: |
-          Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced - if `add_timestamps` is `true`, the produced timestamps will be word timestamps instead. If `true`, the server will return timestamp events containing phoneme-level timing information.
+          Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced. If `true`, the server will return timestamp events containing phoneme-level timing information.
       use_normalized_timestamps:
         type: optional<boolean>
         docs: |
