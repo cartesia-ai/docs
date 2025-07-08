@@ -12,19 +12,17 @@ Your subscription plan determines how many requests can be processed simultaneou
 
 | Plan | TTS Concurrent Requests | STT Concurrent Requests |
 |------|------------------------|------------------------|
-| Free | 2 | 2 |
-| Pro | 3 | 3 |
-| Startup | 5 | 5 |
-| Scale | 15 | 15 |
+| Free | 2 | 8 |
+| Pro | 3 | 12 |
+| Startup | 5 | 20 |
+| Scale | 15 | 60 |
 | Enterprise | Custom | Custom |
 
 <Note>
-  Sonic (Text-to-Speech) and Ink (Speech-to-Text) services have separate concurrent request limits. For example, if you're on the Scale plan, you can have up to 15 concurrent TTS requests AND 15 concurrent STT requests running simultaneously.
+  Sonic (Text-to-Speech) and Ink (Speech-to-Text) services have separate concurrent request limits. For example, if you're on the Scale plan, you can have up to 15 concurrent TTS requests AND 60 concurrent STT requests running simultaneously.
 </Note>
 
 ## Text-to-Speech (TTS) Concurrency
-
-### How TTS concurrency limits work
 
 We measure TTS generation concurrency in terms of the number of unique contexts active at a given time.
 
@@ -33,7 +31,7 @@ We measure TTS generation concurrency in terms of the number of unique contexts 
 
 If you exceed your TTS concurrency limit, you will receive a `429 Too Many Requests` error. You can check your concurrency limit and upgrade it on the playground at [play.cartesia.ai](https://play.cartesia.ai).
 
-### Interpreting TTS concurrency limits
+### Interpreting concurrency limits
 
 How you interpret your TTS concurrency limit depends on how you're using the Sonic model family.
 
@@ -53,18 +51,7 @@ How you interpret your TTS concurrency limit depends on how you're using the Son
   </Accordion>
 </AccordionGroup>
 
-## Speech-to-Text (STT) Concurrency
-
-### How STT concurrency limits work
-
-Each active transcription stream counts as one concurrent request, regardless of whether you're using HTTP or WebSocket connections.
-
-- One stream equals one HTTP connection
-- Each concurrent transcription counts toward your STT concurrency limit
-
-If you exceed your STT concurrency limit, you will receive a `429 Too Many Requests` error.
-
-## WebSocket limits
+### WebSocket limits
 
 <Tip> You don't need to worry about WebSocket limits if you're only using the HTTP API. </Tip>
 
@@ -74,6 +61,15 @@ If you exceed your WebSocket limit, you will receive a `429 Too Many Requests` e
 
 Usually, when users run into WebSocket limits (even at scale), it's because they're not properly closing idle connections. Beyond closing idle connections, you can also create a connection pool to ensure you don't exceed your WebSocket limit.
 
-## WebSocket timeouts
+#### WebSocket timeouts
 
 We close idle WebSocket connections after 5 minutes. We recommend closing and re-opening a new websocket connection when connections stay idle longer than 5 minutes.
+
+## Speech-to-Text (STT) Concurrency
+
+Each active transcription stream counts as one concurrent request, regardless of whether you're using HTTP or WebSocket connections.
+
+- One stream equals one HTTP or WebSocket connection
+- Each concurrent transcription counts toward your STT concurrency limit
+
+If you exceed your STT concurrency limit, you will receive a `429 Too Many Requests` error.
