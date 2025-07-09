@@ -34,15 +34,12 @@ navigation:
             icon: fa-code
       - section: Build with Cartesia
         contents:
-          - section: Models
-            icon: fa-microchip
-            contents:
-              - page: TTS
-                path: ../build-with-sonic/models-tts.mdx
-                icon: fa-volume-high
-              - page: STT
-                path: ../build-with-sonic/models-stt.mdx
-                icon: fa-microphone
+          - page: TTS Models
+            path: ../build-with-sonic/models-tts.mdx
+            icon: fa-volume-high
+          - page: STT Models
+            path: ../build-with-sonic/models-stt.mdx
+            icon: fa-microphone
           - section: Capability Guides
             icon: fa-cubes
             contents:
