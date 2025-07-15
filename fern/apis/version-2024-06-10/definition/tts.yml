@@ -430,8 +430,21 @@ types:
       speed: optional<ModelSpeed>
 
   TTSSSERequest:
-    extends: TTSRequest
     properties:
+      model_id:
+        type: string
+        docs: |
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
+      transcript: string
+      voice: TTSRequestVoiceSpecifier
+      language: optional<SupportedLanguage>
+      output_format: RawOutputFormat
+      duration:
+        type: optional<double>
+        docs: |
+          The maximum duration of the audio in seconds. You do not usually need to specify this.
+          If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+      speed: optional<ModelSpeed>
       add_timestamps:
         type: optional<boolean>
         docs: |
@@ -444,6 +457,15 @@ types:
         type: optional<boolean>
         docs: |
           Whether to use normalized timestamps (True) or original timestamps (False).
+      continue:
+        type: optional<boolean>
+        docs: |
+          Whether this input may be followed by more inputs.
+          If not specified, this defaults to `false`.
+      context_id:
+        type: optional<ContextID>
+        docs: |
+          Optional context ID for this request.
 
   SupportedLanguage:
     docs: |

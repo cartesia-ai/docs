@@ -50,6 +50,19 @@ service:
               container: "raw"
               sample_rate: 44100
               encoding: "pcm_f32le"
+        - name: With Save
+          request:
+            model_id: "sonic-2"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "wav"
+              sample_rate: 44100
+              encoding: "pcm_f32le"
+            save: true
 
     sse:
       path: /sse
@@ -60,7 +73,7 @@ service:
         type: WebSocketResponse
         format: sse
       examples:
-        - name: SSE
+        - name: Basic SSE
           request:
             model_id: "sonic-2"
             transcript: "Hello, world!"
@@ -85,6 +98,21 @@ service:
               sample_rate: 44100
               encoding: "pcm_f32le"
             add_timestamps: true
+            add_phoneme_timestamps: true
+        - name: SSE with Continuation
+          request:
+            model_id: "sonic-2"
+            transcript: "Hello, world!"
+            voice:
+              mode: "id"
+              id: "694f9389-aac1-45b6-b726-9d9369183238"
+            language: "en"
+            output_format:
+              container: "raw"
+              sample_rate: 44100
+              encoding: "pcm_f32le"
+            continue: true
+            context_id: "my-context-123"
 
 channel:
   path: /tts/websocket
@@ -327,9 +355,9 @@ types:
         docs: |
           The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
       transcript:
-        type: unknown
+        type: string
         docs: |
-          The transcript to generate speech for. This can be a string or an iterator over strings.
+          The transcript to generate speech for.
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
       output_format: WebSocketRawOutputFormat
@@ -427,10 +455,27 @@ types:
           The maximum duration of the audio in seconds. You do not usually need to specify this.
           If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
       speed: optional<ModelSpeed>
+             save:
+         type: optional<boolean>
+         docs: |
+           Whether to save the generated audio file. When true, the response will include a `Cartesia-File-ID` header.
 
   TTSSSERequest:
-    extends: TTSRequest
     properties:
+      model_id:
+        type: string
+        docs: |
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
+      transcript: string
+      voice: TTSRequestVoiceSpecifier
+      language: optional<SupportedLanguage>
+      output_format: RawOutputFormat
+      duration:
+        type: optional<double>
+        docs: |
+          The maximum duration of the audio in seconds. You do not usually need to specify this.
+          If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+      speed: optional<ModelSpeed>
       add_timestamps:
         type: optional<boolean>
         docs: |
@@ -443,6 +488,15 @@ types:
         type: optional<boolean>
         docs: |
           Whether to use normalized timestamps (True) or original timestamps (False).
+      continue:
+        type: optional<boolean>
+        docs: |
+          Whether this input may be followed by more inputs.
+          If not specified, this defaults to `false`.
+      context_id:
+        type: optional<ContextID>
+        docs: |
+          Optional context ID for this request.
 
   SupportedLanguage:
     docs: |
@@ -477,7 +531,6 @@ types:
     properties:
       encoding: RawEncoding
       sample_rate: integer
-      bit_rate: optional<integer>
 
   RawEncoding:
     enum:
