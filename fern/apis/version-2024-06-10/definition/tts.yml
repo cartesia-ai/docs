@@ -438,7 +438,7 @@ types:
       transcript: string
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
-      output_format: RawOutputFormat
+      output_format: SSEOutputFormat
       duration:
         type: optional<double>
         docs: |
@@ -501,6 +501,12 @@ types:
       encoding: RawEncoding
       sample_rate: integer
       bit_rate: optional<integer>
+
+  SSEOutputFormat:
+    properties:
+      container: literal<"raw">
+      encoding: RawEncoding
+      sample_rate: integer
 
   RawEncoding:
     enum:
