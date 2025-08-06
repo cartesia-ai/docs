@@ -6,6 +6,7 @@ instances:
         owner: cartesia-ai
         repo: docs
         branch: main
+
 title: Cartesia
 versions:
   - display-name: "2025-04-16"
@@ -96,7 +97,7 @@ redirects:
     destination: /get-started/make-an-api-request
     permanent: true
   - source: /getting-started/available-models
-    destination: /build-with-cartesia/models
+    destination: /build-with-cartesia/models-tts
     permanent: true
   - source: /getting-started/dev-quickstart
     destination: /get-started/make-an-api-request
@@ -181,4 +182,88 @@ redirects:
     permanent: true
   - source: /build-with-sonic/capability-guides/stream-inputs-using-continuations
     destination: /build-with-cartesia/capability-guides/stream-inputs-using-continuations
+    permanent: true
+  - source: /build-with-cartesia/models
+    destination: /build-with-cartesia/models-tts
+    permanent: true
+  - source: /2024-06-10/build-with-sonic/models
+    destination: /2024-06-10/build-with-cartesia/models-tts
+    permanent: true
+  - source: /2024-11-13/build-with-sonic/models
+    destination: /2024-11-13/build-with-cartesia/models-tts
+    permanent: true
+  - source: /2025-04-16/build-with-sonic/models
+    destination: /2025-04-16/build-with-cartesia/models-tts
+    permanent: true
+  - source: /integrate-with-sonic/mcp
+    destination: /integrations/mcp
+    permanent: true
+  - source: /2024-06-10/integrate-with-sonic/mcp
+    destination: /2024-06-10/integrations/mcp
+    permanent: true
+  - source: /2024-11-13/integrate-with-sonic/mcp
+    destination: /2024-11-13/integrations/mcp
+    permanent: true
+  - source: /2025-04-16/integrate-with-sonic/mcp
+    destination: /2025-04-16/integrations/mcp
+    permanent: true
+  - source: /integrate-with-sonic/live-kit
+    destination: /integrations/live-kit
+    permanent: true
+  - source: /2024-06-10/integrate-with-sonic/live-kit
+    destination: /2024-06-10/integrations/live-kit
+    permanent: true
+  - source: /2024-11-13/integrate-with-sonic/live-kit
+    destination: /2024-11-13/integrations/live-kit
+    permanent: true
+  - source: /2025-04-16/integrate-with-sonic/live-kit
+    destination: /2025-04-16/integrations/live-kit
+    permanent: true
+  - source: /integrate-with-sonic/pipecat
+    destination: /integrations/pipecat
+    permanent: true
+  - source: /2024-06-10/integrate-with-sonic/pipecat
+    destination: /2024-06-10/integrations/pipecat
+    permanent: true
+  - source: /2024-11-13/integrate-with-sonic/pipecat
+    destination: /2024-11-13/integrations/pipecat
+    permanent: true
+  - source: /2025-04-16/integrate-with-sonic/pipecat
+    destination: /2025-04-16/integrations/pipecat
+    permanent: true
+  - source: /integrate-with-sonic/rasa
+    destination: /integrations/rasa
+    permanent: true
+  - source: /2024-06-10/integrate-with-sonic/rasa
+    destination: /2024-06-10/integrations/rasa
+    permanent: true
+  - source: /2024-11-13/integrate-with-sonic/rasa
+    destination: /2024-11-13/integrations/rasa
+    permanent: true
+  - source: /2025-04-16/integrate-with-sonic/rasa
+    destination: /2025-04-16/integrations/rasa
+    permanent: true
+  - source: /integrate-with-sonic/thoughtly
+    destination: /integrations/thoughtly
+    permanent: true
+  - source: /2024-06-10/integrate-with-sonic/thoughtly
+    destination: /2024-06-10/integrations/thoughtly
+    permanent: true
+  - source: /2024-11-13/integrate-with-sonic/thoughtly
+    destination: /2024-11-13/integrations/thoughtly
+    permanent: true
+  - source: /2025-04-16/integrate-with-sonic/thoughtly
+    destination: /2025-04-16/integrations/thoughtly
+    permanent: true
+  - source: /integrate-with-sonic/twilio
+    destination: /integrations/twilio
+    permanent: true
+  - source: /2024-06-10/integrate-with-sonic/twilio
+    destination: /2024-06-10/integrations/twilio
+    permanent: true
+  - source: /2024-11-13/integrate-with-sonic/twilio
+    destination: /2024-11-13/integrations/twilio
+    permanent: true
+  - source: /2025-04-16/integrate-with-sonic/twilio
+    destination: /2025-04-16/integrations/twilio
     permanent: true
