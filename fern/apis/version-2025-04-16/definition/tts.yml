@@ -467,6 +467,10 @@ types:
         type: optional<boolean>
         docs: |
           Whether to save the generated audio file. When true, the response will include a `Cartesia-File-ID` header.
+      pronunciation_dict_ids:
+        type: optional<list<string>>
+        docs: |
+          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
 
   TTSSSERequest:
     properties:
