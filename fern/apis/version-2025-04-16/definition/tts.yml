@@ -396,6 +396,11 @@ types:
         type: optional<boolean>
         docs: |
           Whether to use normalized timestamps (True) or original timestamps (False).
+      pronunciation_dict_ids:
+        type: optional<list<string>>
+        docs: |
+          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
+
 
   WebSocketRawOutputFormat:
     properties:
@@ -424,15 +429,19 @@ types:
       voice: TTSRequestVoiceSpecifier
       duration: optional<integer>
       language: optional<string>
-      add_timestamps: 
+      add_timestamps:
         type: optional<boolean>
         docs: |
           Whether to return word-level timestamps. If `false` (default), no word timestamps will be produced at all. If `true`, the server will return timestamp events containing word-level timing information.
-      add_phoneme_timestamps: 
+      add_phoneme_timestamps:
         type: optional<boolean>
         docs: |
           Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced. If `true`, the server will return timestamp events containing phoneme-level timing information.
       use_normalized_timestamps: optional<boolean>
+      pronunciation_dict_ids:
+        type: optional<list<string>>
+        docs: |
+          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
       continue: optional<boolean>
       context_id: optional<string>
       max_buffer_delay_ms: optional<integer>
@@ -458,6 +467,10 @@ types:
         type: optional<boolean>
         docs: |
           Whether to save the generated audio file. When true, the response will include a `Cartesia-File-ID` header.
+      pronunciation_dict_ids:
+        type: optional<list<string>>
+        docs: |
+          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
 
   TTSSSERequest:
     properties:
@@ -487,6 +500,10 @@ types:
         type: optional<boolean>
         docs: |
           Whether to use normalized timestamps (True) or original timestamps (False).
+      pronunciation_dict_ids:
+        type: optional<list<string>>
+        docs: |
+          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
       context_id:
         type: optional<ContextID>
         docs: |
