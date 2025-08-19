@@ -1,0 +1,98 @@
+The Cartesia SDK abstracts away all of the complexities in managing Audio infrastructure and lets you focus on the core reasoning of your application in the language model domain.  The SDK is designed from the ground up to support asynchronous background tasks, helping developers balance the needs of conversation speed and intelligence. 
+
+```python
+pip install cartesia-agents
+```
+
+The Cartesia SDK abstracts away all of the complexities in managing Audio infrastructure and lets you focus on the core reasoning of your application in the language model domain.  The SDK is designed from the ground up to support asynchronous background tasks, helping developers balance the needs of conversation speed and intelligence.
+
+The SDK is organized around three main components that compose a Voice Agent in the SDK: VoiceAgentSystem, ReasoningNode, and NodeBridge.
+
+![SDK Architecture](/assets/images/agents/SDKArchitecture.png)
+
+
+## 1. VoiceAgentSystem
+This is the central system that manages the entire Agent lifecycle, provides event routing between components, and websocket connections to Cartesia's Voice Agents infrastructure to manage voice I/O. Each call should get a single instance of VoiceAgentSystem to avoid any state errors between calls.
+
+## 2. ReasoningNode
+A ReasoningNode is the base class for handling Agent logic with an LLM. The class includes built in Conversation Management for appending messages to conversation history, adding tools to individual Nodes, and streaming content to the conversation. Only one ReasoningNode can be authorized to talk to the user at any given time. Each node has access to a node specific data that persists for a single call.
+
+### Node Data
+
+<ParamField path="context.messages">
+  The complete history of messages from a ReasoningNode
+</ParamField>
+
+<ParamField path="context.data">
+  A history of tool calls
+</ParamField>    
+
+## 3. NodeBridge
+    
+A NodeBridge instance connects each ReasoningNode to a VoiceAgent System through a pub/sub style relationship to other ReasoningNodes in the VoiceAgentSystem. The NodeBridge component has a different types listed below, and you can create multiple bridges from a single ReasoningNode to the rest of the system. 
+
+An event is registered to a ReasoningNode by creating a NodeBridge and specifying the event type. You can chain as many event types as you like when you create your NodeBridge.
+
+```python
+# Clean event routing with fluent API
+conversation_bridge = NodeBridge.for_node(conversation_node)
+(
+    conversation_bridge.on("agent.transcription_received")
+    .for_each(lambda msg: conversation_node.add_message("user", msg.data.get("content", "")))
+    .filter(lambda result: isinstance(result, NodeMessage))
+    .generate_and_publish("user.message")
+)
+```
+
+The events are divided into two directions, into the Agent system and out to the user. All events are listed below.
+
+### Inbound to the Agent
+
+<ParamField path="agent.transcription_received">
+  The user said something, triggered on the first transcript byte
+</ParamField>
+
+<ParamField path="agent.generation_complete">
+  Sonic finished generating the text sent to the user
+</ParamField>
+
+<ParamField path="agent.user_started_speaking">
+  The user started speaking
+</ParamField>
+
+<ParamField path="agent.user_stopped_speaking">
+    The user stopped speaking
+</ParamField>
+
+
+### Outbound to the VoiceAgentSystem from a Node
+
+<ParamField path="user.message">
+    The user stopped speaking
+</ParamField>
+
+<ParamField path="user.tool_call">
+    Sends a message to the system to let other nodes know that a tool call was completed
+</ParamField>
+
+<ParamField path="user.error">
+    Sends a message to the system to let other nodes know that an error was encountered
+</ParamField>
+
+<ParamField path="user.transfer_call">
+    Sends a message to the telephony system that a call should be transferred
+</ParamField>
+
+<ParamField path="user.end_call">
+    Sends a message to the telephony system to end a call
+</ParamField>
+
+<ParamField path="user.authorize">
+    Changes the node that is authorized to speak
+</ParamField>
+
+
+## Initialization
+The SDK has a hook in for an initialization() step which gets called before a call is connected. Note that if this initialization() function is too long, the call may not get answered. 
+
+

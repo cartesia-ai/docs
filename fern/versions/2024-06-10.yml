@@ -1,6 +1,6 @@
 tabs:
   docs:
-    display-name: Documentation
+    display-name: Models
     slug: docs
     icon: fa-regular fa-file-alt
     skip-slug: true

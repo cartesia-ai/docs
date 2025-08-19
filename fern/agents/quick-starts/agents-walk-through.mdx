@@ -1,0 +1,173 @@
+---
+title: Deploy your first Agent
+---
+
+Line is fundamentally a code-first way of building voice agents. You can create Agent code by prompting our Text to Agent system, building from a quick
+start template, or writing it from scratch. All of these are built on top of the Line SDK which is the most powerful way to build voice agents. 
+We'll get a voice agent up and running in under five minutes. 
+
+Let's start by installing the Cartesia CLI.
+
+```bash
+curl -fsSL https://cartesia.sh | sh
+```
+
+Now let's connect the CLI to your Cartesia account. Create an API key from your playground and use it to authenticate. 
+
+```bash
+cartesia auth login             
+cartesia auth status             
+```
+
+We'll use our simple chat template to start, which connects a language model to the Line audio harness. You can access this remplate from three different paths.
+
+<Tabs>
+  <Tab title="Templates">
+    Choose the basic chat template from the playground    
+<Frame caption="Templates">
+  <img src="/assets/images/agents/playground-creation.png" alt="Build with a template from the playground"/>
+</Frame>
+
+Then create a new repository to copy it into. 
+
+    <Frame caption="Connect GitHub">
+    <img src="/assets/images/agents/playground-connect-github.png" alt="Connect a repo to your agent"/>
+    </Frame>
+
+    Now that your repo is created, let's clone it so we can edit loally.
+
+    ```bash
+    git clone https://github.com/your-username/your-repo-name.git
+    ```
+
+    Finally, let's link your local directory to your Cartesia account via the CLI. Be sure to choose the existing agent you just created.
+    ```
+    cartesia init 
+    ```    
+
+</Tab>
+
+<Tab title="Text to Agent">
+    You can simply describe the agent you want to build and Line will automaticaly mint you an agent. 
+<Frame caption="Text to Agent">
+  <img src="/assets/images/agents/playground-tta.png" alt="Describe your agent"/>
+</Frame>
+
+Line will create a few different candidate agents for you to try. As generation completes you can call your agents and choose which one you 
+like the best. When you pin one to production, it will get connected to a phone number and available to call. In this example, let's also connect
+the agent to a GitHub repository so you can continue to improve it in code.
+
+<Frame caption="Connect Text to Agent to Github">
+  <img src="/assets/images/agents/playground-tta.png" alt="Describe your agent"/>
+</Frame>
+
+Then create a new repository to copy it into. 
+
+    <Frame caption="Connect GitHub">
+    <img src="/assets/images/agents/playground-connect-github.png" alt="Connect a repo to your agent"/>
+    </Frame>
+
+    Now that your repo is created, let's clone it so we can edit loally.
+
+    ```bash
+    git clone https://github.com/your-username/your-repo-name.git
+    ```
+
+    Next let's link your local directory to your Cartesia account via the CLI. Be sure to choose the existing agent you just created.
+    ```
+    cartesia init 
+    ```    
+
+</Tab>
+
+
+
+  <Tab title="CLI">
+    You can use the Cartesia CLI to copy templates into a local directory to get started. 
+
+    ```bash
+    cartesia init
+    cartesia create
+    cartesia create simple-chat-example
+    cd simple-chat-example
+    cartesia init
+    ```
+
+    For this example, let's also connect this directory to a GitHub repo. Note that this step is optional,
+    you can deploy your agent without a GitHub repository but let's establish the link.
+
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit"
+    git remote add origin https://github.com/your-username/your-repo-name.git
+    ```
+
+  </Tab>
+
+</Tabs>
+
+Now that you have the template code cloned locally and connected to an agent ID, you'll a file structure outlined below.  
+```
+.
+├── .cartesia                      
+    └── config.toml
+├── chat_node.py
+├── config.py                          
+├── main.py    
+├── README.md                           
+└── requirements.txt
+```
+
+Our next goal it to chat with our agent locally in the terminal. We'll need to establish an LLM provider API key in our environment.
+
+```bash
+export GEMINI_API_KEY=YOUR_GEMINI_KEY
+```
+
+Now that you have your LLM connected let's talk to the agent. To do this, we'll open up two separate terminals one to spin up the server locally, and the other to chat with
+your agent. In the first terminal you'll run a python command so let's se
+
+```bash
+uv pip install -r requirements.txt
+```
+
+```bash
+uv run python main.py
+```
+
+Then in another terminal, use the Cartesia CLI to chat with the server.
+
+```bash
+cartesia chat 8000
+```
+
+<Frame caption="Chat with your agent">
+<img src="/assets/images/agents/cli-chat.png" alt="Chat with your agent"/>
+</Frame>
+
+
+Great! Now if you want to customize your agent behavior, simply open the config.py file in your repository and modify the SYSTEM_PROMPT to whatever you like.
+When you're happy with your changes you have two options of deploying, pushing to GitHub or using the CLI. 
+
+<Tabs>
+  <Tab title="Git">
+
+    ```bash
+    git add .
+    git commit -m "updated system prompt"
+    git push
+    ```
+</Tab>
+
+  <Tab title="CLI">
+
+    ```bash
+    cartesia deploy
+    ```
+</Tab>
+
+</Tabs>
+
+You've just successfully deployed your first voice agent! 
+

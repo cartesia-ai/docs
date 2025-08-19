@@ -1,0 +1,495 @@
+---
+title: Adding Background Nodes for Parallel Processing
+---
+
+Now that we have tool calls in place, let's move these to background nodes to unblock the main node from keeping the conversation going.
+In this example, we'll extend our basic chat agent by adding a background agent that performs sentiment analysis in parallel. 
+This demonstrates how to build multi-node systems where specialized nodes work together.
+
+
+## What are Background Nodes?
+
+Background nodes
+- Process events in parallel with the speaking node
+- Cannot directly communicate with users
+- Emit custom events for other agents to consume
+- Enable specialized processing without blocking conversations
+
+Think of them as your agent's support team - analyzing, researching, and providing insights while the main node maintains the conversation.
+
+<Steps>
+  <Step title="Create a Custom Event Type">
+
+Background agents communicate through custom events. Create `custom_events.py`:
+
+```python
+"""
+Custom events for inter-node communication
+"""
+
+from datetime import datetime
+from typing import Literal
+from pydantic import BaseModel, Field
+
+
+class SentimentAnalysis(BaseModel):
+    """Event emitted by sentiment analysis agent"""
+
+    sentiment: Literal["positive", "neutral", "negative"]
+    confidence: float = Field(ge=0, le=1, description="Confidence score 0-1")
+    keywords: list[str] = Field(default_factory=list, description="Key emotional words detected")
+    analysis: str = Field(description="Brief analysis of the sentiment")
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "sentiment": "positive",
+                "confidence": 0.85,
+                "keywords": ["excited", "happy", "great"],
+                "analysis": "User expressing enthusiasm about the product",
+                "timestamp": "2024-01-01T00:00:00Z"
+            }
+        }
+```
+  </Step>
+
+  <Step title="Create the Background Sentiment Agent">
+
+Create `sentiment_agent.py`:
+
+```python
+"""
+Sentiment Analysis Background Agent
+"""
+
+from typing import AsyncGenerator
+from loguru import logger
+
+from google.genai import types as gemini_types
+from line import ConversationContext, ReasoningNode
+from line.utils.gemini_utils import convert_messages_to_gemini
+
+from custom_events import SentimentAnalysis
+
+
+SENTIMENT_PROMPT = """You are a sentiment analysis expert. Analyze the emotional tone of
+conversations and identify the user's sentiment. Focus on:
+- Overall emotional state (positive, neutral, negative)
+- Key emotional indicators and words
+- Confidence in your assessment
+- Brief analysis of what's driving the sentiment
+
+Respond with a JSON object containing: sentiment, confidence, keywords, and analysis."""
+
+
+class SentimentAgent(ReasoningNode):
+    """
+    Background agent that analyzes conversation sentiment.
+
+    This agent:
+    - Processes user messages in parallel
+    - Analyzes emotional tone and keywords
+    - Emits SentimentAnalysis events for other agents
+    """
+
+    def __init__(self, gemini_client, model_id: str = "gemini-2.5-flash"):
+        super().__init__(
+            system_prompt=SENTIMENT_PROMPT,
+            max_context_length=50  # Keep recent context for sentiment tracking
+        )
+
+        self.client = gemini_client
+        self.model_id = model_id
+
+        logger.info("SentimentAgent initialized for background analysis")
+
+    async def process_context(
+        self, context: ConversationContext
+    ) -> AsyncGenerator[SentimentAnalysis, None]:
+        """
+        Analyze sentiment and emit custom events.
+
+        Note: Background agents should NOT yield AgentResponse events.
+        """
+        # Only analyze if we have user messages
+        user_message = context.get_latest_user_transcript_message()
+        if not user_message:
+            return
+
+        logger.info(f"Analyzing sentiment for: '{user_message[:50]}...'")
+
+        try:
+            # Convert context for Gemini
+            messages = convert_messages_to_gemini(context.events)
+
+            # Configure for JSON output
+            generation_config = gemini_types.GenerateContentConfig(
+                system_instruction=self.system_prompt,
+                temperature=0.3,  # Lower temperature for consistent analysis
+                response_mime_type="application/json",
+            )
+
+            # Get sentiment analysis
+            response = await self.client.aio.models.generate_content(
+                model=self.model_id,
+                contents=messages,
+                config=generation_config,
+            )
+
+            # Parse and validate response
+            import json
+            result = json.loads(response.text)
+
+            # Create and yield sentiment event
+            sentiment_event = SentimentAnalysis(
+                sentiment=result.get("sentiment", "neutral"),
+                confidence=float(result.get("confidence", 0.5)),
+                keywords=result.get("keywords", []),
+                analysis=result.get("analysis", "Unable to determine sentiment")
+            )
+
+            logger.info(f"Sentiment detected: {sentiment_event.sentiment} "
+                       f"(confidence: {sentiment_event.confidence})")
+
+            yield sentiment_event
+
+        except Exception as e:
+            logger.error(f"Error in sentiment analysis: {e}")
+            # Emit neutral sentiment on error
+            yield SentimentAnalysis(
+                sentiment="neutral",
+                confidence=0.0,
+                keywords=[],
+                analysis=f"Analysis failed: {str(e)}"
+            )
+```
+
+  </Step>
+
+  <Step title="Create an Enhanced Speaking Agent">
+
+Update your chat node to receive sentiment insights. Create `enhanced_chat_node.py`:
+
+```python
+"""
+Enhanced Chat Node that receives sentiment insights
+"""
+
+from typing import AsyncGenerator
+from loguru import logger
+
+from google.genai import types as gemini_types
+from line import ConversationContext, ReasoningNode
+from line.events import AgentResponse, ToolCall, ToolResult
+from line.tools.system_tools import EndCallTool
+from line.utils.gemini_utils import convert_messages_to_gemini
+
+from custom_events import SentimentAnalysis
+
+
+ENHANCED_PROMPT = """You are a warm, emotionally intelligent assistant having a voice
+conversation. Keep responses brief (1-2 sentences). You receive sentiment analysis
+insights about the user's emotional state - use these to tailor your responses
+appropriately, but don't explicitly mention the analysis unless relevant."""
+
+
+class EnhancedChatNode(ReasoningNode):
+    """
+    Speaking agent that adapts based on sentiment insights.
+    """
+
+    def __init__(self, gemini_client):
+        super().__init__(system_prompt=ENHANCED_PROMPT)
+
+        self.client = gemini_client
+        self.model_id = "gemini-2.5-flash"
+        self.current_sentiment = None
+        self.end_call_tool = EndCallTool()
+
+    async def process_context(
+        self, context: ConversationContext
+    ) -> AsyncGenerator[AgentResponse | ToolCall | ToolResult, None]:
+        """
+        Generate responses informed by sentiment analysis.
+        """
+        messages = convert_messages_to_gemini(context.events)
+
+        # Check for recent sentiment analysis in context
+        sentiment_info = ""
+        for event in reversed(context.events[-10:]):  # Check recent events
+            if isinstance(event, SentimentAnalysis):
+                self.current_sentiment = event
+                sentiment_info = f"\n\nUser sentiment: {event.sentiment} (confidence: {event.confidence})"
+                sentiment_info += f"\nEmotional keywords: {', '.join(event.keywords)}"
+                sentiment_info += f"\nAnalysis: {event.analysis}"
+                break
+
+        # Add sentiment context to prompt
+        enhanced_prompt = self.system_prompt + sentiment_info
+
+        generation_config = gemini_types.GenerateContentConfig(
+            system_instruction=enhanced_prompt,
+            temperature=0.7,
+            tools=[self.end_call_tool.to_gemini_tool()],
+        )
+
+        stream = await self.client.aio.models.generate_content_stream(
+            model=self.model_id,
+            contents=messages,
+            config=generation_config,
+        )
+
+        full_response = ""
+        async for chunk in stream:
+            if chunk.text:
+                full_response += chunk.text
+                yield AgentResponse(content=chunk.text)
+
+            if chunk.function_calls:
+                for function_call in chunk.function_calls:
+                    if function_call.name == self.end_call_tool.name:
+                        goodbye = function_call.args.get(
+                            "goodbye_message",
+                            "Goodbye! Thanks for chatting!"
+                        )
+                        yield AgentResponse(content=goodbye)
+                        yield ToolResult(
+                            tool_name=self.end_call_tool.name,
+                            result={"message": goodbye}
+                        )
+                        from line.events import EndCall
+                        yield EndCall()
+
+        if full_response:
+            logger.info(f"Response: '{full_response}' "
+                       f"(informed by {self.current_sentiment.sentiment if self.current_sentiment else 'no'} sentiment)")
+```
+
+  </Step>
+
+  <Step title="Wire Everything Together">
+
+Update your `main.py` to use both agents:
+
+```python
+import os
+from dotenv import load_dotenv
+import google.genai as genai
+
+from line import (
+    Bridge,
+    CallRequest,
+    VoiceAgentApp,
+    VoiceAgentSystem,
+)
+from line.events import (
+    UserStartedSpeaking,
+    UserStoppedSpeaking,
+    UserTranscriptionReceived,
+)
+
+from enhanced_chat_node import EnhancedChatNode
+from sentiment_agent import SentimentAgent
+from custom_events import SentimentAnalysis
+
+load_dotenv()
+
+gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+async def handle_new_call(system: VoiceAgentSystem, call_request: CallRequest):
+    """Set up multi-agent system with background sentiment analysis"""
+
+    # Create the speaking agent
+    chat_node = EnhancedChatNode(gemini_client)
+    chat_bridge = Bridge(chat_node)
+
+    # Create the background sentiment agent
+    sentiment_node = SentimentAgent(gemini_client)
+    sentiment_bridge = Bridge(sentiment_node)
+
+    # Configure speaking agent routes
+    chat_bridge.on(UserTranscriptionReceived).map(chat_node.add_event)
+
+    # IMPORTANT: Subscribe to sentiment events BEFORE the generation route
+    chat_bridge.on(SentimentAnalysis).map(chat_node.add_event)
+
+    (
+        chat_bridge.on(UserStoppedSpeaking)
+        .interrupt_on(UserStartedSpeaking, handler=chat_node.on_interrupt_generate)
+        .stream(chat_node.generate)
+        .broadcast()
+    )
+
+    # Configure background agent routes
+    sentiment_bridge.on(UserTranscriptionReceived).map(sentiment_node.add_event)
+
+    (
+        sentiment_bridge.on(UserStoppedSpeaking)
+        .stream(sentiment_node.generate)
+        .broadcast()  # Broadcasts SentimentAnalysis events
+    )
+
+    # Register agents with the system
+    system.with_speaking_node(chat_node, chat_bridge)  # Only this can speak
+    system.with_node(sentiment_node, sentiment_bridge)  # Background processing
+
+    # Start the system
+    await system.start()
+
+    # Initial greeting
+    await system.send_initial_message(
+        "Hi there! I'm here to help. How are you feeling today?"
+    )
+
+    await system.wait_for_shutdown()
+
+
+app = VoiceAgentApp(handle_new_call)
+
+if __name__ == "__main__":
+    app.run()
+```
+  </Step>
+
+  <Step title="Understanding the Event Flow">
+
+Here's what happens in our multi-agent system:
+
+1. **User speaks**: "I'm really frustrated with this product!"
+
+2. **Both agents receive** `UserTranscriptionReceived`:
+   - Speaking agent adds to conversation history
+   - Background agent adds to its history
+
+3. **User stops speaking** triggers `UserStoppedSpeaking`:
+   - Background agent analyzes sentiment → yields `SentimentAnalysis`
+   - Speaking agent waits for generation
+
+4. **SentimentAnalysis event** is broadcast:
+   - Speaking agent receives it via `chat_bridge.on(SentimentAnalysis)`
+   - Adds sentiment context before generating response
+
+5. **Speaking agent generates**:
+   - Uses sentiment insights to craft empathetic response
+   - "I understand your frustration. What specific issue can I help you resolve?"
+
+</Step>
+</Steps>
+
+## Key Concepts for Background Agents
+
+### 1. Registration Difference
+
+```python
+# Speaking agent - can communicate with user
+system.with_speaking_node(chat_node, chat_bridge)
+
+# Background agent - internal processing only
+system.with_node(sentiment_node, sentiment_bridge)
+```
+
+### 2. Custom Events Only
+
+Background agents should yield custom events, not `AgentResponse`:
+
+```python
+# ✅ Correct - custom event
+yield SentimentAnalysis(sentiment="positive", ...)
+
+# ❌ Wrong - this won't reach the user from background agent
+yield AgentResponse(content="User seems happy")
+```
+
+### 3. Event Subscription Order
+
+Subscribe to custom events before generation routes:
+
+```python
+# First subscribe to background agent events
+chat_bridge.on(SentimentAnalysis).map(chat_node.add_event)
+
+# Then set up generation
+chat_bridge.on(UserStoppedSpeaking).stream(chat_node.generate)
+```
+
+### 4. Parallel Processing
+
+Background agents process independently:
+- Don't block the main conversation
+- Can perform heavy computations
+- Enable real-time analysis
+
+## Advanced Patterns
+
+### Multiple Background Agents
+
+Create specialized agents for different tasks:
+
+```python
+# Sentiment analysis
+sentiment_node = SentimentAgent(gemini_client)
+system.with_node(sentiment_node, sentiment_bridge)
+
+# Topic extraction
+topic_node = TopicExtractionAgent(gemini_client)
+system.with_node(topic_node, topic_bridge)
+
+# Intent classification
+intent_node = IntentClassifierAgent(gemini_client)
+system.with_node(intent_node, intent_bridge)
+```
+
+### Chained Background Processing
+
+Background agents can trigger each other:
+
+```python
+# Sentiment triggers detailed emotion analysis
+emotion_bridge.on(SentimentAnalysis).filter(
+    lambda msg: msg.event.sentiment == "negative"
+).stream(emotion_node.analyze_emotions).broadcast()
+```
+
+### Conditional Background Agents
+
+Activate agents based on conditions:
+
+```python
+# Only analyze sentiment for authenticated users
+if user.is_authenticated:
+    system.with_node(sentiment_node, sentiment_bridge)
+```
+
+## Testing Your Multi-Agent System
+
+Test various emotional states:
+
+1. **Positive**: "This is amazing! I love how easy it is!"
+2. **Negative**: "I'm frustrated and nothing is working"
+3. **Neutral**: "Can you tell me about your features?"
+
+Observe how the speaking agent adapts its responses based on sentiment.
+
+## Best Practices
+
+1. **Keep Background Agents Focused**: Each should do one thing well
+2. **Use Structured Events**: Define clear Pydantic models for communication
+3. **Handle Failures Gracefully**: Background agents shouldn't crash the system
+4. **Monitor Performance**: Log processing times for background tasks
+5. **Consider Rate Limiting**: Don't overwhelm the system with analysis
+
+## What's Next?
+
+With background agents, you can:
+
+1. **Add More Intelligence**: Entity extraction, topic modeling, intent classification
+2. **External Integrations**: Database lookups, API calls, real-time monitoring
+3. **Complex Workflows**: Multi-stage processing pipelines
+4. **Adaptive Behavior**: Agents that learn from conversation patterns
+5. **Analytics & Insights**: Track conversation metrics in real-time
+
+Background agents unlock the full potential of multi-agent systems, enabling sophisticated processing while maintaining responsive conversations.
+
+Happy building! 🚀
