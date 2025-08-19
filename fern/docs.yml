@@ -100,7 +100,7 @@ redirects:
     destination: /get-started/make-an-api-request
     permanent: true
   - source: /getting-started/available-models
-    destination: /build-with-cartesia/models-tts
+    destination: /build-with-cartesia/tts-models
     permanent: true
   - source: /getting-started/dev-quickstart
     destination: /get-started/make-an-api-request
@@ -187,16 +187,16 @@ redirects:
     destination: /build-with-cartesia/capability-guides/stream-inputs-using-continuations
     permanent: true
   - source: /build-with-cartesia/models
-    destination: /build-with-cartesia/models-tts
+    destination: /build-with-cartesia/tts-models
     permanent: true
   - source: /2024-06-10/build-with-sonic/models
-    destination: /2024-06-10/build-with-cartesia/models-tts
+    destination: /2024-06-10/build-with-cartesia/tts-models
     permanent: true
   - source: /2024-11-13/build-with-sonic/models
-    destination: /2024-11-13/build-with-cartesia/models-tts
+    destination: /2024-11-13/build-with-cartesia/tts-models
     permanent: true
   - source: /2025-04-16/build-with-sonic/models
-    destination: /2025-04-16/build-with-cartesia/models-tts
+    destination: /2025-04-16/build-with-cartesia/tts-models
     permanent: true
   - source: /integrate-with-sonic/mcp
     destination: /integrations/mcp
