@@ -196,7 +196,7 @@ navigation:
           #       path: ../agents/integrations/inference-platforms/agents-cerebras.mdx
           - page: GitHub
             path: ../agents/integrations/github.mdx
-            icon: github
+            icon: fa-brands fa-github
             slug: github
           - section: Telephony
             icon: fa-phone
