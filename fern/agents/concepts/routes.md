@@ -30,19 +30,19 @@ Routes are built using a fluent API, where operations can be chained together:
 
 ## Core Operations
 
-| Operation | Description |
-|-----------|-------------|
-| `on(Event)` | Listen for specific event types |
-| `map(function)` | Transform data by applying a function |
-| `filter(condition)` | Continue processing only if condition is met |
-| `stream(generator)` | Process async generators that yield multiple values |
-| `broadcast()` | Send results to other components (terminal operation) |
+| Operation           | Description                                           |
+| ------------------- | ----------------------------------------------------- |
+| `on(Event)`         | Listen for specific event types                       |
+| `map(function)`     | Transform data by applying a function                 |
+| `filter(condition)` | Continue processing only if condition is met          |
+| `stream(generator)` | Process async generators that yield multiple values   |
+| `broadcast()`       | Send results to other components (terminal operation) |
 
 ## Key Features
 
 - **Declarative Processing**: Define what happens when events occur
 - **Pipeline Chaining**: Link operations to transform and route data
-- **Interrupt Handling**: Gracefully handle conversation interruptions  
+- **Interrupt Handling**: Gracefully handle conversation interruptions
 - **Multi-Agent Coordination**: Route events between different agents
 
-Routes enable event processing patterns and agent coordination. See [Agent Patterns](../agent_patterns/) for pipeline examples.
+Routes enable event processing patterns and agent coordination. See [Agent Patterns](../agent-patterns/) for pipeline examples.

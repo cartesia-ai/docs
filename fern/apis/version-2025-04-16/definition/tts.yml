@@ -352,7 +352,7 @@ types:
       model_id:
         type: string
         docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/tts-models) for available models.
       transcript:
         type: string
         docs: |
@@ -400,7 +400,6 @@ types:
         type: optional<list<string>>
         docs: |
           A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
-
 
   WebSocketRawOutputFormat:
     properties:
