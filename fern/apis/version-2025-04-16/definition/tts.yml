@@ -422,7 +422,7 @@ types:
       model_id:
         type: string
         docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/tts-smodels) for available models.
       output_format: optional<OutputFormat>
       transcript: optional<string>
       voice: TTSRequestVoiceSpecifier
@@ -451,7 +451,7 @@ types:
       model_id:
         type: string
         docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/tts-models) for available models.
       transcript: string
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
@@ -476,7 +476,7 @@ types:
       model_id:
         type: string
         docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
+          The ID of the model to use for the generation. See [Models](/build-with-cartesia/tts-models) for available models.
       transcript: string
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
