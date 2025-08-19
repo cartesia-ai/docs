@@ -3,17 +3,14 @@ tabs:
     display-name: Models
     slug: docs
     icon: fa-regular fa-file-alt
-    skip-slug: true
   agents:
     display-name: Agents
     slug: agents
     icon: fa-regular fa-file-alt
-    skip-slug: true
   reference:
     display-name: API Reference
     slug: reference
     icon: fa-regular fa-code
-    skip-slug: true
 navigation:
   - tab: docs
     layout:
