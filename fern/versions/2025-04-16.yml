@@ -1,7 +1,7 @@
 tabs:
   docs:
     display-name: Models
-    slug: docs
+    skip-slug: true
     icon: fa-regular fa-file-alt
   agents:
     display-name: Agents
@@ -9,7 +9,7 @@ tabs:
     icon: fa-regular fa-file-alt
   reference:
     display-name: API Reference
-    slug: reference
+    skip-slug: true
     icon: fa-regular fa-code
 navigation:
   - tab: docs
