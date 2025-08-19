@@ -1,0 +1,72 @@
+---
+title: Introduction
+subtitle: >-
+    Build intelligent, low-latency Voice Agents with background reasoning.
+---
+
+import { StuckWidget } from "../../components/StuckWidget"
+import { BulletList } from "../../components/BulletList"
+
+
+# What is Line?
+**Line** is Cartesia's platform for building real-time Voice Agents with code. Build production-ready Voice Agents that understand context, integrate with your systems, and respond in real-time.
+
+Line handles the complex audio infrastructure while you focus on your Agent's reasoning and personality. Build your Agent with the Line SDK, and Line will deploy it, managing all audio infrastructure and orchestration for you.
+
+# Deploy Your First Agent in 5 Minutes
+
+<CardGroup cols={3}>
+  <Card
+      title="Quick Start"
+      icon="fa-terminal"
+      href="start-building/talk-to-your-first-agent"
+    >
+    Build and deploy Agents locally with full control.
+  </Card>
+  <Card
+      title="Templates"
+      icon="fa-copy"
+      href="templates"
+  >
+    Start with templates for common use cases.
+  </Card>
+  <Card
+      title="Text to Agent"
+      icon="fa-stars"
+      href="text-to-agent"
+  >
+    Generate working Agent code from natural language prompts.
+  </Card>
+</CardGroup>
+
+# Reasoning and Application Logic
+With Line, you control exactly how your Agent responds. Write custom reasoning and application logic in code, and connect it to external systems.
+
+- **LLMs** – augment responses with large language models
+- **Databases** – fetch and update information in real time
+- **Tool calls** – integrate APIs or business logic
+- **Guardrails** – enforce safety and compliance rules
+- **Audio orchestration** – manage voice interruptions, turn-taking, and latency
+
+You can even connect Line with third-party Agent SDKs to build custom Agents.
+
+# Audio Orchestration
+Line handles the complexity of real-time voice infrastructure for you, using Cartesia's own speech models: **[Ink](https://cartesia.ai/ink)** (speech-to-text) and **[Sonic](https://cartesia.ai/sonic)** (text-to-speech).
+
+Your Agent code runs in Line's managed runtime, with auto-scaling and low-latency audio processing.
+
+<Frame>
+  <img src="/assets/images/agents/line-architecture.png" alt="Line voice agent platform architecture" />
+</Frame>
+
+
+# Developer Tools
+Line provides everything you need to build, test, and scale production Voice Agents.
+
+- **[CLI interface](cli/)** – Deploy and test Agents directly from your terminal.
+- **[Real-time call logs](infrastructure/observability#call-logs)** – Debug conversations and monitor performance in real time.
+- **[Call evaluations](evaluations/metrics)** – Measure and benchmark agent performance with custom metrics.
+- **[Deployment tracking](infrastructure/observability#deployment)** –  Track versions and roll back deployments when needed.
+- **[Environment management](infrastructure/model-configurations#environment-variables)** – Manage API keys and settings securely.
+
+<StuckWidget />

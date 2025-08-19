@@ -45,6 +45,9 @@ navbar-links:
 layout:
   tabs-placement: header
   searchbar-placement: header
+experimental:
+  mdx-components:
+    - ./components
 typography:
   bodyFont:
     name: Tiempos Text

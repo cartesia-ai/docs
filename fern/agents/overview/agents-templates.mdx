@@ -1,0 +1,61 @@
+Templates are pre-built Agents for common use cases developed on the [Line SDK](https://github.com/cartesia-ai/line)
+that are easy to extend for your application.
+
+These templates can be cloned into new GitHub repositories by installing the Cartesia app into your
+personal or organization account.
+
+<Steps>
+  <Step title="Sign into Cartesia Playground ">
+    Go to [play.cartesia.ai/agents](https://play.cartesia.ai/agents/) and sign into your account.
+  </Step>
+  <Step title="Select Agent Template">
+    Click on a Template that suites your use case.
+      <Frame>
+        <img src="/assets/images/agents/template-selection.png" alt="Select a template"/>
+    </Frame>
+  </Step>
+
+  <Step title="Connect your GitHub account">
+    After choosing a Template, you can connect your GitHub account and automatically clone a Template into a new private repository.
+
+    <Frame>
+        <img src="/assets/images/agents/github-connection.png" alt="Connect to Github"/>
+    </Frame>
+
+  </Step>
+
+    <Step title="Clone your Agent locally">
+
+    Now that your repo is created, let's set up your Agent on your machine.
+
+    ```zsh
+    git clone https://github.com/your-username/your-repo-name.git
+    ```
+    </Step>
+
+    <Step title="Customize your Agent">
+
+    Now that your repo is cloned, you can customize it with specific instructions in the README.md. You can use
+        [cartesia chat](/line/cli#chat-with-your-agent) from your CLI to try your changes locally before deploying.
+    </Step>
+
+
+  <Step title="Deploy your changes">
+    When you're satisfied with your Agent, pushing to main will trigger a new deployment.
+    ```zsh
+    git add .
+    git commit -m "hello world"
+    git push
+    ```
+  </Step>
+
+  <Step title="Check deployment status">
+    See your deployment status in the playground or the CLI if you prefer.
+
+    <Frame>
+        <img src="/assets/images/agents/deployments.png" alt="Deployments"/>
+    </Frame>
+
+  </Step>
+
+</Steps>

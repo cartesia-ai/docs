@@ -1,0 +1,88 @@
+---
+title: Metrics Results
+subtitle: >-
+  View the results from metrics run against all calls handled by your agent.
+---
+
+Metrics results are accessible via both API and the playground.
+
+Each metric result contains relevant information to help you analyze your calls. Some fields include:
+
+```
+- metric_id
+- metric_name
+- agent_id
+- call_id
+- summary
+- transcript
+- deployment_id
+- value
+- status
+```
+
+To view the full schema, visit the API [List Metric Results](../../api-reference/agents/metrics/list-metric-results).
+
+## API
+
+To get metrics via the API, you can specify a few filter parameters including `call_id`, `agent_id` and more. You can retrieve these metric results or export them into a CSV. [List Metric Results](/api-reference/agents/metrics/list-metric-results) and [Export Metric Results](/api-reference/agents/metrics/export-metric-results) have the same query parameters available and differ only in the response format.
+
+#### Example Request for CSV Results
+
+<Tabs>
+  <Tab title="cURL">
+    ```zsh
+curl --location 'https://backend.cartesia.ai/agents/metrics/results?metric_id={metric_id}&limit=100&starting_after={previous_next_page_metric_id}' \
+--header 'Cartesia-Version: 2025-04-16' \
+--header 'X-API-KEY: {YOUR_API_KEY}'
+    ```
+  </Tab>
+  <Tab title="python">
+    ```python
+import requests
+
+url = "https://api.cartesia.ai/agents/metrics/export"
+params = {
+    "metric_id": "{metric_id}",
+    "limit": 100,
+    "starting_after": "{previous_next_page_metric_id}"
+}
+headers = {
+    "Content-Type": "application/json",
+    "Cartesia-Version": "2025-04-16",
+    "Authorization": "Bearer <YOUR_API_KEY>"
+}
+
+response = requests.get(url, headers=headers, params=params)
+
+if response.status_code == 200:
+    # Save CSV to file
+    with open("metrics.csv", "w", encoding="utf-8") as f:
+        f.write(response.text)
+    print("CSV file saved as metrics.csv")
+else:
+    print(f"Error {response.status_code}: {response.text}")
+    ```
+  </Tab>
+  <Tab title="javascript">
+```typescript
+const response = await fetch(
+  "https://api.cartesia.ai/agents/metrics/export?metric_id={metric_id}&limit=100&starting_after={previous_next_page_metric_id}",
+  {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Cartesia-Version": "2025-04-16",
+      Authorization: "Bearer <your_api_key>",
+    },
+  }
+);
+```
+  </Tab>
+</Tabs>
+
+
+## Console
+
+Metrics are visible in the playground for a specific call record.
+
+

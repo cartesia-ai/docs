@@ -1,0 +1,395 @@
+# Tutorial: Building Your First Voice Agent with Cartesia Line SDK
+
+Welcome to the Cartesia Line SDK! In this tutorial, we'll build a voice-enabled conversational agent from scratch. By the end, you'll understand the core concepts of the event-driven architecture and have a working voice chat bot similar to the `examples/basic_chat` example.
+
+## Prerequisites
+
+- Python 3.10 or higher
+- A Google Gemini API key
+- Basic understanding of async Python
+
+## 1. Set Up Your Environment
+
+First, let's create a new project directory and set up a virtual environment using `uv`:
+
+```bash
+mkdir my-voice-agent
+cd my-voice-agent
+
+# Create a virtual environment with uv
+uv venv
+source .venv/bin/activate
+
+# Install the Cartesia Line SDK
+uv pip install "git+https://oauth2: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@github.com/cartesia-ai/line"
+uv pip install google-genai loguru python-dotenv uvicorn
+```
+
+```bash
+conda create -n my-agent python=3.10
+conda activate my-agent
+pip install "git+https://oauth2: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@github.com/cartesia-ai/line"
+pip install google-genai loguru python-dotenv uvicorn
+```
+
+Create a `.env` file in your project root with your API keys:
+
+```
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+## 2. Create the Main Application
+
+Let's start by creating `main.py`:
+
+```python
+import os
+from dotenv import load_dotenv
+import google.genai as genai
+
+from line import (
+    Bridge,
+    CallRequest,
+    VoiceAgentApp,
+    VoiceAgentSystem,
+)
+from line.events import (
+    UserStartedSpeaking,
+    UserStoppedSpeaking,
+    UserTranscriptionReceived,
+)
+
+# We'll import our chat node after we create it
+# from chat_node import ChatNode
+
+load_dotenv()
+
+# Initialize the Gemini client
+gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+async def handle_new_call(system: VoiceAgentSystem, call_request: CallRequest):
+    """
+    This function is called for each new voice call.
+    We'll set up our agent system here.
+    """
+    # We'll implement this after creating ChatNode
+    pass
+
+
+# Create and run the voice agent app
+app = VoiceAgentApp(handle_new_call)
+
+if __name__ == "__main__":
+    app.run()
+```
+
+This sets up the basic structure. The `VoiceAgentApp` handles WebSocket connections and calls `handle_new_call` for each new conversation.
+
+## 3. Create the Chat Node
+
+Now let's create `chat_node.py`. This is where our conversation logic lives:
+
+```python
+"""
+ChatNode - A simple conversational agent using Gemini
+"""
+
+from typing import AsyncGenerator
+
+from google.genai import types as gemini_types
+from loguru import logger
+
+from line import ConversationContext, ReasoningNode
+from line.events import AgentResponse, ToolCall, ToolResult
+from line.utils.gemini_utils import convert_messages_to_gemini
+
+# Define our system prompt
+SYSTEM_PROMPT = """You are a warm, personable, intelligent assistant having a real-time
+voice conversation with a user. Keep your responses brief and conversational - aim for
+1-2 sentences, under 35 words. After answering, ask a brief follow-up question to keep
+the conversation flowing naturally.
+
+Be yourself - warm, engaging, and genuinely interested in helping. If you don't understand
+something, just ask for clarification in a natural way."""
+
+
+class ChatNode(ReasoningNode):
+    """
+    A conversational agent node that uses Gemini for generation.
+
+    This extends ReasoningNode, which provides:
+    - Conversation history management
+    - Event handling infrastructure
+    - Template method pattern for processing
+    """
+
+    def __init__(
+        self,
+        gemini_client,
+        system_prompt: str = SYSTEM_PROMPT,
+        model_id: str = "gemini-2.5-flash",
+        temperature: float = 0.7,
+    ):
+        """
+        Initialize the chat node.
+
+        Args:
+            gemini_client: Google Gemini client instance
+            system_prompt: Instructions for the AI's behavior
+            model_id: Which Gemini model to use
+            temperature: Controls randomness (0=deterministic, 1=creative)
+        """
+        # Initialize the parent ReasoningNode with our system prompt
+        super().__init__(system_prompt=system_prompt)
+
+        self.client = gemini_client
+        self.model_id = model_id
+        self.temperature = temperature
+
+        logger.info(f"ChatNode initialized with model: {model_id}")
+
+    async def process_context(
+        self, context: ConversationContext
+    ) -> AsyncGenerator[AgentResponse | ToolCall | ToolResult, None]:
+        """
+        Process the conversation context and generate a response.
+
+        This is the main method you implement when extending ReasoningNode.
+        It receives the conversation history and yields response events.
+
+        Args:
+            context: Contains conversation history and metadata
+
+        Yields:
+            AgentResponse: Text chunks to speak to the user
+            ToolCall: If the model wants to use a tool
+            ToolResult: Results from tool execution
+        """
+        # Convert conversation events to Gemini format
+        messages = convert_messages_to_gemini(context.events)
+
+        # Log what the user said
+        user_message = context.get_latest_user_transcript_message()
+        if user_message:
+            logger.info(f'User said: "{user_message}"')
+
+        # Configure generation with our tools
+        generation_config = gemini_types.GenerateContentConfig(
+            system_instruction=self.system_prompt,
+            temperature=self.temperature,
+        )
+
+        # Stream the response from Gemini
+        full_response = ""
+        stream = await self.client.aio.models.generate_content_stream(
+            model=self.model_id,
+            contents=messages,
+            config=generation_config,
+        )
+
+        async for chunk in stream:
+            # Yield text chunks for immediate speech synthesis
+            if chunk.text:
+                full_response += chunk.text
+                yield AgentResponse(content=chunk.text)
+
+        if full_response:
+            logger.info(f'Agent said: "{full_response}"')
+```
+
+## Concepts: your agent is an event-driven system
+
+Let's understand the concepts we're using:
+
+### Events
+
+The Line SDK uses an **events** where components communicate through typed events. Think of events as messages that flow through your system:
+
+- **User events**: `UserTranscriptionReceived`, `UserStoppedSpeaking`, `UserStartedSpeaking`
+- **Agent events**: `AgentResponse`, `ToolCall`, `ToolResult`
+
+### Core Components
+
+1. **Node**: A stateful unit that processes events (like your chat bot logic)
+2. **Event routing**: Nodes get events, based on routes defined in `main.py`
+3. **VoiceAgentSystem**: Orchestrates everything together
+
+The basic flow looks like this:
+
+```
+User speaks → Events → Your Node → Response → User hears
+```
+
+### Understanding the ChatNode
+
+Let's break down what's happening:
+
+1. **Inheritance from ReasoningNode**: This gives us conversation management, event handling, and the template method pattern for free.
+
+2. **The `__init__` method**: Sets up our Gemini client and configuration. The parent class handles conversation history.
+
+3. **The `process_context` method**: This is where the magic happens. It:
+   - Receives the conversation context (all previous messages)
+   - Converts them to Gemini's format
+   - Streams responses from the language model
+   - Yields `AgentResponse` events that become speech
+   - Handles tool calls for ending conversations
+
+## 4: Connect Everything with Routes
+
+Now let's complete our `main.py` by implementing the routing:
+
+```python
+# Add this import at the top
+from chat_node import ChatNode
+
+async def handle_new_call(system: VoiceAgentSystem, call_request: CallRequest):
+    """
+    Set up the voice agent for a new call.
+
+    This function:
+    1. Creates our chat node
+    2. Creates a bridge to connect it to the system
+    3. Sets up event routing
+    4. Starts everything and sends a greeting
+    """
+
+    # Create our conversational node
+    chat_node = ChatNode(gemini_client)
+
+    # Create a bridge to connect the node to the event bus
+    chat_bridge = Bridge(chat_node)
+
+    # Configure event routing
+    (
+        chat_bridge.on(UserTranscriptionReceived) # When a user's speech is transcribed
+        .map(chat_node.add_event) # add it to the conversation history
+    )
+
+    # Route 2: When user stops speaking, generate a response
+    (
+        chat_bridge.on(UserStoppedSpeaking) # When the user stops speaking
+        # (with this handler for interruptions)
+        .interrupt_on(UserStartedSpeaking, handler=chat_node.on_interrupt_generate)
+        .stream(chat_node.generate) # Generate a stream of responses
+        .broadcast() # And broadcast each response as an event
+    )
+
+    # Register our node as the "speaking node" (authorized to talk to the user)
+    system.with_speaking_node(chat_node, chat_bridge)
+
+    # Start the system
+    await system.start()
+
+    # Send an initial greeting
+    await system.send_initial_message(
+        "Hi there! I'm your AI assistant. What's on your mind today?"
+    )
+
+    # Keep the system running until the call ends
+    await system.wait_for_shutdown()
+```
+
+This routing pattern creates a natural conversation flow:
+- User speaks → We listen and record
+- User stops → We respond
+- User interrupts → We stop and listen
+
+## 5. Run Your Voice Agent
+
+Create a simple `config.py` file for any additional configuration:
+
+```python
+# Default configuration
+DEFAULT_MODEL_ID = "gemini-2.5-flash"
+DEFAULT_TEMPERATURE = 0.7
+```
+
+Now you can run your voice agent:
+
+```bash
+python main.py
+```
+
+Your agent will start listening on `http://localhost:8080`.
+
+## 6. Test and Deploy with Cartesia CLI
+
+The Cartesia CLI provides powerful tools for testing your agent locally and deploying it to the Line platform.
+
+### Installing the CLI
+
+First, install the Cartesia CLI using Homebrew:
+
+```bash
+brew install cartesia-cli
+```
+
+### Testing Locally with Text Chat
+
+Before deploying, you can test your agent using the text chat interface. This is perfect for rapid iteration and debugging.
+
+**Important**: You need to have your agent running before using the chat interface:
+
+1. First, start your agent in one terminal:
+   ```bash
+   python main.py
+   ```
+
+2. Then, in a separate terminal, start the chat interface:
+   ```bash
+   cartesia chat
+   ```
+
+The `cartesia chat` command connects to your locally running agent (on `http://localhost:8080`) and provides an interactive text interface. You can:
+- Test different conversation flows
+- Debug your agent's responses
+- Verify tool calls are working correctly
+- Iterate quickly without voice synthesis
+
+The text interface is especially useful during development since you can see exactly what your agent is saying without the overhead of speech synthesis.
+
+### Deploying to the Line Platform
+
+Once you're satisfied with your agent's performance, deploy it to the Cartesia Line platform:
+
+```bash
+cartesia deploy
+```
+
+This command will:
+1. Package your agent code
+2. Upload it to the Line platform
+3. Make it available for voice calls
+4. Provide you with a deployment URL
+
+After deployment completes, you can:
+- View your agent on [play.cartesia.ai](https://play.cartesia.ai)
+- Make voice calls to test the full experience
+- Share your agent with others
+
+### Development Workflow
+
+Here's a recommended workflow:
+
+1. **Develop locally**: Write and modify your code
+2. **Test with text**:
+   - Run `python main.py` in one terminal
+   - Run `cartesia chat` in another terminal to test
+3. **Deploy**: Use `cartesia deploy` when ready for production
+4. **Test on platform**: Make calls via play.cartesia.ai
+
+This workflow lets you iterate quickly while ensuring your agent works well in both text and voice contexts.
+
+## What's Next?
+
+You now have a working voice agent! Here are some ways to extend it:
+
+1. **Customize the personality**: Modify the system prompt for different use cases
+2. **Add tool calls**: Create custom tools for weather, calculations, or API calls
+3. **Add multiple nodes**: Create specialized nodes for different tasks (see `examples/personal_banking_handoffs`)
+4. **Integrate MCP servers**: Connect to external tools and services
+5. **Add conversation memory**: Store and retrieve past conversations
+
+Happy building!

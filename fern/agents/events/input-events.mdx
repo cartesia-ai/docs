@@ -1,0 +1,45 @@
+Input events represent actions or states from the user or the system. These are delivered to your code as structured JSON objects. Here are the main types of input events you'll encounter:
+
+### Transcriptions
+
+Delivers what the user has said, transcribed into text.
+
+```json
+{
+  "type": "message",
+  "content": "{What the user said}"
+}
+```
+
+### DTMF Key Press
+
+Triggered when the user presses a key on their phone keypad.
+
+```json
+{
+  "type": "dtmf",
+  "button": "0-9, *, or #"
+}
+```
+
+### User State
+
+Indicates whether the user is currently speaking or idle.
+
+```json
+{
+  "type": "user_state",
+  "value": "idle" | "speaking"
+}
+```
+
+### Agent State
+
+Indicates whether the agent is currently speaking or idle.
+
+```json
+{
+  "type": "agent_state",
+  "value": "idle" | "speaking"
+}
+```
