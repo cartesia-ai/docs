@@ -19,10 +19,6 @@ types:
         type: boolean
         docs: |
           Whether the current user is the owner of the voice.
-      is_public:
-        type: boolean
-        docs: |
-          Whether the voice is publicly accessible.
       name: &name
         type: string
         docs: |
@@ -31,10 +27,6 @@ types:
         type: string
         docs: |
           The description of the voice.
-      gender:
-        type: optional<GenderPresentation>
-        docs: |
-          The gender of the voice, if specified.
       created_at:
         type: datetime
         docs: |
@@ -86,7 +78,6 @@ types:
     properties:
       name: *name
       description: *description
-      gender: optional<GenderPresentation>
 
   LocalizeTargetLanguage:
     docs: |
@@ -234,7 +225,7 @@ service:
             type: optional<boolean>
             docs: Whether to only return starred voices.
           gender:
-            type: nullable<GenderPresentation>
+            type: optional<GenderPresentation>
             docs: The gender presentation of the voices to return.
           expand[]:
             type: optional<list<VoiceExpandOptions>>
@@ -275,7 +266,7 @@ service:
             enhance:
               type: optional<boolean>
               docs: |
-                Whether to apply AI enhancements to the clip to reduce background noise. This is not recommended unless the source clip is extremely low quality.
+                Whether to apply AI enhancements to the clip to reduce background noise. This leads to cleaner generated speech at the cost of reduced similarity to the source clip.
             base_voice_id:
               type: optional<VoiceId>
               docs: |
@@ -311,28 +302,8 @@ service:
       display-name: Update Voice
       path-parameters:
         id: VoiceId
-      docs: |
-        Update the name, description, and gender of a voice. To set the gender back to the default, set the gender to `null`. If gender is not specified, the gender will not be updated.
       request: UpdateVoiceRequest
       response: Voice
-      examples:
-        - name: Update Voice
-          path-parameters:
-            id: "8f7d3c2e-1a2b-3c4d-5e6f-7g8h9i0j1k2l"
-          request:
-            name: "Sarah Peninsular Spanish"
-            description: "Sarah Voice in Peninsular Spanish"
-            gender: "feminine"
-          response:
-            body:
-              id: "8f7d3c2e-1a2b-3c4d-5e6f-7g8h9i0j1k2l"
-              is_public: false
-              is_owner: true
-              name: "Sarah Peninsular Spanish"
-              description: "Sarah Voice in Peninsular Spanish"
-              created_at: "2024-03-15T10:30:00.000Z"
-              language: es
-              gender: "feminine"
 
     get:
       path: /{id}

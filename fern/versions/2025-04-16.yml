@@ -1,7 +1,12 @@
 tabs:
   docs:
-    display-name: Documentation
+    display-name: Models
     slug: docs
+    icon: fa-regular fa-file-alt
+    skip-slug: true
+  agents:
+    display-name: Agents
+    slug: agents
     icon: fa-regular fa-file-alt
     skip-slug: true
   reference:
@@ -34,12 +39,15 @@ navigation:
             icon: fa-code
       - section: Build with Cartesia
         contents:
-          - page: TTS Models
-            path: ../build-with-sonic/models-tts.mdx
-            icon: fa-volume-high
-          - page: STT Models
-            path: ../build-with-sonic/models-stt.mdx
-            icon: fa-microphone
+          - section: Models
+            icon: fa-microchip
+            contents:
+              - page: TTS
+                path: ../build-with-sonic/models-tts.mdx
+                icon: fa-volume-high
+              - page: STT
+                path: ../build-with-sonic/models-stt.mdx
+                icon: fa-microphone
           - section: Capability Guides
             icon: fa-cubes
             contents:
@@ -109,6 +117,124 @@ navigation:
           - page: Changelog
             path: ../developer-tools/changelog.mdx
             icon: fa-file-lines
+  - tab: agents
+    layout:
+      - section: Overview
+        slug: line
+        contents:
+          - page: Introduction
+            path: ../agents/overview/agents-overview.mdx
+            icon: fa-robot
+          - page: CLI
+            path: ../agents/overview/agents-cli.mdx
+            icon: fa-terminal
+          - section: SDK
+            icon: fa-code
+            contents:
+              - page: Overview
+                path: ../agents/concepts/overview.md
+              - page: Events
+                path: ../agents/concepts/events.md
+              - page: Nodes
+                path: ../agents/concepts/nodes.md
+              - page: Bridges
+                path: ../agents/concepts/bridges.md
+              - page: Routes
+                path: ../agents/concepts/routes.md
+              - page: Tips
+                path: ../agents/concepts/tips.md
+          - section: Agent Patterns
+            icon: fa-diagram-project
+            contents:
+              - page: Chained Processing
+                path: ../agents/agent_patterns/chained-processing.md
+              - page: Event Transformation
+                path: ../agents/agent_patterns/event-transformation.md
+              - page: Interruption Handling
+                path: ../agents/agent_patterns/interruption-handling.md
+              - page: Multi-Agent Coordination
+                path: ../agents/agent_patterns/multi-agent-coordination.md
+              - page: Streaming Responses
+                path: ../agents/agent_patterns/streaming-responses.md
+              - page: Tool Integration
+                path: ../agents/agent_patterns/tool-integration.md
+          - page: Templates
+            path: ../agents/overview/agents-templates.mdx
+            icon: fa-copy
+          - page: Text to agent
+            path: ../agents/overview/agents-line-by-line.mdx
+            icon: fa-stars
+      - section: Start Building
+        slug: line/start-building
+        contents:
+          - page: Talk to your first agent
+            path: ../agents/quick-starts/call-your-first-agent.mdx
+            icon: fa-phone
+          # TODO: Add these sections in.
+          # - page: Add tool calling
+          #   path: ../agents/quick-starts/2-tool-calls.mdx
+          #   icon: fa-toolbox
+          # - page: Leverage background nodes
+          #   path: ../agents/quick-starts/3-background-agent.mdx
+          #   icon: fa-ghost
+# TODO: add walkthrough of handing off between nodes
+#          - page:  Handoff between nodes
+#            path: ../agents/quick-starts/4-handoffs.mdx
+#            icon: fa-chart-network
+      - section: Integrations
+        slug: line/integrations
+        contents:
+          # TODO: Add in clear examples of how to use these integrations with partners
+          # - section: Language Models
+          #   icon: fa-robot
+          #   contents:
+          #     - page: Gemini
+          #       path: ../agents/integrations/language-models/agents-gemini.mdx
+          # - section: Inference Platforms
+          #   icon: fa-webhook
+          #   contents:
+          #     - page: Together AI
+          #       path: ../agents/integrations/inference-platforms/agents-together.mdx
+          #     - page: Cerebras
+          #       path: ../agents/integrations/inference-platforms/agents-cerebras.mdx
+          - page: GitHub
+            path: ../agents/integrations/github.mdx
+            icon: fa-brands fa-github
+            slug: github
+          - section: Telephony
+            icon: fa-phone
+            contents:
+              - page: Phone Numbers
+                path: ../agents/integrations/telephony/agents-telephony-overview.mdx
+              - page: Outbound Dialing
+                path: ../agents/integrations/telephony/agents-telephony-outbound.mdx
+      - section: Infrastructure
+        slug: line/infrastructure
+        contents:
+          - page: Deployments
+            path: ../agents/overview/agents-deployment.mdx
+            icon: fa-rocket
+          - page: Model configurations
+            path: ../agents/infrastructure/agents-configurations.mdx
+            icon: fa-gear
+          - page: Observability
+            path: ../agents/infrastructure/agents-observability.mdx
+            icon: fa-eye
+          - page: Scaling
+            path: ../agents/infrastructure/agents-scaling.mdx
+            icon: fa-chart-line
+      - section: Evaluations
+        slug: line/evaluations
+        contents:
+          - page: Metrics
+            path: ../agents/evaluations/agents-metrics.mdx
+            icon: fa-ruler-triangle
+          - page: Results
+            path: ../agents/evaluations/agents-metrics-results.mdx
+            icon: fa-gauge-high
+          # - page: Simulations
+          #   path: ../agents/evaluations/agents-metrics-simulations.mdx
+          #   icon: fa-people-arrows
   - tab: reference
     layout:
       - section: Use the API
@@ -144,11 +270,37 @@ navigation:
                   - page: Context Flushing and Flush IDs
                     path: ../api-reference/context-flushing-and-flush-ids.mdx
                     icon: fa-cube
-          - stt:
-              - stt.transcribe
-              - stt.stt
-              - page: Migrate from OpenAI
-                path: ../api-reference/stt-migrate-from-openai.mdx
-                icon: fa-arrows-left-right
+          - stt
+          - agents:
+              - section: Agents
+                icon: fa-robot
+                contents:
+                  - agents.list
+                  - agents.get
+                  - agents.update
+                  - agents.delete
+                  - agents.templates
+                  - agents.phone-numbers
+              - section: Calls
+                icon: fa-phone
+                contents:
+                  - agents.list-calls
+                  - agents.get-call
+                  - agents.download-call-audio
+              - section: Deployments
+                icon: fa-rocket
+                contents:
+                  - agents.list-deployments
+                  - agents.get-deployment
+              - section: Metrics
+                icon: fa-bar-chart
+                contents:
+                  - agents.list-metrics
+                  - agents.get-metric
+                  - agents.create-metric
+                  - agents.list-metric-results
+                  - agents.export-metric-results
+                  - agents.add-metric-to-agent
+                  - agents.remove-metric-from-agent
           - voices: []
           - voice-changer: []

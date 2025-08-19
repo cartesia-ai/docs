@@ -22,7 +22,7 @@ Our versioning scheme is inspired by the [Anthropic API](https://docs.anthropic.
 
 ### Use API keys to authenticate
 
-Authentication is handled using API keys. You can create a new API key from [play.cartesia.ai/keys](https://play.cartesia.ai/keys).
+Authentication is handled using API keys. You can create a new API key from [play.cartesia.ai/keys](https://play.cartesia.ai/keys). To use your API key, include `Authorization: Bearer <api_key>` in the HTTP headers of Cartesia API requests.
 
 Client apps making Cartesia API requests should use Access Tokens, to avoid exposing your API Key. Your server generates an Access Token and sends it to your client, which in turn includes `Authorization: Bearer <access_token>` in the HTTP headers of Cartesia API requests.
 Read the full documentation for this at [Access Token API Reference](/api-reference/auth/access-token) for more info.

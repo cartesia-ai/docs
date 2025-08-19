@@ -1,10 +1,9 @@
 instances:
-  - url: https://cartesia.docs.buildwithfern.com
-    custom-domain: docs.cartesia.ai
+  - url: https://cartesia-private.docs.buildwithfern.com
     edit-this-page:
       github:
         owner: cartesia-ai
-        repo: docs
+        repo: docs-internal
         branch: main
 
 title: Cartesia
@@ -45,6 +44,9 @@ navbar-links:
 layout:
   tabs-placement: header
   searchbar-placement: header
+experimental:
+  mdx-components:
+    - ./components
 typography:
   bodyFont:
     name: Tiempos Text

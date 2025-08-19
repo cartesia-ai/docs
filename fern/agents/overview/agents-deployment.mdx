@@ -1,0 +1,46 @@
+---
+title: Deployments 
+---
+
+# Overview
+Deployments are instances of your Agent running on our servers.
+
+<Frame>
+    <img src="/assets/images/agents/deployments.png" alt="Deployments"/>
+</Frame>
+
+# State
+Only deployments in the `ready` state can handle inbound or outbound calls. At any time, only one deployment is active.
+Deployments that fail health checks will not receive traffic.
+
+# Creating a deployment
+You can use the CLI deploy command or push to a GitHub repository linked to an Agent to create a new deployment for an Agent.
+
+When we receive a new deployment, Cartesia servers will perform the following:
+
+1. Build the virtual environment
+
+    <Callout intent="info">
+        Line currently supports Python 3.9.0 through 3.13.0 and can be specified in pyproject.toml files.
+    </Callout>
+
+2. Load `main.py` and instantiate a FastAPI App
+
+    <Callout intent="info">
+    The Line SDK currently supports FastAPI servers. Support for more languages and frameworks is coming soon.
+    </Callout>
+
+3. Perform a health check.
+
+4. Set the deployment in the `ready` state and start receiving traffic
+
+
+<Tip title="Pre-Call Initialization" icon="phone-volume">
+Inbound calls will ring for five seconds to allow your application logic to warm up any required resources and establish
+    connections.
+</Tip>
+
+
+
+
+

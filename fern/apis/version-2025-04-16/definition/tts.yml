@@ -50,30 +50,17 @@ service:
               container: "raw"
               sample_rate: 44100
               encoding: "pcm_f32le"
-        - name: With Save
-          request:
-            model_id: "sonic-2"
-            transcript: "Hello, world!"
-            voice:
-              mode: "id"
-              id: "694f9389-aac1-45b6-b726-9d9369183238"
-            language: "en"
-            output_format:
-              container: "wav"
-              sample_rate: 44100
-              encoding: "pcm_f32le"
-            save: true
 
     sse:
       path: /sse
       method: POST
       display-name: Text to Speech (SSE)
-      request: TTSSSERequest
+      request: TTSRequest
       response-stream:
         type: WebSocketResponse
         format: sse
       examples:
-        - name: Basic SSE
+        - name: SSE
           request:
             model_id: "sonic-2"
             transcript: "Hello, world!"
@@ -85,33 +72,6 @@ service:
               container: "raw"
               sample_rate: 44100
               encoding: "pcm_f32le"
-        - name: SSE with Timestamps
-          request:
-            model_id: "sonic-2"
-            transcript: "Hello, world!"
-            voice:
-              mode: "id"
-              id: "694f9389-aac1-45b6-b726-9d9369183238"
-            language: "en"
-            output_format:
-              container: "raw"
-              sample_rate: 44100
-              encoding: "pcm_f32le"
-            add_timestamps: true
-            add_phoneme_timestamps: true
-        - name: SSE with Context
-          request:
-            model_id: "sonic-2"
-            transcript: "Hello, world!"
-            voice:
-              mode: "id"
-              id: "694f9389-aac1-45b6-b726-9d9369183238"
-            language: "en"
-            output_format:
-              container: "raw"
-              sample_rate: 44100
-              encoding: "pcm_f32le"
-            context_id: "my-context-123"
 
 channel:
   path: /tts/websocket
@@ -129,6 +89,7 @@ channel:
     Read the guide on [working with contexts](/api-reference/tts/working-with-web-sockets/contexts) to learn more.
 
     For the best performance, we recommend the following usage pattern:
+
     1. **Do many generations over a single WebSocket.** Just use a separate context for each generation. The WebSocket scales up to dozens of concurrent generations.
     2. **Set up the WebSocket before the first generation.** This ensures you don't incur latency when you start generating speech.
     3. **Include necessary spaces and punctuation:** This allows Sonic to generate speech more accurately and with better prosody.
@@ -137,8 +98,6 @@ channel:
     For conversational agent use cases, we recommend the following usage pattern:
     1. **Each turn in a conversation should correspond to a context:** For example, if you are using Sonic to power a voice agent, each turn in the conversation should be a new context.
     2. **Start a new context for interruptions:** If the user interrupts the agent, start a new context for the agent's response.
-
-    To learn more about managing concurrent generations and WebSocket connection limits, see the [concurrency limits and timeouts](/use-the-api/concurrency-limits-and-timeouts) page.
 
   auth: true
 
@@ -292,6 +251,7 @@ types:
     properties:
       data: base64
       step_time: double
+      flush_id: optional<FlushID>
 
   WebSocketTimestampsResponse:
     extends: WebSocketBaseResponse
@@ -354,9 +314,9 @@ types:
         docs: |
           The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
       transcript:
-        type: string
+        type: unknown
         docs: |
-          The transcript to generate speech for.
+          The transcript to generate speech for. This can be a string or an iterator over strings.
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
       output_format: WebSocketRawOutputFormat
@@ -387,20 +347,19 @@ types:
       add_timestamps:
         type: optional<boolean>
         docs: |
-          Whether to return word-level timestamps. If `false` (default), no word timestamps will be produced at all. If `true`, the server will return timestamp events containing word-level timing information.
+          Whether to return word-level timestamps.
       add_phoneme_timestamps:
         type: optional<boolean>
         docs: |
-          Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced. If `true`, the server will return timestamp events containing phoneme-level timing information.
-      use_normalized_timestamps:
+          Whether to return phoneme-level timestamps.
+      use_original_timestamps:
         type: optional<boolean>
         docs: |
-          Whether to use normalized timestamps (True) or original timestamps (False).
+          Whether to use the original transcript for timestamps.
       pronunciation_dict_ids:
         type: optional<list<string>>
         docs: |
           A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
-
 
   WebSocketRawOutputFormat:
     properties:
@@ -429,23 +388,17 @@ types:
       voice: TTSRequestVoiceSpecifier
       duration: optional<integer>
       language: optional<string>
-      add_timestamps:
-        type: optional<boolean>
-        docs: |
-          Whether to return word-level timestamps. If `false` (default), no word timestamps will be produced at all. If `true`, the server will return timestamp events containing word-level timing information.
-      add_phoneme_timestamps:
-        type: optional<boolean>
-        docs: |
-          Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced. If `true`, the server will return timestamp events containing phoneme-level timing information.
-      use_normalized_timestamps: optional<boolean>
-      pronunciation_dict_ids:
-        type: optional<list<string>>
-        docs: |
-          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
+      add_timestamps: optional<boolean>
+      use_original_timestamps: optional<boolean>
+      add_phoneme_timestamps: optional<boolean>
       continue: optional<boolean>
       context_id: optional<string>
       max_buffer_delay_ms: optional<integer>
       speed: optional<ModelSpeed>
+      pronunciation_dict_ids:
+        type: optional<list<string>>
+        docs: |
+          A list of pronunciation dict IDs to use for the generation.
 
   TTSRequest:
     properties:
@@ -463,51 +416,10 @@ types:
           The maximum duration of the audio in seconds. You do not usually need to specify this.
           If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
       speed: optional<ModelSpeed>
-      save:
-        type: optional<boolean>
-        docs: |
-          Whether to save the generated audio file. When true, the response will include a `Cartesia-File-ID` header.
       pronunciation_dict_ids:
         type: optional<list<string>>
         docs: |
-          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
-
-  TTSSSERequest:
-    properties:
-      model_id:
-        type: string
-        docs: |
-          The ID of the model to use for the generation. See [Models](/build-with-cartesia/models) for available models.
-      transcript: string
-      voice: TTSRequestVoiceSpecifier
-      language: optional<SupportedLanguage>
-      output_format: SSEOutputFormat
-      duration:
-        type: optional<double>
-        docs: |
-          The maximum duration of the audio in seconds. You do not usually need to specify this.
-          If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
-      speed: optional<ModelSpeed>
-      add_timestamps:
-        type: optional<boolean>
-        docs: |
-          Whether to return word-level timestamps. If `false` (default), no word timestamps will be produced at all. If `true`, the server will return timestamp events containing word-level timing information.
-      add_phoneme_timestamps:
-        type: optional<boolean>
-        docs: |
-          Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced. If `true`, the server will return timestamp events containing phoneme-level timing information.
-      use_normalized_timestamps:
-        type: optional<boolean>
-        docs: |
-          Whether to use normalized timestamps (True) or original timestamps (False).
-      pronunciation_dict_ids:
-        type: optional<list<string>>
-        docs: |
-          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
-      context_id:
-        type: optional<ContextID>
-        docs: |
-          Optional context ID for this request.
+          A list of pronunciation dict IDs to use for the generation.
 
   SupportedLanguage:
     docs: |
@@ -542,12 +454,7 @@ types:
     properties:
       encoding: RawEncoding
       sample_rate: integer
-
-  SSEOutputFormat:
-    properties:
-      container: literal<"raw">
-      encoding: RawEncoding
-      sample_rate: integer
+      bit_rate: optional<integer>
 
   RawEncoding:
     enum:

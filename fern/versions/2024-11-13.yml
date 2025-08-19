@@ -1,6 +1,6 @@
 tabs:
   docs:
-    display-name: Documentation
+    display-name: Models
     slug: docs
     icon: fa-regular fa-file-alt
     skip-slug: true
@@ -138,11 +138,6 @@ navigation:
                   - page: Context Flushing and Flush IDs
                     path: ../api-reference/context-flushing-and-flush-ids.mdx
                     icon: fa-cube
-          - stt:
-              - stt.transcribe
-              - stt.stt
-              - page: Migrate from OpenAI
-                path: ../api-reference/stt-migrate-from-openai.mdx
-                icon: fa-arrows-left-right
+          - stt
           - voices: []
           - voice-changer: []

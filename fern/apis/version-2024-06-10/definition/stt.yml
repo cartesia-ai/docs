@@ -1,231 +1,19 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
-service:
-  base-path: /stt
-  auth: true
-  endpoints:
-    transcribe:
-      path: ""
-      method: POST
-      display-name: Speech-to-Text (Batch)
-      docs: |
-        Transcribes audio files into text using Cartesia's Speech-to-Text API.
-        
-        Upload an audio file and receive a complete transcription response. Supports arbitrarily long audio files with automatic intelligent chunking for longer audio.
-        
-        **Supported audio formats:** flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, webm
-        
-        **Response format:** Returns JSON with transcribed text, duration, and language. Include `timestamp_granularities: ["word"]` to get word-level timestamps.
-         
-        **Pricing:** Batch transcription is priced at **1 credit per 2 seconds** of audio processed.
-
-        <Note>
-        For migrating from the OpenAI SDK, see our [OpenAI Whisper to Cartesia Ink Migration Guide](/api-reference/stt/migrate-from-open-ai).
-        </Note>
-      request:
-        name: TranscriptionRequest
-        body:
-          properties:
-            file:
-              type: file
-              docs: |
-                The audio file to transcribe. The max file size we support is 2GB. Supported formats: flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, webm.
-            model:
-              type: string
-              docs: |
-                ID of the model to use for transcription. Use `ink-whisper` for the latest Cartesia Whisper model.
-            language:
-              type: optional<string>
-              docs: |
-                The language of the input audio in ISO-639-1 format. Defaults to `en`.
-                
-                <Accordion title="Supported languages">
-                  - `en` (English)
-                  - `zh` (Chinese)
-                  - `de` (German)
-                  - `es` (Spanish)
-                  - `ru` (Russian)
-                  - `ko` (Korean)
-                  - `fr` (French)
-                  - `ja` (Japanese)
-                  - `pt` (Portuguese)
-                  - `tr` (Turkish)
-                  - `pl` (Polish)
-                  - `ca` (Catalan)
-                  - `nl` (Dutch)
-                  - `ar` (Arabic)
-                  - `sv` (Swedish)
-                  - `it` (Italian)
-                  - `id` (Indonesian)
-                  - `hi` (Hindi)
-                  - `fi` (Finnish)
-                  - `vi` (Vietnamese)
-                  - `he` (Hebrew)
-                  - `uk` (Ukrainian)
-                  - `el` (Greek)
-                  - `ms` (Malay)
-                  - `cs` (Czech)
-                  - `ro` (Romanian)
-                  - `da` (Danish)
-                  - `hu` (Hungarian)
-                  - `ta` (Tamil)
-                  - `no` (Norwegian)
-                  - `th` (Thai)
-                  - `ur` (Urdu)
-                  - `hr` (Croatian)
-                  - `bg` (Bulgarian)
-                  - `lt` (Lithuanian)
-                  - `la` (Latin)
-                  - `mi` (Maori)
-                  - `ml` (Malayalam)
-                  - `cy` (Welsh)
-                  - `sk` (Slovak)
-                  - `te` (Telugu)
-                  - `fa` (Persian)
-                  - `lv` (Latvian)
-                  - `bn` (Bengali)
-                  - `sr` (Serbian)
-                  - `az` (Azerbaijani)
-                  - `sl` (Slovenian)
-                  - `kn` (Kannada)
-                  - `et` (Estonian)
-                  - `mk` (Macedonian)
-                  - `br` (Breton)
-                  - `eu` (Basque)
-                  - `is` (Icelandic)
-                  - `hy` (Armenian)
-                  - `ne` (Nepali)
-                  - `mn` (Mongolian)
-                  - `bs` (Bosnian)
-                  - `kk` (Kazakh)
-                  - `sq` (Albanian)
-                  - `sw` (Swahili)
-                  - `gl` (Galician)
-                  - `mr` (Marathi)
-                  - `pa` (Punjabi)
-                  - `si` (Sinhala)
-                  - `km` (Khmer)
-                  - `sn` (Shona)
-                  - `yo` (Yoruba)
-                  - `so` (Somali)
-                  - `af` (Afrikaans)
-                  - `oc` (Occitan)
-                  - `ka` (Georgian)
-                  - `be` (Belarusian)
-                  - `tg` (Tajik)
-                  - `sd` (Sindhi)
-                  - `gu` (Gujarati)
-                  - `am` (Amharic)
-                  - `yi` (Yiddish)
-                  - `lo` (Lao)
-                  - `uz` (Uzbek)
-                  - `fo` (Faroese)
-                  - `ht` (Haitian Creole)
-                  - `ps` (Pashto)
-                  - `tk` (Turkmen)
-                  - `nn` (Nynorsk)
-                  - `mt` (Maltese)
-                  - `sa` (Sanskrit)
-                  - `lb` (Luxembourgish)
-                  - `my` (Myanmar)
-                  - `bo` (Tibetan)
-                  - `tl` (Tagalog)
-                  - `mg` (Malagasy)
-                  - `as` (Assamese)
-                  - `tt` (Tatar)
-                  - `haw` (Hawaiian)
-                  - `ln` (Lingala)
-                  - `ha` (Hausa)
-                  - `ba` (Bashkir)
-                  - `jw` (Javanese)
-                  - `su` (Sundanese)
-                  - `yue` (Cantonese)
-                </Accordion>
-            timestamp_granularities[]:
-              type: optional<list<TimestampGranularity>>
-              docs: |
-                The timestamp granularities to populate for this transcription. Currently only `word` level timestamps are supported.
-        query-parameters:
-          encoding:
-            type: optional<STTEncoding>
-            docs: |
-              The encoding format to process the audio as. If not specified, the audio file will be decoded automatically.
-              
-              **Supported formats:**
-              - `pcm_s16le` - 16-bit signed integer PCM, little-endian (recommended for best performance)
-              - `pcm_s32le` - 32-bit signed integer PCM, little-endian
-              - `pcm_f16le` - 16-bit floating point PCM, little-endian
-              - `pcm_f32le` - 32-bit floating point PCM, little-endian
-              - `pcm_mulaw` - 8-bit μ-law encoded PCM
-              - `pcm_alaw` - 8-bit A-law encoded PCM
-          sample_rate:
-            type: optional<integer>
-            docs: |
-              The sample rate of the audio in Hz. 
-      response: TranscriptionResponse
-      examples:
-        - name: Basic Transcription
-          request:
-            model: "ink-whisper"
-            language: "en"
-          response:
-            body:
-              text: "Hello, this is a test transcription."
-              language: "en"
-              duration: 2.5
-        - name: With Word Timestamps
-          request:
-            model: "ink-whisper"
-            language: "en"
-            timestamp_granularities[]: ["word"]
-          response:
-            body:
-              text: "Hello, this is a test transcription."
-              language: "en"
-              duration: 2.5
-              words:
-                - word: "Hello,"
-                  start: 0.0
-                  end: 0.25
-                - word: "this"
-                  start: 0.3
-                  end: 0.5
-                - word: "is"
-                  start: 0.55
-                  end: 0.65
-                - word: "a"
-                  start: 0.7
-                  end: 0.75
-                - word: "test"
-                  start: 0.8
-                  end: 1.0
-                - word: "transcription."
-                  start: 1.05
-                  end: 1.8
-
 channel:
   path: /stt/websocket
-  display-name: Speech-to-Text (Streaming)
+  display-name: Speech to Text (Streaming)
   docs: |
     This endpoint creates a bidirectional WebSocket connection for real-time speech transcription.
 
-    Our STT endpoint enables sending in a stream of audio as bytes, and provides transcription results as they become available.
+    Our STT endpoint enables sending in a stream of audio as bytes encoded as PCM 16K samples, and provides transcription results as they become available.
     
     **Usage Pattern:**
     1. Connect to the WebSocket with appropriate query parameters
-    2. Send audio chunks as **binary WebSocket messages** in the specified encoding format
-    3. Receive transcription messages as JSON with word-level timestamps
+    2. Send audio chunks as **binary WebSocket messages** in pcm_s16le format at 16K sample rate
+    3. Receive transcription messages as JSON
     4. Send `finalize` as a **text message** to flush any remaining audio (receives `flush_done` acknowledgment)
     5. Send `done` as a **text message** to close the session cleanly (receives `done` acknowledgment and closes)
-    
-    **Performance Recommendation:**
-    For best performance, it is recommended to resample audio before streaming and send audio chunks in `pcm_s16le` format at 16kHz sample rate.
-
-    **Pricing:**
-    Speech-to-text streaming is priced at **1 credit per 1 second** of audio streamed in.
-
-    **Concurrency:**
-    STT has a dedicated concurrency limit, which determines the maximum number of active WebSocket connections you can have at any time. If you exceed your concurrency limit, new connections will be rejected with a 429 error. Idle WebSocket connections are automatically closed after 20 seconds of inactivity (no audio being streamed).
 
   auth: true
   
@@ -238,131 +26,16 @@ channel:
       type: optional<string>
       docs: |
         The language of the input audio in ISO-639-1 format. Defaults to `en`.
-        
-        <Accordion title="Supported languages">
-          - `en` (English)
-          - `zh` (Chinese)
-          - `de` (German)
-          - `es` (Spanish)
-          - `ru` (Russian)
-          - `ko` (Korean)
-          - `fr` (French)
-          - `ja` (Japanese)
-          - `pt` (Portuguese)
-          - `tr` (Turkish)
-          - `pl` (Polish)
-          - `ca` (Catalan)
-          - `nl` (Dutch)
-          - `ar` (Arabic)
-          - `sv` (Swedish)
-          - `it` (Italian)
-          - `id` (Indonesian)
-          - `hi` (Hindi)
-          - `fi` (Finnish)
-          - `vi` (Vietnamese)
-          - `he` (Hebrew)
-          - `uk` (Ukrainian)
-          - `el` (Greek)
-          - `ms` (Malay)
-          - `cs` (Czech)
-          - `ro` (Romanian)
-          - `da` (Danish)
-          - `hu` (Hungarian)
-          - `ta` (Tamil)
-          - `no` (Norwegian)
-          - `th` (Thai)
-          - `ur` (Urdu)
-          - `hr` (Croatian)
-          - `bg` (Bulgarian)
-          - `lt` (Lithuanian)
-          - `la` (Latin)
-          - `mi` (Maori)
-          - `ml` (Malayalam)
-          - `cy` (Welsh)
-          - `sk` (Slovak)
-          - `te` (Telugu)
-          - `fa` (Persian)
-          - `lv` (Latvian)
-          - `bn` (Bengali)
-          - `sr` (Serbian)
-          - `az` (Azerbaijani)
-          - `sl` (Slovenian)
-          - `kn` (Kannada)
-          - `et` (Estonian)
-          - `mk` (Macedonian)
-          - `br` (Breton)
-          - `eu` (Basque)
-          - `is` (Icelandic)
-          - `hy` (Armenian)
-          - `ne` (Nepali)
-          - `mn` (Mongolian)
-          - `bs` (Bosnian)
-          - `kk` (Kazakh)
-          - `sq` (Albanian)
-          - `sw` (Swahili)
-          - `gl` (Galician)
-          - `mr` (Marathi)
-          - `pa` (Punjabi)
-          - `si` (Sinhala)
-          - `km` (Khmer)
-          - `sn` (Shona)
-          - `yo` (Yoruba)
-          - `so` (Somali)
-          - `af` (Afrikaans)
-          - `oc` (Occitan)
-          - `ka` (Georgian)
-          - `be` (Belarusian)
-          - `tg` (Tajik)
-          - `sd` (Sindhi)
-          - `gu` (Gujarati)
-          - `am` (Amharic)
-          - `yi` (Yiddish)
-          - `lo` (Lao)
-          - `uz` (Uzbek)
-          - `fo` (Faroese)
-          - `ht` (Haitian Creole)
-          - `ps` (Pashto)
-          - `tk` (Turkmen)
-          - `nn` (Nynorsk)
-          - `mt` (Maltese)
-          - `sa` (Sanskrit)
-          - `lb` (Luxembourgish)
-          - `my` (Myanmar)
-          - `bo` (Tibetan)
-          - `tl` (Tagalog)
-          - `mg` (Malagasy)
-          - `as` (Assamese)
-          - `tt` (Tatar)
-          - `haw` (Hawaiian)
-          - `ln` (Lingala)
-          - `ha` (Hausa)
-          - `ba` (Bashkir)
-          - `jw` (Javanese)
-          - `su` (Sundanese)
-          - `yue` (Cantonese)
-        </Accordion>
     encoding:
-      type: STTEncoding
+      type: optional<STTEncoding>
       docs: |
         The encoding format of the audio data. This determines how the server interprets the raw binary audio data you send.
         
-        **Required field** - you must specify the encoding format that matches your audio data. We recommend using `pcm_s16le` for best performance.
+        Currently supported: `pcm_s16le` - 16-bit signed integer PCM, little-endian (default)
     sample_rate:
       type: integer
       docs: |
-        The sample rate of the audio in Hz. 
-                
-        **Required field** - must match the actual sample rate of your audio data. We recommend using `16000` for best performance.
-    min_volume:
-      type: optional<double>
-      docs: |
-        Volume threshold for voice activity detection. Audio below this threshold will be considered silence. 
-        Range: 0.0-1.0. Higher values = more aggressive filtering of quiet speech.
-    max_silence_duration_secs:
-      type: optional<double>
-      docs: |
-        Maximum duration of silence (in seconds) before the system considers the utterance complete and triggers endpointing.
-        Higher values allow for longer pauses within utterances.
+        The sample rate of the audio in Hz, only `16000` is supported (default). Must match the actual sample rate of your audio data.
     api_key:
       type: string
       docs: |
@@ -395,7 +68,7 @@ channel:
       origin: server
       body: StreamingTranscriptionResponse
       docs: |
-        The server will send transcription results as they become available. Messages can be of type `transcript`, `flush_done`, `done`, or `error`. Each transcript response includes word-level timestamps.
+        The server will send transcription results as they become available. Messages can be of type `transcript`, `flush_done`, `done`, or `error`.
 
   examples:
     - name: Streaming Transcription Session
@@ -410,22 +83,6 @@ channel:
             is_final: false
             duration: 0.5
             language: "en"
-            words:
-              - word: "How"
-                start: 0.0
-                end: 0.12
-              - word: "are"
-                start: 0.15
-                end: 0.25
-              - word: "you"
-                start: 0.28
-                end: 0.35
-              - word: "doing"
-                start: 0.38
-                end: 0.55
-              - word: "today?"
-                start: 0.58
-                end: 0.78
         - type: send
           body: "<binary audio data - send as binary WebSocket message>"
         - type: receive  
@@ -436,31 +93,6 @@ channel:
             is_final: false
             duration: 1.2
             language: "en"
-            words:
-              - word: "I'm"
-                start: 0.8
-                end: 0.92
-              - word: "planning"
-                start: 0.95
-                end: 1.25
-              - word: "to"
-                start: 1.28
-                end: 1.35
-              - word: "visit"
-                start: 1.38
-                end: 1.58
-              - word: "the"
-                start: 1.61
-                end: 1.68
-              - word: "museum"
-                start: 1.71
-                end: 1.98
-              - word: "this"
-                start: 2.01
-                end: 2.15
-              - word: "weekend."
-                start: 2.18
-                end: 2.45
         - type: send
           body: "finalize"
         - type: receive
@@ -473,48 +105,8 @@ channel:
             request_id: "b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8"
             text: "How are you doing today? I'm planning to visit the museum this weekend."
             is_final: true
-            duration: 2.5
+            duration: 1.7
             language: "en"
-            words:
-              - word: "How"
-                start: 0.0
-                end: 0.12
-              - word: "are"
-                start: 0.15
-                end: 0.25
-              - word: "you"
-                start: 0.28
-                end: 0.35
-              - word: "doing"
-                start: 0.38
-                end: 0.55
-              - word: "today?"
-                start: 0.58
-                end: 0.78
-              - word: "I'm"
-                start: 0.8
-                end: 0.92
-              - word: "planning"
-                start: 0.95
-                end: 1.25
-              - word: "to"
-                start: 1.28
-                end: 1.35
-              - word: "visit"
-                start: 1.38
-                end: 1.58
-              - word: "the"
-                start: 1.61
-                end: 1.68
-              - word: "museum"
-                start: 1.71
-                end: 1.98
-              - word: "this"
-                start: 2.01
-                end: 2.15
-              - word: "weekend."
-                start: 2.18
-                end: 2.45
         - type: send
           body: "done"
         - type: receive
@@ -523,26 +115,6 @@ channel:
             request_id: "b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8"
 
 types:
-  TimestampGranularity:
-    enum:
-      - word
-    docs: |
-      The granularity of timestamps to include in the response.
-      
-      Currently only `word` level timestamps are supported, providing start and end times for each word.
-
-  TranscriptionWord:
-    properties:
-      word:
-        type: string
-        docs: The transcribed word.
-      start:
-        type: double
-        docs: Start time of the word in seconds.
-      end:
-        type: double  
-        docs: End time of the word in seconds.
-
   TranscriptionResponse:
     properties:
       text:
@@ -550,13 +122,10 @@ types:
         docs: The transcribed text.
       language:
         type: optional<string>
-        docs: The specified language of the input audio.
+        docs: The detected or specified language of the input audio.
       duration:
         type: optional<double>
         docs: The duration of the input audio in seconds.
-      words:
-        type: optional<list<TranscriptionWord>>
-        docs: Word-level timestamps showing the start and end time of each word. Only included when `[word]` is passed into `timestamp_granularities[]`.
 
   StreamingTranscriptionResponse:
     discriminant: type
@@ -587,10 +156,7 @@ types:
         docs: The duration of the audio transcribed so far, in seconds.
       language:
         type: optional<string>
-        docs: The specified language of the input audio.
-      words:
-        type: optional<list<TranscriptionWord>>
-        docs: Word-level timestamps showing the start and end time of each word in seconds. Always included in streaming responses.
+        docs: The detected or specified language of the input audio.
 
   FlushDoneMessage:
     properties:
@@ -620,10 +186,13 @@ types:
   STTEncoding:
     enum:
       - pcm_s16le
-      - pcm_s32le
-      - pcm_f16le
-      - pcm_f32le
-      - pcm_mulaw
-      - pcm_alaw
+      # - pcm_f32le
+      # - pcm_mulaw
+      # - pcm_alaw
     docs: |
       The encoding format for audio data sent to the STT WebSocket.
+      
+      Currently supported:
+      - `pcm_s16le` - 16-bit signed integer PCM, little-endian
+      
+      Support for other formats will be added in the future.
