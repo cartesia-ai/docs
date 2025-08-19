@@ -5,7 +5,7 @@ tabs:
     icon: fa-regular fa-file-alt
   agents:
     display-name: Agents
-    slug: agents
+    slug: line
     icon: fa-regular fa-file-alt
   reference:
     display-name: API Reference
@@ -114,7 +114,7 @@ navigation:
   - tab: agents
     layout:
       - section: Overview
-        slug: line
+        skip-slug: true
         contents:
           - page: Introduction
             path: ../agents/overview/agents-overview.mdx
@@ -159,7 +159,6 @@ navigation:
             path: ../agents/overview/agents-line-by-line.mdx
             icon: fa-stars
       - section: Start Building
-        slug: line/start-building
         contents:
           - page: Talk to your first agent
             path: ../agents/quick-starts/call-your-first-agent.mdx
@@ -176,7 +175,6 @@ navigation:
 #            path: ../agents/quick-starts/4-handoffs.mdx
 #            icon: fa-chart-network
       - section: Integrations
-        slug: line/integrations
         contents:
           # TODO: Add in clear examples of how to use these integrations with partners
           # - section: Language Models
@@ -203,7 +201,6 @@ navigation:
               - page: Outbound Dialing
                 path: ../agents/integrations/telephony/agents-telephony-outbound.mdx
       - section: Infrastructure
-        slug: line/infrastructure
         contents:
           - page: Deployments
             path: ../agents/overview/agents-deployment.mdx
@@ -218,7 +215,6 @@ navigation:
             path: ../agents/infrastructure/agents-scaling.mdx
             icon: fa-chart-line
       - section: Evaluations
-        slug: line/evaluations
         contents:
           - page: Metrics
             path: ../agents/evaluations/agents-metrics.mdx
