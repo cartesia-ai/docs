@@ -9,7 +9,7 @@ tabs:
     icon: fa-regular fa-file-alt
   reference:
     display-name: API Reference
-    skip-slug: true
+    slug: api-reference
     icon: fa-regular fa-code
 navigation:
   - tab: docs
@@ -236,6 +236,7 @@ navigation:
             path: ../api-reference/concurrency-limits-and-timeouts.mdx
             icon: fa-traffic-light
       - api: API Reference
+        skip-slug: true
         api-name: version-2025-04-16
         paginated: true
         flattened: true
