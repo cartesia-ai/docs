@@ -144,22 +144,21 @@ Now let's set up your local environment to iterate on your agent.
       <Tab title="uv">
         ```zsh
         uv venv --python 3.11
-        source .venv/bin/activate
-        uv pip install -r requirements.txt
+        uv pip install .
         ```
       </Tab>
       <Tab title="pip">
         ```zsh
         python -m venv .venv
         source .venv/bin/activate
-        pip install -r requirements.txt
+        pip install .
         ```
       </Tab>
       <Tab title="conda">
         ```zsh
         conda create -n line-quickstart python=3.11
         conda activate line-quickstart
-        pip install -r requirements.txt
+        pip install .
         ```
       </Tab>
     </Tabs>

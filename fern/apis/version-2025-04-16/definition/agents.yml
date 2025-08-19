@@ -109,6 +109,21 @@ types:
         docs: |
           The phone number with country code included.
 
+  GitRepository:
+    properties:
+      provider:
+        type: string
+        docs: |
+          The provider of the Git repository, e.g., GitHub.
+      account:
+        type: string
+        docs: |
+          The account name associated with the Git repository.
+      name:
+        type: string
+        docs: |
+          The name of the Git repository.
+
   AgentSummary:
     docs: |
       A summary of essential information about an agent.
@@ -149,14 +164,10 @@ types:
         type: optional<datetime>
         docs: |
           The date and time when the agent was deleted, if applicable.
-      git_repository_name:
-        type: optional<string>
+      git_repository:
+        type: optional<GitRepository>
         docs: |
-          The name of the Git repository associated with the agent.
-      git_repository_id:
-        type: optional<string>
-        docs: |
-          The identifier of the Git repository associated with the agent. This is Cartesia's internal identifier for the Git repository, not the repository ID on Github.
+          The Git repository associated with the agent.
       git_deploy_branch:
         type: optional<string>
         docs: |
@@ -522,10 +533,6 @@ types:
         type: string
         docs: |
           The ID of the source code file associated with this deployment.
-      git_repository_id:
-        type: string
-        docs: |
-          The ID of the Git repository associated with this deployment. This is an internal Cartesia ID and does not reference the actual repository on Github.
       git_commit_hash:
         type: string
         docs: |
@@ -592,8 +599,10 @@ service:
                   tts_language: "en"
                   has_text_to_agent_run: false
                   deployment_count: 1
-                  git_repository_name: "cartesia-basic-chat"
-                  git_repository_id: "123456"
+                  git_repository:
+                    provider: "github"
+                    account: "cartesia-ai"
+                    name: "cartesia-basic-chat"
                   git_deploy_branch: "main"
                   phone_numbers: [{ id: "123456", number: "+11234567890" }]
                 - id: "agent_456"
@@ -605,8 +614,10 @@ service:
                   tts_language: "en"
                   has_text_to_agent_run: false
                   deployment_count: 1
-                  git_repository_name: "cartesia-outbound-calls"
-                  git_repository_id: "789012"
+                  git_repository:
+                    provider: "github"
+                    account: "cartesia-ai"
+                    name: "cartesia-outbound-calls"
                   git_deploy_branch: "main"
                   phone_numbers: [{ id: "789012", number: "+11234567890" }]
 
@@ -636,8 +647,10 @@ service:
               tts_language: "en"
               has_text_to_agent_run: false
               deployment_count: 1
-              git_repository_name: "cartesia-basic-chat"
-              git_repository_id: "123456"
+              git_repository:
+                provider: "github"
+                account: "cartesia-ai"
+                name: "cartesia-basic-chat"
               git_deploy_branch: "main"
               phone_numbers: [{ id: "123456", number: "+11234567890" }]
 
@@ -1157,7 +1170,6 @@ service:
                 is_pinned: true
                 env_var_collection_id: "env_123"
                 source_code_file_id: "scf_456"
-                git_repository_id: "git_789"
                 git_commit_hash: "commit_hash_abc"
                 created_at: "2025-07-25T06:50:12.889Z"
                 updated_at: "2025-07-25T07:00:12.889Z"
@@ -1194,7 +1206,6 @@ service:
               is_pinned: true
               env_var_collection_id: "env_123"
               source_code_file_id: "scf_456"
-              git_repository_id: "git_789"
               git_commit_hash: "commit_hash_abc"
               created_at: "2025-07-25T06:50:12.889Z"
               updated_at: "2025-07-25T07:00:12.889Z"
