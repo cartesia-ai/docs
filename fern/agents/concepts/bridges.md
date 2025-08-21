@@ -4,9 +4,12 @@ Bridges connect your nodes to the event system.
 
 ## What is a Bridge?
 
-Bridges are event transport that sit between the Nodes and the Bus. Messages are received and sent on the Bridge.
+Bridges are event transport that sit between the Nodes and the Bus. Messages are
+received and sent on the Bridge.
 
-You can subscribe to specific event types on a Bridge and execute actions when those events occur. When subscribing to an event type, you create a Route, which runs when an event of that type is received on the bridge. 
+You can subscribe to specific event types on a Bridge and execute actions when
+those events occur. When subscribing to an event type, you create a Route, which
+runs when an event of that type is received on the bridge.
 
 ## Basic Example
 
@@ -23,11 +26,14 @@ bridge.on(UserStoppedSpeaking).map(chat_node.generate)
 
 ## Key Concepts
 
-**Event Patterns**: Patterns that match events (e.g., `UserTranscriptionReceived`, `ToolCall`, `"*"` for all events).
+**Event Patterns**: Patterns that match events (e.g.,
+`UserTranscriptionReceived`, `ToolCall`, `"*"` for all events).
 
-**Actions**: What to do when an event matches (e.g., call a node method, transform data, broadcast new events).
+**Actions**: What to do when an event matches (e.g., call a node method,
+transform data, broadcast new events).
 
-**Filtering**: Additional criteria for when routes should trigger (source, event properties, custom functions).
+**Filtering**: Additional criteria for when routes should trigger (source, event
+properties, custom functions).
 
 ## Event Patterns
 
@@ -42,5 +48,8 @@ bridge.on("*").map(log_all_events)
 bridge.on(AgentResponse, source="main_agent").map(send_to_user)
 
 # Custom filtering
-bridge.on(ToolCall, filter_fn=lambda msg: msg.event.tool_name == "calculator").map(handle_calc)
+bridge.on(
+    ToolCall,
+    filter_fn=lambda msg: msg.event.tool_name == "calculator",
+).map(handle_calc)
 ```

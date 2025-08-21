@@ -1,0 +1,18 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.10
+    hooks:
+      - id: ruff
+        name: ruff-check
+      - id: ruff-format
+        name: ruff-format
+  
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.22
+    hooks:
+      - id: mdformat
+        name: mdformat
+        additional_dependencies:
+          - mdformat-ruff
+        args: ["--wrap", "80"]
+        files: '\.(md|mdx)$'
