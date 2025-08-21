@@ -83,7 +83,7 @@ html {
 	font-weight: normal;
 }
 
-.fern-prose code, .prose-base code {
+.fern-prose .language-bash code, .prose-base .language-bash code {
 	white-space: pre-wrap;
 }
 
