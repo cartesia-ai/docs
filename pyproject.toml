@@ -1,0 +1,12 @@
+[tool.ruff]
+line-length = 70
+target-version = "py38"
+
+[tool.ruff.format]
+line-ending = "auto"
+indent-style = "space"
+quote-style = "double"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = []
