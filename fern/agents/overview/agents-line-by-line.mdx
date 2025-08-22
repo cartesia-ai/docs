@@ -3,39 +3,47 @@ title: Text to Agent
 ---
 
 You can also build Voice Agents on Line from the playground by simply describing what you want the Agent. You can export the code and
-customize it even more. 
+customize it even more.
 
 <Steps>
   <Step title="Sign into Cartesia Playground ">
     Go to the [Text to Agent](https://play.cartesia.ai/agents/new/text-to-agent) page in the playground.
   </Step>
 
-  <Step title="Describe your Agent">
-Enter a description of what you want the Agent to accomplish.
-      <Frame>
-        <img src="/assets/images/agents/t2a.png" alt="Select a template"/>
-    </Frame>
-  </Step>
+{" "}
 
-  <Step title="Try out candidates">
-After a generation run completes, you can try calling several candidates created and pin one to production. This will
-      assign it to a phone number and count towards your Agent slots. You can also re-generate a new version of your Agent
-      by repeating the steps above.
-    <Frame>
-        <img src="/assets/images/agents/promote-to-production.png" alt="Try canddiates"/>
-    </Frame>
-  </Step>
+<Step title="Describe your Agent">
+  Enter a description of what you want the Agent to accomplish.
+  <Frame>
+    <img src="/assets/images/agents/t2a.png" alt="Select a template" />
+  </Frame>
+</Step>
+
+{" "}
+
+<Step title="Try out candidates">
+  After a generation run completes, you can try calling several candidates
+  created and pin one to production. This will assign it to a phone number and
+  count towards your Agent slots. You can also re-generate a new version of your
+  Agent by repeating the steps above.
+  <Frame>
+    <img
+      src="/assets/images/agents/promote-to-production.png"
+      alt="Try canddiates"
+    />
+  </Frame>
+</Step>
 
     <Step title="Export code to GitHub">
+
 If you want to further customize your Agent, you can export your Agent code to a new GitHub repository,
-        modify it, and then re-deploy it. Start by connecting your Agent to GitHub in the playground.
+modify it, and then re-deploy it. Start by connecting your Agent to GitHub in the playground.
 
         <Frame>
         <img src="/assets/images/agents/github-connection.png" alt="Connect to Github"/>
     </Frame>
 
   </Step>
-
 
     <Step title="Clone your Agent locally">
 
@@ -52,14 +60,12 @@ If you want to further customize your Agent, you can export your Agent code to a
         [cartesia chat](/line/cli#chat-with-your-agent) from your CLI to try your changes locally before deplowing.
     </Step>
 
-  <Step title="Deploy your changes">
-    When you're satisfied with your Agent, pushing to main will trigger a new deployment.
-    ```zsh
-    git add .
-    git commit -m "hello world"
-    git push
-    ```
-  </Step>
+{" "}
+
+<Step title="Deploy your changes">
+  When you're satisfied with your Agent, pushing to main will trigger a new
+  deployment. ```zsh git add . git commit -m "hello world" git push ```
+</Step>
 
   <Step title="Check deployment status">
     See your deployment status in the playground or the CLI if you prefer.
@@ -71,3 +77,13 @@ If you want to further customize your Agent, you can export your Agent code to a
   </Step>
 </Steps>
 
+<iframe
+  width="650"
+  height="400"
+  src="https://www.youtube.com/embed/SE0O-p1NPeQ?si=Imh53WAQGOkPeCBX"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen={true}
+></iframe>
