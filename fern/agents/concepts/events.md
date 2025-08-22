@@ -36,6 +36,7 @@ insight = CustomerInsight(
 
 For a full list of built-in events and their descriptions, see
 [line/events.py](https://github.com/cartesia-ai/line/blob/main/line/events.py).
+
 | Category | Events | |----------|--------| |
 <Tooltip tip="Events triggered by user actions during the conversation"><strong>User
 Events</strong></Tooltip> | `UserTranscriptionReceived`, `UserStartedSpeaking`,
