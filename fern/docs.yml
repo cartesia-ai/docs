@@ -270,3 +270,9 @@ redirects:
   - source: /2025-04-16/integrate-with-sonic/twilio
     destination: /2025-04-16/integrations/twilio
     permanent: true
+  - source: /build-with-cartesia/models/tts
+    destination: /build-with-cartesia/tts-models
+    permanent: true
+  - source: /build-with-cartesia/models/stt
+    destination: /build-with-cartesia/stt-models
+    permanent: true
