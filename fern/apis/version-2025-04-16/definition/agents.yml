@@ -587,6 +587,8 @@ service:
       response: GetAgentsResponse
       examples:
         - name: List Agents
+          headers:
+            Cartesia-Version: "2025-04-16"
           response:
             body:
               summaries:
@@ -635,6 +637,8 @@ service:
       response: AgentSummary
       examples:
         - name: Get Agent
+          headers:
+            Cartesia-Version: "2025-04-16"
           path-parameters:
             agent_id: "agent_123"
           response:
@@ -667,6 +671,8 @@ service:
       response: AgentSummary
       examples:
         - name: Update Agent
+          headers:
+            Cartesia-Version: "2025-04-16"
           path-parameters:
             agent_id: "agent_123"
           request:
@@ -704,6 +710,8 @@ service:
       response: GetTemplatesResponse
       examples:
         - name: List Templates
+          headers:
+            Cartesia-Version: "2025-04-16"
           response:
             body:
               templates:
@@ -766,6 +774,8 @@ service:
       response: AgentCall
       examples:
         - name: Get Call
+          headers:
+            Cartesia-Version: "2025-04-16"
           path-parameters:
             call_id: "ac_abc123"
           response:
@@ -863,6 +873,8 @@ service:
       response: list<PhoneNumber>
       examples:
         - name: List Phone Numbers
+          headers:
+            Cartesia-Version: "2025-04-16"
           path-parameters:
             agent_id: "agent_demo"
           response:
@@ -893,6 +905,8 @@ service:
       response: ListMetricsResponse
       examples:
         - name: List Metrics
+          headers:
+            Cartesia-Version: "2025-04-16"
           response:
             body:
               data:
@@ -933,6 +947,8 @@ service:
       response: Metric
       examples:
         - name: Get Metric
+          headers:
+            Cartesia-Version: "2025-04-16"
           path-parameters:
             metric_id: "am_abc123"
           response:
@@ -968,6 +984,8 @@ service:
       response: Metric
       examples:
         - name: Create Metric
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             name: "evaluate-user-satisfaction"
             display_name: "Evaluate User Satisfaction"
@@ -1055,6 +1073,8 @@ service:
         results: $response.data
       examples:
         - name: List Metric Results
+          headers:
+            Cartesia-Version: "2025-04-16"
           response:
             body:
               data:
@@ -1159,6 +1179,8 @@ service:
       response: list<Deployment>
       examples:
         - name: List Deployments
+          headers:
+            Cartesia-Version: "2025-04-16"
           path-parameters:
             agent_id: "agent_demo"
           response:
@@ -1195,6 +1217,8 @@ service:
       response: Deployment
       examples:
         - name: Get Deployment
+          headers:
+            Cartesia-Version: "2025-04-16"
           path-parameters:
             deployment_id: "ad_abc123"
           response:

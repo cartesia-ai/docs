@@ -10,13 +10,13 @@ service:
       display-name: Speech-to-Text (Batch)
       docs: |
         Transcribes audio files into text using Cartesia's Speech-to-Text API.
-        
+
         Upload an audio file and receive a complete transcription response. Supports arbitrarily long audio files with automatic intelligent chunking for longer audio.
-        
+
         **Supported audio formats:** flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, webm
-        
+
         **Response format:** Returns JSON with transcribed text, duration, and language. Include `timestamp_granularities: ["word"]` to get word-level timestamps.
-         
+
         **Pricing:** Batch transcription is priced at **1 credit per 2 seconds** of audio processed.
 
         <Note>
@@ -38,7 +38,7 @@ service:
               type: optional<string>
               docs: |
                 The language of the input audio in ISO-639-1 format. Defaults to `en`.
-                
+
                 <Accordion title="Supported languages">
                   - `en` (English)
                   - `zh` (Chinese)
@@ -150,7 +150,7 @@ service:
             type: optional<STTEncoding>
             docs: |
               The encoding format to process the audio as. If not specified, the audio file will be decoded automatically.
-              
+
               **Supported formats:**
               - `pcm_s16le` - 16-bit signed integer PCM, little-endian (recommended for best performance)
               - `pcm_s32le` - 32-bit signed integer PCM, little-endian
@@ -161,10 +161,12 @@ service:
           sample_rate:
             type: optional<integer>
             docs: |
-              The sample rate of the audio in Hz. 
+              The sample rate of the audio in Hz.
       response: TranscriptionResponse
       examples:
         - name: Basic Transcription
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             model: "ink-whisper"
             language: "en"
@@ -174,6 +176,8 @@ service:
               language: "en"
               duration: 2.5
         - name: With Word Timestamps
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             model: "ink-whisper"
             language: "en"
@@ -210,14 +214,14 @@ channel:
     This endpoint creates a bidirectional WebSocket connection for real-time speech transcription.
 
     Our STT endpoint enables sending in a stream of audio as bytes, and provides transcription results as they become available.
-    
+
     **Usage Pattern:**
     1. Connect to the WebSocket with appropriate query parameters
     2. Send audio chunks as **binary WebSocket messages** in the specified encoding format
     3. Receive transcription messages as JSON with word-level timestamps
     4. Send `finalize` as a **text message** to flush any remaining audio (receives `flush_done` acknowledgment)
     5. Send `done` as a **text message** to close the session cleanly (receives `done` acknowledgment and closes)
-    
+
     **Performance Recommendation:**
     For best performance, it is recommended to resample audio before streaming and send audio chunks in `pcm_s16le` format at 16kHz sample rate.
 
@@ -228,17 +232,17 @@ channel:
     STT has a dedicated concurrency limit, which determines the maximum number of active WebSocket connections you can have at any time. If you exceed your concurrency limit, new connections will be rejected with a 429 error. Idle WebSocket connections are automatically closed after 20 seconds of inactivity (no audio being streamed).
 
   auth: true
-  
+
   query-parameters:
     model:
       type: string
       docs: |
         ID of the model to use for transcription. Use `ink-whisper` for the latest Cartesia Whisper model.
-    language: 
+    language:
       type: optional<string>
       docs: |
         The language of the input audio in ISO-639-1 format. Defaults to `en`.
-        
+
         <Accordion title="Supported languages">
           - `en` (English)
           - `zh` (Chinese)
@@ -345,18 +349,18 @@ channel:
       type: STTEncoding
       docs: |
         The encoding format of the audio data. This determines how the server interprets the raw binary audio data you send.
-        
+
         **Required field** - you must specify the encoding format that matches your audio data. We recommend using `pcm_s16le` for best performance.
     sample_rate:
       type: integer
       docs: |
-        The sample rate of the audio in Hz. 
-                
+        The sample rate of the audio in Hz.
+
         **Required field** - must match the actual sample rate of your audio data. We recommend using `16000` for best performance.
     min_volume:
       type: optional<double>
       docs: |
-        Volume threshold for voice activity detection. Audio below this threshold will be considered silence. 
+        Volume threshold for voice activity detection. Audio below this threshold will be considered silence.
         Range: 0.0-1.0. Higher values = more aggressive filtering of quiet speech.
     max_silence_duration_secs:
       type: optional<double>
@@ -375,23 +379,23 @@ channel:
       display-name: "Send Audio Data or Commands"
       origin: client
       body: string
-      docs: |        
+      docs: |
         **In Practice:**
         - Send **binary WebSocket messages** containing raw audio data in the format specified by `encoding` parameter
         - Send **text WebSocket messages** with commands:
           - `finalize` - Flush any remaining audio and receive flush_done acknowledgment
           - `done` - Flush remaining audio, close session, and receive done acknowledgment
-                
+
         **Timeout Behavior:**
         - If no audio data is sent for 20 seconds, the WebSocket will automatically disconnect
         - The timeout resets with each message (audio data or text command) sent to the server
-        
+
         **Audio Requirements:**
         - Send audio in small chunks (e.g., 100ms intervals) for optimal latency
         - Audio format must match the `encoding` and `sample_rate` parameters
 
     receive:
-      display-name: "Receive Transcription" 
+      display-name: "Receive Transcription"
       origin: server
       body: StreamingTranscriptionResponse
       docs: |
@@ -399,6 +403,8 @@ channel:
 
   examples:
     - name: Streaming Transcription Session
+      headers:
+        Cartesia-Version: "2025-04-16"
       messages:
         - type: send
           body: "<binary audio data - send as binary WebSocket message>"
@@ -428,7 +434,7 @@ channel:
                 end: 0.78
         - type: send
           body: "<binary audio data - send as binary WebSocket message>"
-        - type: receive  
+        - type: receive
           body:
             type: "transcript"
             request_id: "00d8bde7-3b9d-493c-b1d9-c67e6d49859c"
@@ -528,7 +534,7 @@ types:
       - word
     docs: |
       The granularity of timestamps to include in the response.
-      
+
       Currently only `word` level timestamps are supported, providing start and end times for each word.
 
   TranscriptionWord:
@@ -540,7 +546,7 @@ types:
         type: double
         docs: Start time of the word in seconds.
       end:
-        type: double  
+        type: double
         docs: End time of the word in seconds.
 
   TranscriptionResponse:
@@ -577,7 +583,7 @@ types:
         type: string
         docs: |
           The transcribed text. May be partial or final depending on is_final.
-          
+
           **Note**: Text may be empty in initial responses while the system accumulates sufficient audio for transcription. This is normal behavior - wait for responses with non-empty text or monitor is_final for completion status.
       is_final:
         type: boolean
