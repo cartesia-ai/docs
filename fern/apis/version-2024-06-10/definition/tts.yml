@@ -16,6 +16,8 @@ service:
       response: file
       examples:
         - name: MP3
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             model_id: "sonic-2"
             transcript: "Hello, world!"
@@ -28,6 +30,8 @@ service:
               sample_rate: 44100
               bit_rate: 128000
         - name: WAV
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             model_id: "sonic-2"
             transcript: "Hello, world!"
@@ -40,6 +44,8 @@ service:
               sample_rate: 44100
               encoding: "pcm_f32le"
         - name: RAW
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             model_id: "sonic-2"
             transcript: "Hello, world!"
@@ -62,6 +68,8 @@ service:
         format: sse
       examples:
         - name: SSE
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             model_id: "sonic-2"
             transcript: "Hello, world!"
@@ -74,6 +82,8 @@ service:
               sample_rate: 44100
               encoding: "pcm_f32le"
         - name: SSE with Timestamps
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             model_id: "sonic-2"
             transcript: "Hello, world!"
@@ -145,6 +155,8 @@ channel:
 
   examples:
     - name: Generation Example
+      headers:
+        Cartesia-Version: "2024-06-10"
       messages:
         - type: send
           body:

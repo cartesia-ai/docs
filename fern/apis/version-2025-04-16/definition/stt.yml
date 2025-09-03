@@ -142,6 +142,7 @@ service:
                   - `yue` (Cantonese)
                 </Accordion>
             timestamp_granularities[]:
+              name: timestamp_granularities
               type: optional<list<TimestampGranularity>>
               docs: |
                 The timestamp granularities to populate for this transcription. Currently only `word` level timestamps are supported.
