@@ -258,6 +258,8 @@ service:
       response: VoiceMetadata
       examples:
         - name: Stability
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             # clip: file
             name: "A high-stability cloned voice"
@@ -274,6 +276,8 @@ service:
               created_at: "2024-11-13T07:06:22.476564Z"
               language: en
         - name: Similarity
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             # clip: file
             name: "A high-similarity cloned voice"
@@ -324,6 +328,8 @@ service:
       response: VoiceMetadata
       examples:
         - name: Localize Voice
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             voice_id: "694f9389-aac1-45b6-b726-9d9369183238"
             name: "Sarah Peninsular Spanish"
@@ -358,6 +364,8 @@ service:
       response: VoiceMetadata
       examples:
         - name: Create Voice
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             name: "My Custom Voice"
             description: "A custom voice created through the API"

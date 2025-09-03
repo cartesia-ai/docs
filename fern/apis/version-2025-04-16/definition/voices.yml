@@ -283,6 +283,8 @@ service:
       response: VoiceMetadata
       examples:
         - name: Similarity
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             # clip: file
             name: "A high-similarity cloned voice"
@@ -317,6 +319,8 @@ service:
       response: Voice
       examples:
         - name: Update Voice
+          headers:
+            Cartesia-Version: "2025-04-16"
           path-parameters:
             id: "8f7d3c2e-1a2b-3c4d-5e6f-7g8h9i0j1k2l"
           request:
@@ -352,6 +356,8 @@ service:
       response: VoiceMetadata
       examples:
         - name: Localize Voice
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             voice_id: "694f9389-aac1-45b6-b726-9d9369183238"
             name: "Sarah Peninsular Spanish"

@@ -12,6 +12,8 @@ service:
       response: TokenResponse
       examples:
         - name: Generate Access Token with TTS and STT Access
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             grants:
               tts: true
@@ -21,6 +23,8 @@ service:
             body:
               token: "eyJhbGciOiJIUzI1NiIsImtpZCI6InNzaWRfeU1uQ0NxRUZXTmJ5ZmFqdUFCVWhaTCJ9.eyJncmFudHMiOnsidHRzIjp0cnVlLCJzdHQiOnRydWV9LCJqdGkiOiJMK0dwd1Z1QWpzTUMiLCJpYXQiOjE3NDQ3NDk1NTQsImlzcyI6Imh0dHBzOi8vYXBpLmNhcnRlc2lhLmFpIiwiZXhwIjoxNzQ0NzQ5NjE0fQ.example"
         - name: Generate TTS-Only Access Token
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             grants:
               tts: true
@@ -29,6 +33,8 @@ service:
             body:
               token: "eyJhbGciOiJIUzI1NiIsImtpZCI6InNzaWRfeU1uQ0NxRUZXTmJ5ZmFqdUFCVWhaTCJ9.eyJncmFudHMiOnsidHRzIjp0cnVlfSwianRpIjoiTCtHcHdWdUFqc01DIiwiaWF0IjoxNzQ0NzQ5NTU0LCJpc3MiOiJodHRwczovL2FwaS5jYXJ0ZXNpYS5haSIsImV4cCI6MTc0NDc0OTYxNH0.GtdqNH0aBtAtkrOMjvsDumshPiNFk8ZM-zwAtqfgmiI"
         - name: Generate STT-Only Access Token
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             grants:
               stt: true

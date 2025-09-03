@@ -165,6 +165,8 @@ service:
       response: TranscriptionResponse
       examples:
         - name: Basic Transcription
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             model: "ink-whisper"
             language: "en"
@@ -174,6 +176,8 @@ service:
               language: "en"
               duration: 2.5
         - name: With Word Timestamps
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             model: "ink-whisper"
             language: "en"
