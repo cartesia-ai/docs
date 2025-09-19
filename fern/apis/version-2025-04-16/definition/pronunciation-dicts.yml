@@ -1,16 +1,20 @@
 types:
   PronunciationDictItem:
-    docs: A pronunciation dictionary item mapping text to a custom pronunciation
+    docs: A pronunciation dictionary item mapping text to a custom pronunciation.
     properties:
       text:
         type: string
-        docs: The original text to be replaced
+        docs: The original text to be replaced. This is case-sensitive. For example, "Cartesia" and "cartesia" are two different words. If you want to replace both, you can add both to the dictionary.
+      pronunciation:
+        type: string
+        docs: A phonetic representation or text to be said in place of the original text. The pronunciation can be at most 100 characters.
       alias:
         type: string
-        docs: A phonetic representation or text to be said in place of the original text
+        docs: A phonetic representation or text to be said in place of the original text. The pronunciation can be at most 100 characters.
+        availability: deprecated
 
   PronunciationDict:
-    docs: A dictionary of text-to-alias mappings
+    docs: A dictionary of unique text-to-pronunciation mappings
     properties:
       id:
         type: string
@@ -18,6 +22,9 @@ types:
       name:
         type: string
         docs: Name of the pronunciation dictionary
+      description:
+        type: optional<string>
+        docs: Description of the pronunciation dictionary
       owner_id:
         type: string
         docs: ID of the user who owns this dictionary
@@ -26,7 +33,7 @@ types:
         docs: Whether this dictionary is pinned for the user
       items:
         type: list<PronunciationDictItem>
-        docs: List of text-to-pronunciation mappings
+        docs: List of unique text-to-pronunciation mappings
       created_at:
         type: string
         docs: ISO 8601 timestamp of when the dictionary was created
@@ -37,9 +44,12 @@ types:
       name:
         type: string
         docs: Name for the new pronunciation dictionary
+      description:
+        type: optional<string>
+        docs: Description for the new pronunciation dictionary
       items:
         type: optional<list<PronunciationDictItem>>
-        docs: Optional initial list of pronunciation mappings
+        docs: Optional initial list of unique pronunciation mappings
 
   UpdatePronunciationDictRequest:
     docs: Request to update an existing pronunciation dictionary
@@ -47,9 +57,12 @@ types:
       name:
         type: optional<string>
         docs: New name for the pronunciation dictionary
+      description:
+        type: optional<string>
+        docs: New description for the pronunciation dictionary
       items:
         type: optional<list<PronunciationDictItem>>
-        docs: Updated list of pronunciation mappings
+        docs: Updated list of unique pronunciation mappings
 
   PaginatedPronunciationDicts:
     docs: Paginated list of pronunciation dictionaries
@@ -91,6 +104,22 @@ service:
               with `dict_abc123`, your subsequent call can include `ending_before=dict_abc123`
               to fetch the previous page of the list.
       response: PaginatedPronunciationDicts
+      examples:
+        - name: List Pronunciation Dictionaries
+          response:
+            body:
+              data:
+                - id: "pdict_abc123"
+                  name: "My Pronunciation Dictionary"
+                  owner_id: "user_abc123"
+                  description: "My pronunciation dictionary - Cartesia"
+                  pinned: false
+                  items:
+                    - text: "Cartesia"
+                      pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+                  created_at: "2025-01-01T00:00:00.000Z"
+              has_more: true
+              next_page: "pdict_def456"
 
     create:
       docs: Create a new pronunciation dictionary
@@ -98,6 +127,25 @@ service:
       method: POST
       request: CreatePronunciationDictRequest
       response: PronunciationDict
+      examples:
+        - name: Create Pronunciation Dictionary
+          request:
+            name: "My Pronunciation Dictionary"
+            description: "My pronunciation dictionary - Cartesia"
+            items:
+              - text: "Cartesia"
+                pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+          response:
+            body:
+              id: "pdict_abc123"
+              name: "My Pronunciation Dictionary"
+              owner_id: "user_abc123"
+              description: "My pronunciation dictionary - Cartesia"
+              pinned: false
+              items:
+                - text: "Cartesia"
+                  pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+              created_at: "2025-01-01T00:00:00.000Z"
 
     get:
       docs: Retrieve a specific pronunciation dictionary by ID
@@ -108,6 +156,21 @@ service:
           type: string
           docs: ID of the pronunciation dictionary to retrieve
       response: PronunciationDict
+      examples:
+        - name: Get Pronunciation Dictionary
+          path-parameters:
+            id: "pdict_abc123"
+          response:
+            body:
+              id: "pdict_abc123"
+              name: "My Pronunciation Dictionary"
+              owner_id: "user_abc123"
+              description: "My pronunciation dictionary - Cartesia"
+              pinned: false
+              items:
+                - text: "Cartesia"
+                  pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+              created_at: "2025-01-01T00:00:00.000Z"
 
     update:
       docs: Update a pronunciation dictionary
@@ -119,6 +182,31 @@ service:
           docs: ID of the pronunciation dictionary to update
       request: UpdatePronunciationDictRequest
       response: PronunciationDict
+      examples:
+        - name: Update Pronunciation Dictionary
+          path-parameters:
+            id: "pdict_abc123"
+          request:
+            name: "My Pronunciation Dictionary"
+            description: "My pronunciation dictionary - Cartesia - This is a production dictionary"
+            items:
+              - text: "Cartesia"
+                pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+              - text: "cartesia"
+                pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+          response:
+            body:
+              id: "pdict_abc123"
+              name: "My Pronunciation Dictionary"
+              owner_id: "user_abc123"
+              description: "My pronunciation dictionary - Cartesia - This is a production dictionary"
+              pinned: false
+              items:
+                - text: "Cartesia"
+                  pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+                - text: "cartesia"
+                  pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+              created_at: "2025-01-01T00:00:00.000Z"
 
     delete:
       docs: Delete a pronunciation dictionary
