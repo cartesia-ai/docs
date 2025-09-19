@@ -9,8 +9,8 @@ types:
         type: string
         docs: A phonetic representation or text to be said in place of the original text. The pronunciation can be at most 100 characters.
       alias:
-        type: string
-        docs: A phonetic representation or text to be said in place of the original text. The pronunciation can be at most 100 characters.
+        type: optional<string>
+        docs: A phonetic representation or text to be said in place of the original text. The alias can be at most 100 characters.
         availability: deprecated
 
   PronunciationDict:
@@ -117,9 +117,9 @@ service:
                   items:
                     - text: "Cartesia"
                       pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+                      alias: "<<k|ɑː|ʈ|iː|z|i|ə>>"
                   created_at: "2025-01-01T00:00:00.000Z"
               has_more: true
-              next_page: "pdict_def456"
 
     create:
       docs: Create a new pronunciation dictionary
@@ -145,6 +145,7 @@ service:
               items:
                 - text: "Cartesia"
                   pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+                  alias: "<<k|ɑː|ʈ|iː|z|i|ə>>"
               created_at: "2025-01-01T00:00:00.000Z"
 
     get:
@@ -170,6 +171,7 @@ service:
               items:
                 - text: "Cartesia"
                   pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+                  alias: "<<k|ɑː|ʈ|iː|z|i|ə>>"
               created_at: "2025-01-01T00:00:00.000Z"
 
     update:
@@ -204,8 +206,10 @@ service:
               items:
                 - text: "Cartesia"
                   pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+                  alias: "<<k|ɑː|ʈ|iː|z|i|ə>>"
                 - text: "cartesia"
                   pronunciation: "<<k|ɑː|ʈ|iː|z|i|ə>>"
+                  alias: "<<k|ɑː|ʈ|iː|z|i|ə>>"
               created_at: "2025-01-01T00:00:00.000Z"
 
     delete:
