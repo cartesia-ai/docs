@@ -40,18 +40,24 @@ service:
       response: file
       examples:
         - name: MP3
+          headers:
+            Cartesia-Version: "2024-11-13"
           request:
             voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
             output_format[container]: mp3
             output_format[sample_rate]: 44100
             output_format[bit_rate]: 128000
         - name: WAV
+          headers:
+            Cartesia-Version: "2024-11-13"
           request:
             voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
             output_format[container]: wav
             output_format[sample_rate]: 44100
             output_format[encoding]: pcm_f32le
         - name: RAW
+          headers:
+            Cartesia-Version: "2024-11-13"
           request:
             voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
             output_format[container]: raw
@@ -87,18 +93,24 @@ service:
       response-stream: StreamingResponse
       examples:
         - name: MP3
+          headers:
+            Cartesia-Version: "2024-11-13"
           request:
             voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
             output_format[container]: mp3
             output_format[sample_rate]: 44100
             output_format[bit_rate]: 128000
         - name: WAV
+          headers:
+            Cartesia-Version: "2024-11-13"
           request:
             voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
             output_format[container]: wav
             output_format[sample_rate]: 44100
             output_format[encoding]: pcm_f32le
         - name: RAW
+          headers:
+            Cartesia-Version: "2024-11-13"
           request:
             voice[id]: "694f9389-aac1-45b6-b726-9d9369183238"
             output_format[container]: raw

@@ -63,6 +63,8 @@ service:
       response: file
       examples:
         - name: MP3
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             model_id: sonic-2
             language: en
@@ -72,6 +74,8 @@ service:
             output_format[sample_rate]: 44100
             output_format[bit_rate]: 128000
         - name: WAV
+          headers:
+            Cartesia-Version: "2025-04-16"
           request:
             model_id: sonic-2
             language: en

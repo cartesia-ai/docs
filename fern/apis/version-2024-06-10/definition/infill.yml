@@ -77,6 +77,8 @@ service:
       response: file
       examples:
         - name: MP3
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             model_id: sonic-2
             language: en
@@ -88,6 +90,8 @@ service:
             voice[__experimental_controls][speed]: slowest
             voice[__experimental_controls][emotion][]: [surprise:high, curiosity:high]
         - name: WAV
+          headers:
+            Cartesia-Version: "2024-06-10"
           request:
             model_id: sonic-2
             language: en

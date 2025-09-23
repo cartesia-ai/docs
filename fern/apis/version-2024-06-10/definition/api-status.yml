@@ -17,6 +17,8 @@ service:
       response: APIInfo
       examples:
         - name: API Status and Version
+          headers:
+            Cartesia-Version: "2024-06-10"
           response:
             body:
               ok: true
