@@ -396,10 +396,10 @@ types:
         type: optional<boolean>
         docs: |
           Whether to use normalized timestamps (True) or original timestamps (False).
-      pronunciation_dict_ids:
-        type: optional<list<string>>
+      pronunciation_dict_id:
+        type: optional<string>
         docs: |
-          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
+          A pronunciation dict ID to use for the generation. This will be applied to this TTS generation only.
 
   WebSocketRawOutputFormat:
     properties:
@@ -437,10 +437,10 @@ types:
         docs: |
           Whether to return phoneme-level timestamps. If `false` (default), no phoneme timestamps will be produced. If `true`, the server will return timestamp events containing phoneme-level timing information.
       use_normalized_timestamps: optional<boolean>
-      pronunciation_dict_ids:
-        type: optional<list<string>>
+      pronunciation_dict_id:
+        type: optional<string>
         docs: |
-          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
+          A pronunciation dict ID to use for the generation. This will be applied to this TTS generation only.
       continue: optional<boolean>
       context_id: optional<string>
       max_buffer_delay_ms: optional<integer>
@@ -466,10 +466,10 @@ types:
         type: optional<boolean>
         docs: |
           Whether to save the generated audio file. When true, the response will include a `Cartesia-File-ID` header.
-      pronunciation_dict_ids:
-        type: optional<list<string>>
+      pronunciation_dict_id:
+        type: optional<string>
         docs: |
-          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
+          A pronunciation dict ID to use for the generation. This will be applied to this TTS generation only.
 
   TTSSSERequest:
     properties:
@@ -499,10 +499,10 @@ types:
         type: optional<boolean>
         docs: |
           Whether to use normalized timestamps (True) or original timestamps (False).
-      pronunciation_dict_ids:
-        type: optional<list<string>>
+      pronunciation_dict_id:
+        type: optional<string>
         docs: |
-          A list of pronunciation dict IDs to use for the generation. This will be applied in addition to the pinned pronunciation dict, which will be treated as the first element of the list. If there are conflicts with dict items, the latest dict will take precedence.
+          A pronunciation dict ID to use for the generation. This will be applied to this TTS generation only.
       context_id:
         type: optional<ContextID>
         docs: |
