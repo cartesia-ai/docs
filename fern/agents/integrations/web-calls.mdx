@@ -1,11 +1,10 @@
-# Web & Mobile Clients
+# Web Calls
 
-Some Cartesia customers might be interested in integrating their Line agents with their web or mobile application, rather than a telephony provider. For these folks, the Agents WebSocket provides real-time, bidirectional communication with voice agents through a streaming interface. This allows you to send audio data and receive agent responses in real-time for any client.
+Some Cartesia customers might be interested in integrating their Line agents with their website, rather than a telephony provider. For these folks, the Agents WebSocket provides real-time, bidirectional communication with voice agents through a streaming interface. This allows you to send audio data and receive agent responses in real-time for any client.
 
 ```mermaid
 graph LR
     A1[Web Client] <-->|General Websocket Events| B[Cartesia API]
-    A2[Mobile Client] <-->|General Websocket Events| B
     B <-->|Agent Events| C[Inferno Agents]
 ```
 
@@ -36,7 +35,11 @@ Note that if you don't specify `stream_id` in the initial `start` message, one w
 
 ### Start Event
 
-Initializes the audio stream configuration. **This must be the first message sent.**
+Initializes the audio stream configuration. 
+- The `config` parameter will optionally alter the input/output audio settings, overriding what your default agent configuration might otherwise be
+- The `stream_id` can be set manually if you wish to maintain this on the client end for observability purposes. If not specified, we'll generate one and return it in the `ack` event
+
+**This must be the first message sent.**
 
 ```json
 {
@@ -112,6 +115,7 @@ Sends custom metadata to the agent.
 ### Ack Event
 
 Server acknowledgment of the start event, confirming stream configuration.
+If `stream_id` wasn't provided in the initial `start` event, this is where the user can obtain the server generated `stream_id`.
 
 ```json
 {

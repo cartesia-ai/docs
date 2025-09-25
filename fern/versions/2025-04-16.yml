@@ -200,8 +200,8 @@ navigation:
                 path: ../agents/integrations/telephony/agents-telephony-overview.mdx
               - page: Outbound Dialing
                 path: ../agents/integrations/telephony/agents-telephony-outbound.mdx
-          - page: Web & Mobile Clients
-            path: ../agents/integrations/web-and-mobile-clients.mdx
+          - page: Web Calls
+            path: ../agents/integrations/web-calls.mdx
             icon: fa-solid fa-browser
       - section: Infrastructure
         contents:
