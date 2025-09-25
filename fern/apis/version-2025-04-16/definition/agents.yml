@@ -605,6 +605,8 @@ service:
                   updated_at: "2025-08-13T12:00:00Z"
                   tts_voice: "bf0a246a-8642-498a-9950-80c35e9276b5"
                   tts_language: "en"
+                  background_sound_file_id: "bg_sound_123"
+                  background_sound_volume: 0.5
                   has_text_to_agent_run: false
                   deployment_count: 1
                   git_repository:
@@ -620,6 +622,8 @@ service:
                   updated_at: "2025-08-13T12:00:00Z"
                   tts_voice: "78ab82d5-25be-4f7d-82b3-7ad64e5b85b2"
                   tts_language: "en"
+                  background_sound_file_id: "bg_sound_456"
+                  background_sound_volume: 0.3
                   has_text_to_agent_run: false
                   deployment_count: 1
                   git_repository:
@@ -653,6 +657,8 @@ service:
               updated_at: "2025-08-13T12:00:00Z"
               tts_voice: "bf0a246a-8642-498a-9950-80c35e9276b5"
               tts_language: "en"
+              background_sound_file_id: "bg_sound_123"
+              background_sound_volume: 0.5
               has_text_to_agent_run: false
               deployment_count: 1
               git_repository:
@@ -688,6 +694,8 @@ service:
               updated_at: "2025-08-13T12:00:00Z"
               tts_voice: "bf0a246a-8642-498a-9950-80c35e9276b5"
               tts_language: "en"
+              background_sound_file_id: "bg_sound_123"
+              background_sound_volume: 0.5
               has_text_to_agent_run: false
               deployment_count: 1
               phone_numbers: [{ id: "123456", number: "+11234567890" }]
