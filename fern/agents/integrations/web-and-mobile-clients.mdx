@@ -30,7 +30,7 @@ The WebSocket protocol uses JSON messages for control and base64-encoded audio f
 3. Bidirectional exchange of events
 4. Connection closes using WebSocket close frames
 
-Note that if you don't specify `streamSid` in the initial `start` message, one will be assigned and returned in the `ack` response.
+Note that if you don't specify `stream_id` in the initial `start` message, one will be assigned and returned in the `ack` response.
 
 ## Input Events (Client → Server)
 
@@ -41,18 +41,18 @@ Initializes the audio stream configuration. **This must be the first message sen
 ```json
 {
   "event": "start",
-  "streamSid": "example_id",
+  "stream_id": "example_id",
   "config": {
-    "inputFormat": "pcm_44100",
-    "outputFormat": "pcm_44100"
+    "input_format": "pcm_44100",
+    "output_format": "pcm_44100"
   }
 }
 ```
 
 **Fields:**
-- `streamSid` (optional): Stream identifier. If not provided, server generates one
-- `config.inputFormat`: Audio format for client audio input (`mulaw_8000`, `pcm_16000`, `pcm_24000`, `pcm_44100`)
-- `config.outputFormat`: Audio format for server audio output (`mulaw_8000`, `pcm_16000`, `pcm_24000`, `pcm_44100`)
+- `stream_id` (optional): Stream identifier. If not provided, server generates one
+- `config.input_format`: Audio format for client audio input (`mulaw_8000`, `pcm_16000`, `pcm_24000`, `pcm_44100`)
+- `config.output_format`: Audio format for server audio output (`mulaw_8000`, `pcm_16000`, `pcm_24000`, `pcm_44100`)
 
 ### Media Event
 
@@ -61,7 +61,7 @@ Sends audio data to the agent.
 ```json
 {
   "event": "media",
-  "streamSid": "example_id",
+  "stream_id": "example_id",
   "media": {
     "payload": "base64_encoded_audio_data"
   }
@@ -69,7 +69,7 @@ Sends audio data to the agent.
 ```
 
 **Fields:**
-- `streamSid`: Stream identifier from the ack response
+- `stream_id`: Stream identifier from the ack response
 - `media.payload`: Base64-encoded audio data in the format specified in the start event
 
 ### DTMF Event
@@ -79,25 +79,23 @@ Sends DTMF (dual-tone multi-frequency) tones.
 ```json
 {
   "event": "dtmf",
-  "streamSid": "example_id",
-  "dtmf": {
-    "digit": "1"
-  }
+  "stream_id": "example_id",
+  "dtmf": "1"
 }
 ```
 
 **Fields:**
-- `streamSid`: Stream identifier
-- `dtmf.digit`: DTMF digit (0-9, *, #)
+- `stream_id`: Stream identifier
+- `dtmf`: DTMF digit (0-9, *, #)
 
-### Metadata Event
+### Custom Event
 
 Sends custom metadata to the agent.
 
 ```json
 {
-  "event": "metadata",
-  "streamSid": "example_id",
+  "event": "custom",
+  "stream_id": "example_id",
   "metadata": {
     "user_id": "user123",
     "session_info": "custom_data"
@@ -106,7 +104,7 @@ Sends custom metadata to the agent.
 ```
 
 **Fields:**
-- `streamSid`: Stream identifier
+- `stream_id`: Stream identifier
 - `metadata`: Object containing key-value pairs of custom data
 
 ## Output Events (Server → Client)
@@ -118,10 +116,10 @@ Server acknowledgment of the start event, confirming stream configuration.
 ```json
 {
   "event": "ack",
-  "streamSid": "example_id",
+  "stream_id": "example_id",
   "config": {
-    "inputFormat": "pcm_44100",
-    "outputFormat": "pcm_44100"
+    "input_format": "pcm_44100",
+    "output_format": "pcm_44100"
   }
 }
 ```
@@ -133,7 +131,7 @@ Server sends agent audio response.
 ```json
 {
   "event": "media",
-  "streamSid": "example_id",
+  "stream_id": "example_id",
   "media": {
     "payload": "base64_encoded_audio_data"
   }
@@ -147,7 +145,7 @@ Indicates the agent wants to clear/interrupt the current audio stream.
 ```json
 {
   "event": "clear",
-  "streamSid": "example_id"
+  "stream_id": "example_id"
 }
 ```
 
@@ -158,21 +156,19 @@ Server sends DTMF tones from the agent.
 ```json
 {
   "event": "dtmf",
-  "streamSid": "example_id",
-  "dtmf": {
-    "digit": "5"
-  }
+  "stream_id": "example_id",
+  "dtmf": "5"
 }
 ```
 
-### Metadata Event
+### Custom Event
 
-Server sends metadata from the agent.
+Server sends custom metadata from the agent.
 
 ```json
 {
-  "event": "metadata",
-  "streamSid": "example_id",
+  "event": "custom",
+  "stream_id": "example_id",
   "metadata": {
     "agent_state": "processing",
     "confidence": 0.95,
@@ -215,4 +211,4 @@ When the agent ends the call, the server closes the connection with:
 2. **Use appropriate audio formats** - Match your input format to your audio source capabilities. For telephony providers this is often MULAW 8k, while for web clients this will often be 44.1k
 3. **Handle connection close gracefully** - Monitor close events and reasons for debugging
 4. **Implement ping/pong for long connections** - Use WebSocket ping frames to periodically confirm connection health
-5. **Monitor streamSid consistency** - Maintain your own streamSid's for the best observability
+5. **Monitor stream_id consistency** - Maintain your own stream_id's for the best observability
