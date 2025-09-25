@@ -2,7 +2,7 @@ Output events are how your code communicates back to the platform, controlling t
 
 ### Config Changes
 
-Dynamically update TTS or STT settings, such as voice, audio format, or VAD (Voice Activity Detection) parameters.
+Dynamically update TTS or STT settings, such as voice, audio format, VAD (Voice Activity Detection), background audio parameters.
 
 ```json
 {
@@ -20,6 +20,10 @@ Dynamically update TTS or STT settings, such as voice, audio format, or VAD (Voi
     "start_secs": 0.0,
     "stop_secs": 0.0,
     "min_volume": 0.0
+  }
+  "background_audio": {
+    "sound_file": "file_id",
+    "volume": 0.0           
   }
 }
 ```
