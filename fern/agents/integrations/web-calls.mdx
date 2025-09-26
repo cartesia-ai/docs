@@ -240,5 +240,5 @@ When the agent ends the call, the server closes the connection with:
 2. **Use appropriate audio formats** - Match your input format to your audio source capabilities. For telephony providers this is often MULAW 8k, while for web clients this will often be 44.1k
 3. **Handle connection close gracefully** - Monitor close events and reasons for debugging
 4. **Implement keepalive for calls with longer periods of silence** - Send WebSocket ping frames every 20-25 seconds to prevent the 30-second inactivity timeout during periods of silence
-5. **Monitor stream_id consistency** - Maintain your own stream_id's for the best observability
+5. Send your own stream_id's for the best observability
 6. Always handle timeout closures (`1000 / connection idle timeout`) by reconnecting and resending a `start` event.
