@@ -17,8 +17,11 @@ wss://api.cartesia.ai/agents/stream/{agent_id}
 ```
 
 **Headers:**
-- `Authorization: Bearer {your_api_key}`
-- `Cartesia-Version: 2025-04-16`
+
+| Header | Value |
+|--------|-------|
+| `Authorization` | `Bearer {your_api_key}` |
+| `Cartesia-Version` | `2025-04-16` |
 
 ## Protocol Overview
 
@@ -26,7 +29,7 @@ The WebSocket connection uses JSON messages for control events and base64-encode
 
 1. **Client → Server:** Send a start event to initialize the stream.
 1. **Server → Client:** Receive an ack event confirming configuration.
-1. **Bidirectional exchange:** Stream audio and control events in real time.
+1. **Bidirectional exchange:** The client and server exchange streaming audio and control events until either side closes the connection, or the inactivity timeout is fired.
 1. **Close:** Either side ends the session with a standard WebSocket close frame.
 
 If the client doesn’t provide a `stream_id` in the initial `start` event, the server generates one and returns it in the `ack` response.
