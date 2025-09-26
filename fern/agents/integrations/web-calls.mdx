@@ -183,17 +183,38 @@ Server sends custom metadata from the agent.
 
 ## Connection Management
 
+### Inactivity Timeout
+
+The server automatically closes idle WebSocket connections after **30 seconds** of inactivity. Activity is defined as receiving any message from the client, including:
+
+- Application messages (media_input, dtmf, custom events)
+- Standard WebSocket ping frames
+- Any other valid WebSocket message
+
+When the timeout occurs, the connection is closed with:
+- **Code:** 1000 (Normal Closure)
+- **Reason:** `"connection idle timeout"`
+
 ### Ping/Pong Keepalive
 
-The WebSocket supports standard ping/pong frames for periodic connection healthchecks:
+To prevent inactivity timeouts during periods of silence, use standard WebSocket ping frames for periodic keepalive:
 
 ```python
-# Client sends ping
+# Client sends ping to reset inactivity timer
 pong_waiter = await websocket.ping()
 latency = await pong_waiter
 ```
 
-The server automatically responds to ping frames with pong frames.
+```javascript
+// JavaScript example
+setInterval(() => {
+  if (websocket.readyState === WebSocket.OPEN) {
+    websocket.ping();
+  }
+}, 20000); // Send ping every 20 seconds
+```
+
+The server automatically responds to ping frames with pong frames and resets the inactivity timer upon receiving any message.
 
 ### Connection Close
 
@@ -214,5 +235,6 @@ When the agent ends the call, the server closes the connection with:
 1. **Always send start event first** - The connection will be closed if any other event is sent before start
 2. **Use appropriate audio formats** - Match your input format to your audio source capabilities. For telephony providers this is often MULAW 8k, while for web clients this will often be 44.1k
 3. **Handle connection close gracefully** - Monitor close events and reasons for debugging
-4. **Implement ping/pong for long connections** - Use WebSocket ping frames to periodically confirm connection health
+4. **Implement keepalive for calls with longer periods of silence** - Send WebSocket ping frames every 20-25 seconds to prevent the 30-second inactivity timeout during periods of silence
 5. **Monitor stream_id consistency** - Maintain your own stream_id's for the best observability
+6. **Prepare for timeout closures** - Handle `"connection idle timeout"` close reasons gracefully in your reconnection logic
