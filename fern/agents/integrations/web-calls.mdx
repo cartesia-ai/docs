@@ -47,6 +47,10 @@ Initializes the audio stream configuration.
   "stream_id": "example_id",
   "config": {
     "input_format": "pcm_44100"
+  },
+  "metadata": {
+    "to": "user@example.com",
+    "from": "+1234567890"
   }
 }
 ```
@@ -54,6 +58,9 @@ Initializes the audio stream configuration.
 **Fields:**
 - `stream_id` (optional): Stream identifier. If not provided, server generates one
 - `config.input_format`: Audio format for client audio input (`mulaw_8000`, `pcm_16000`, `pcm_24000`, `pcm_44100`)
+- `metadata` (optional): Custom metadata object. These will be passed through to the user code, but there are some special fields you can use as well:
+  - `to` (optional): Destination identifier for call routing (defaults to agent ID)
+  - `from` (optional): Source identifier for the call (defaults to "websocket")
 
 ### Media Input Event
 
