@@ -22,14 +22,14 @@ wss://api.cartesia.ai/agents/stream/{agent_id}
 
 ## Protocol Overview
 
-The WebSocket protocol uses JSON messages for control and base64-encoded audio for media. The connection follows this flow:
+The WebSocket connection uses JSON messages for control events and base64-encoded audio for media. The lifecycle follows this sequence:
 
-1. Client sends `start` event to initialize the stream
-2. Server responds with `ack` event confirming configuration
-3. Bidirectional exchange of events
-4. Connection closes using WebSocket close frames
+1. **Client → Server:** Send a start event to initialize the stream.
+1. **Server → Client:** Receive an ack event confirming configuration.
+1. **Bidirectional exchange:** Stream audio and control events in real time.
+1. **Close:** Either side ends the session with a standard WebSocket close frame.
 
-Note that if you don't specify `stream_id` in the initial `start` message, one will be assigned and returned in the `ack` response.
+If the client doesn’t provide a `stream_id` in the initial `start` event, the server generates one and returns it in the `ack` response.
 
 ## Input Events (Client → Server)
 
