@@ -36,7 +36,7 @@ Note that if you don't specify `stream_id` in the initial `start` message, one w
 ### Start Event
 
 Initializes the audio stream configuration. 
-- The `config` parameter will optionally alter the input/output audio settings, overriding what your default agent configuration might otherwise be
+- The `config` parameter will optionally alter the input audio settings, overriding what your default agent configuration might otherwise be
 - The `stream_id` can be set manually if you wish to maintain this on the client end for observability purposes. If not specified, we'll generate one and return it in the `ack` event
 
 **This must be the first message sent.**
@@ -46,8 +46,7 @@ Initializes the audio stream configuration.
   "event": "start",
   "stream_id": "example_id",
   "config": {
-    "input_format": "pcm_44100",
-    "output_format": "pcm_44100"
+    "input_format": "pcm_44100"
   }
 }
 ```
@@ -55,7 +54,6 @@ Initializes the audio stream configuration.
 **Fields:**
 - `stream_id` (optional): Stream identifier. If not provided, server generates one
 - `config.input_format`: Audio format for client audio input (`mulaw_8000`, `pcm_16000`, `pcm_24000`, `pcm_44100`)
-- `config.output_format`: Audio format for server audio output (`mulaw_8000`, `pcm_16000`, `pcm_24000`, `pcm_44100`)
 
 ### Media Input Event
 
@@ -122,8 +120,7 @@ If `stream_id` wasn't provided in the initial `start` event, this is where the u
   "event": "ack",
   "stream_id": "example_id",
   "config": {
-    "input_format": "pcm_44100",
-    "output_format": "pcm_44100"
+    "input_format": "pcm_44100"
   }
 }
 ```
