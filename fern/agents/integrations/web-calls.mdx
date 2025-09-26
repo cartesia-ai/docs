@@ -237,7 +237,7 @@ When the agent ends the call, the server closes the connection with:
 ## Best Practices
 
 1. **Always send start event first** - The connection will be closed if any other event is sent before start
-2. **Use appropriate audio formats** - Match your input format to your audio source capabilities. For telephony providers this is often MULAW 8k, while for web clients this will often be 44.1k
+2. **Use appropriate audio formats** - Match your input format to your audio source capabilities. For telephony providers this is often `mulaw_8000`, while for web clients this will often be `pcm_44000`
 3. **Handle connection close gracefully** - Monitor close events and reasons for debugging
 4. **Implement keepalive for calls with longer periods of silence** - Send WebSocket ping frames every 20-25 seconds to prevent the 30-second inactivity timeout during periods of silence
 5. Send your own stream_id's for the best observability
