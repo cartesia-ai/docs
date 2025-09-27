@@ -205,7 +205,7 @@ navigation:
           - page: Deployments
             path: ../agents/overview/agents-deployment.mdx
             icon: fa-rocket
-          - page: Model configurations
+          - page: Agent Configuration
             path: ../agents/infrastructure/agents-configurations.mdx
             icon: fa-gear
           - page: Observability
