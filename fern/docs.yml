@@ -89,6 +89,7 @@ typography:
         weight: 700
         style: italic
 
+
 redirects:
   - source: /getting-started/welcome
     destination: /get-started/overview
