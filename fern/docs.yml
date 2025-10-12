@@ -45,7 +45,7 @@ navbar-links:
 layout:
   tabs-placement: header
   searchbar-placement: header
-setting:
+settings:
   dark-mode-code: true
   http-snippets: true
 experimental:
