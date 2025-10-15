@@ -51,7 +51,7 @@ service:
               docs: The format of the output audio
             output_format[sample_rate]:
               type: integer
-              docs: The sample rate of the output audio
+              docs: The sample rate of the output audio in Hz. Supported sample rates are 8000, 16000, 22050, 24000, 44100, 48000.
             output_format[encoding]:
               type: optional<tts.RawEncoding>
               docs: |
