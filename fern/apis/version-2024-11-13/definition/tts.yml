@@ -375,7 +375,10 @@ types:
     properties:
       container: literal<"raw">
       encoding: RawEncoding
-      sample_rate: integer
+      sample_rate:
+        type: integer
+        docs: |
+          The sample rate of the audio in Hz. Supported sample rates are 8000, 16000, 22050, 24000, 44100, 48000.
 
   WebSocketRequest:
     discriminated: false
@@ -494,14 +497,20 @@ types:
   RawOutputFormat:
     properties:
       encoding: RawEncoding
-      sample_rate: integer
+      sample_rate:
+        type: integer
+        docs: |
+          The sample rate of the audio in Hz. Supported sample rates are 8000, 16000, 22050, 24000, 44100, 48000.
       bit_rate: optional<integer>
 
   SSEOutputFormat:
     properties:
       container: literal<"raw">
       encoding: RawEncoding
-      sample_rate: integer
+      sample_rate:
+        type: integer
+        docs: |
+          The sample rate of the audio in Hz. Supported sample rates are 8000, 16000, 22050, 24000, 44100, 48000.
 
   RawEncoding:
     enum:
@@ -515,7 +524,10 @@ types:
 
   MP3OutputFormat:
     properties:
-      sample_rate: integer
+      sample_rate:
+        type: integer
+        docs: |
+          The sample rate of the audio in Hz. Supported sample rates are 8000, 16000, 22050, 24000, 44100, 48000.
       bit_rate:
         type: integer
         docs: |
