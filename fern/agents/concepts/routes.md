@@ -36,12 +36,13 @@ Routes are built using a fluent API, where operations can be chained together:
 
 ## Core Operations
 
-| Operation | Description | | ------------------- |
------------------------------------------------------ | | `on(Event)` | Listen
-for specific event types | | `map(function)` | Transform data by applying a
-function | | `filter(condition)` | Continue processing only if condition is met
-| | `stream(generator)` | Process async generators that yield multiple values |
-| `broadcast()` | Send results to other components (terminal operation) |
+| Operation           | Description                                           |
+| ------------------- | ----------------------------------------------------- |
+| `on(Event)`         | Listen for specific event types                       |
+| `map(function)`     | Transform data by applying a function                 |
+| `filter(condition)` | Continue processing only if condition is met          |
+| `stream(generator)` | Process async generators that yield multiple values   |
+| `broadcast()`       | Send results to other components (terminal operation) |
 
 ## Key Features
 

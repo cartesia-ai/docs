@@ -33,9 +33,10 @@ class ChatNode(ReasoningNode):
 
 ## Node Types
 
-| Type | Description | |------|-------------| | **`Node`** | Base class for all
-nodes | | **`ReasoningNode`** | Template for conversational agents with
-automatic context management |
+| Type                | Description                                                          |
+| ------------------- | -------------------------------------------------------------------- |
+| **`Node`**          | Base class for all nodes                                             |
+| **`ReasoningNode`** | Template for conversational agents with automatic context management |
 
 <Tip>
 `ReasoningNode` is the base class for all nodes that use LLMs. Users should implement the `process_context()` method to process messages and yield events asynchronously.
