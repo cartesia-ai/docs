@@ -57,7 +57,7 @@ You can scale up continuations to any number of inputs. There is no limit.
 
 ## Caveat: Streamed inputs should form a valid transcript when joined
 
-This means that `Hello, world!` can be followed by ` How are you?` (note the leading space) but not `How are you?`, since when joined they form the invalid transcript `Hello, world!How are you?`.
+This means that `"Hello, world!"` can be followed by `" How are you?"` (note the leading space) but not `"How are you?"`, since when joined they form the invalid transcript `"Hello, world!How are you?"`.
 
 In practice, this means you should maintain spacing and punctuation in your streamed inputs.
 

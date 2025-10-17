@@ -79,4 +79,4 @@ additional metadata:
 `source` | The node that sent the event | | `timestamp` | The time the event was
 sent |
 
-Messages are automatically wrapped in Messages before being sent to the bus.
+Events are automatically wrapped in Messages before being sent to the bus.
