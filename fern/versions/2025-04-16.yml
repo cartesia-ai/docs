@@ -52,7 +52,7 @@ navigation:
                 icon: fa-microchip
                 contents:
                   - page: Playground
-                    path: ../apis/version-2025-04-16/pvc-2025-04-16.mdx
+                    path: ../apis/version-2025-04-16/pvc-2025-10-15-update.mdx
                     icon: fa-browser
                   - page: API
                     path: ../apis/version-2025-04-16/pvc-python-example.mdx
@@ -170,10 +170,10 @@ navigation:
           # - page: Leverage background nodes
           #   path: ../agents/quick-starts/3-background-agent.mdx
           #   icon: fa-ghost
-# TODO: add walkthrough of handing off between nodes
-#          - page:  Handoff between nodes
-#            path: ../agents/quick-starts/4-handoffs.mdx
-#            icon: fa-chart-network
+      # TODO: add walkthrough of handing off between nodes
+      #          - page:  Handoff between nodes
+      #            path: ../agents/quick-starts/4-handoffs.mdx
+      #            icon: fa-chart-network
       - section: Integrations
         contents:
           # TODO: Add in clear examples of how to use these integrations with partners
