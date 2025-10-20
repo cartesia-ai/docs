@@ -1,0 +1,96 @@
+---
+title: Pro Voice Cloning
+subtitle: Create near replica voices by leveraging more of your data.
+---
+
+## Why use Pro Voice Cloning?
+
+A Professional Voice Clone (PVC) is a voice that uses a fine-tune of our TTS model on your data, which allows it to create an almost exact replica of the voice it hears including accent, speaking style, and audio quality.
+
+Compared to [Instant Voice Cloning](/build-with-cartesia/capability-guides/clone-voices), Pro Voice Cloning can capture the exact nuances of your hours of studio-quality audio voice data.
+
+<Frame background="subtle">
+  <img src="/assets/images/pvc/pvc-compare-ivc.png" />
+</Frame>
+
+## Overview
+
+Pro Voice Cloning is available in the [Playground](https://play.cartesia.ai/pro-voice-cloning) for anyone with a Cartesia subscription of Startup or higher. It allows you to create highly accurate voice clones by leveraging a larger amount of data compared to instant cloning.
+
+| Feature             | Required audio data | Pricing: cost to create | Pricing: cost to use for TTS |
+| ------------------- | ------------------- | ----------------------- | ---------------------------- |
+| Instant Voice Clone | 10 seconds          | Free                    | 1 credit per character       |
+| Pro Voice Clone     | 3 hours             | 1M credits on success   | 1.5 credits per character    |
+
+When you create a Pro Voice Clone, Cartesia first fine-tunes a model on your data, then creates Voices from selected clips of your data. These Voices are tied to the fine-tuned model and will be automatically used with these Voices for text-to-speech.
+
+<Frame background="subtle">
+  <img src="/assets/images/pvc/fine-tune-model.png" />
+</Frame>
+
+## Get started
+
+Visit the Pro Voice Clone tab to get started on your first PVC. On the home page, you can to see all your fine-tuned models and their statuses (i.e Draft, Failed, Training, Completed).
+
+<Frame background="subtle">
+  <img src="/assets/images/pvc/create-pvc.png" />
+</Frame>
+
+<Steps>
+    ### Prepare Data
+    Fill out the form to create a Pro Voice Clone.
+
+    <Frame background="subtle">
+        <img src="/assets/images/pvc/pvc-metadata.png" />
+    </Frame>
+
+    Then, upload all of the audio files you want to use for training. You can upload multiple
+    files at once. Files must be one of the following audio formats:
+
+    - .wav
+    - .mp3
+    - .flac
+    - .ogg
+    - .oga
+    - .ogx
+    - .aac
+    - .wma
+    - .m4a
+    - .opus
+    - .ac3
+    - .webm
+
+    Pro Voice Clones require a minimum of 30 minutes of audio, but we recommend 2 hours of audio for optimal balance of quality and effort. The Pro Voice Clone will closely match your uploaded data, so make sure it sounds the way you like in terms of background noise, loudness, and speech quality.
+    Generally, it's better to upload audio with only the speaker you which to clone. Multi-speaker audio can interfere with cloning quality.
+
+    <Frame background="subtle">
+        <img src="/assets/images/pvc/pvc-ds-upload.png" />
+    </Frame>
+
+    If you also reused data from past Pro Voice Clones. Switch to the **Select dataset** tab to view previous datasets. These datasets can be edited separately from your PVCs and are helpful for managing your audio files.
+
+    <Frame background="subtle">
+        <img src="/assets/images/pvc/pvc-ds-select.png" />
+    </Frame>
+
+    ### Train Model
+
+    Training should take 3 hours to complete. You'll only be charged if the training is successful. If training fails, you can click the `Re-attempt Training` button to try again or contact [support](mailto:support@cartesia.ai) if the failures persist.
+
+
+    ### Test Voices
+
+    Once training is complete, we'll automatically create four Voices based on different source audio clips from your dataset. These Voices are internally linked to your fine-tuned model, which will be used when you specify the model ID of the fine-tuned model in your requests.
+
+    The Voices are also available in the Voice Library under My Voices and can be used through the API.
+
+    <Frame background="subtle">
+      <img src="/assets/images/pvc/pvc-test-voice-candidates.png" />
+    </Frame>
+
+    **Note about base model updates:**
+
+    We've fine-tuned the latest base model available in production, which is reflected in the displayed model ID. This means that the fine-tuned model is fixed to this particular model ID and will not be activated if you use a different `model-id`. PVCs will not automatically be updated for future base models, and will need to be retrained on each new base model.
+    Retraining a new fine-tuned model with new data or the latest base model will again cost 1M credits.
+
+</Steps>
