@@ -1,0 +1,682 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "aspen",
+  "name": "Cartesia Docs",
+  "colors": {
+    "primary": "#000",
+    "light": "#fff",
+    "dark": "#000"
+  },
+  "background": {
+    "decoration": "gradient"
+  },
+  "favicon": "/logo/favicon.png",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "navigation": {
+    "versions": [
+      {
+        "version": "2025-04-16",
+        "tabs": [
+          {
+            "tab": "Models",
+            "icon": "file-lines",
+            "pages": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "get-started/overview",
+                  "get-started/make-an-api-request",
+                  "get-started/authenticate-your-client-applications"
+                ]
+              },
+              {
+                "group": "Use an SDK",
+                "pages": [
+                  "use-an-sdk/javascript-typescript",
+                  "use-an-sdk/python"
+                ]
+              },
+              {
+                "group": "Build with Cartesia",
+                "pages": [
+                  "build-with-cartesia/tts-models",
+                  "build-with-cartesia/stt-models",
+                  {
+                    "group": "Capability Guides",
+                    "icon": "cubes",
+                    "pages": [
+                      "build-with-cartesia/capability-guides/clone-voices",
+                      {
+                        "group": "Clone Voices (Pro)",
+                        "icon": "microchip",
+                        "pages": [
+                          "build-with-cartesia/capability-guides/clone-voices-pro/playground",
+                          "build-with-cartesia/capability-guides/clone-voices-pro/api"
+                        ]
+                      },
+                      "build-with-cartesia/capability-guides/specify-custom-pronunciations",
+                      "build-with-cartesia/capability-guides/stream-inputs-using-continuations",
+                      "build-with-cartesia/capability-guides/localize-voices"
+                    ]
+                  },
+                  {
+                    "group": "Formatting Text for Sonic-2",
+                    "icon": "text-size",
+                    "pages": [
+                      "build-with-cartesia/formatting-text-for-sonic-2/best-practices",
+                      "build-with-cartesia/formatting-text-for-sonic-2/inserting-breaks-pauses",
+                      "build-with-cartesia/formatting-text-for-sonic-2/spelling-out-input-text"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Integrations",
+                "pages": [
+                  "integrations/mcp",
+                  "integrations/live-kit",
+                  "integrations/pipecat",
+                  "integrations/rasa",
+                  "integrations/thoughtly",
+                  "integrations/twilio"
+                ]
+              },
+              {
+                "group": "Enterprise",
+                "pages": [
+                  "enterprise/set-up-sso",
+                  "enterprise/set-up-an-organization"
+                ]
+              },
+              {
+                "group": "Developer Tools",
+                "pages": [
+                  "developer-tools/changelog"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Agents",
+            "icon": "file-lines",
+            "pages": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "line/introduction",
+                  "line/cli",
+                  {
+                    "group": "SDK",
+                    "icon": "code",
+                    "pages": [
+                      "line/sdk/overview",
+                      "line/sdk/events",
+                      "line/sdk/nodes",
+                      "line/sdk/bridges",
+                      "line/sdk/routes",
+                      "line/sdk/tips"
+                    ]
+                  },
+                  {
+                    "group": "Agent Patterns",
+                    "icon": "diagram-project",
+                    "pages": [
+                      "line/agent-patterns/chained-processing",
+                      "line/agent-patterns/event-transformation",
+                      "line/agent-patterns/interruption-handling",
+                      "line/agent-patterns/multi-agent-coordination",
+                      "line/agent-patterns/streaming-responses",
+                      "line/agent-patterns/tool-integration"
+                    ]
+                  },
+                  "line/templates",
+                  "line/text-to-agent"
+                ]
+              },
+              {
+                "group": "Start Building",
+                "pages": [
+                  "line/start-building/talk-to-your-first-agent"
+                ]
+              },
+              {
+                "group": "Integrations",
+                "pages": [
+                  "line/integrations/github",
+                  {
+                    "group": "Telephony",
+                    "icon": "phone",
+                    "pages": [
+                      "line/integrations/telephony/phone-numbers",
+                      "line/integrations/telephony/outbound-dialing"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Infrastructure",
+                "pages": [
+                  "line/infrastructure/deployments",
+                  "line/infrastructure/agent-configuration",
+                  "line/infrastructure/observability",
+                  "line/infrastructure/scaling"
+                ]
+              },
+              {
+                "group": "Evaluations",
+                "pages": [
+                  "line/evaluations/metrics",
+                  "line/evaluations/results"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "icon": "code",
+            "pages": [
+              {
+                "group": "Use the API",
+                "pages": [
+                  "use-the-api/api-conventions",
+                  "use-the-api/concurrency-limits-and-timeouts"
+                ]
+              },
+              {
+                "group": "API Status",
+                "pages": [
+                  "api-reference/api-status/get"
+                ]
+              },
+              {
+                "group": "TTS",
+                "pages": [
+                  "api-reference/tts/compare-tts-endpoints",
+                  "api-reference/tts/bytes",
+                  "api-reference/tts/sse",
+                  "api-reference/tts/tts",
+                  {
+                    "group": "Working with WebSockets",
+                    "icon": "plug",
+                    "pages": [
+                      "api-reference/tts/working-with-web-sockets/contexts",
+                      "api-reference/tts/working-with-web-sockets/context-flushing-and-flush-i-ds"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "STT",
+                "pages": [
+                  "api-reference/stt/transcribe",
+                  "api-reference/stt/stt",
+                  "api-reference/stt/migrate-from-open-ai"
+                ]
+              },
+              {
+                "group": "Agents",
+                "pages": [
+                  {
+                    "group": "Agents",
+                    "icon": "robot",
+                    "pages": [
+                      "api-reference/agents/agents/list",
+                      "api-reference/agents/agents/get",
+                      "api-reference/agents/agents/update",
+                      "api-reference/agents/agents/delete",
+                      "api-reference/agents/agents/templates",
+                      "api-reference/agents/agents/phone-numbers"
+                    ]
+                  },
+                  {
+                    "group": "Calls",
+                    "icon": "phone",
+                    "pages": [
+                      "api-reference/agents/calls/list-calls",
+                      "api-reference/agents/calls/get-call",
+                      "api-reference/agents/calls/download-call-audio"
+                    ]
+                  },
+                  {
+                    "group": "Deployments",
+                    "icon": "rocket",
+                    "pages": [
+                      "api-reference/agents/deployments/list-deployments",
+                      "api-reference/agents/deployments/get-deployment"
+                    ]
+                  },
+                  {
+                    "group": "Metrics",
+                    "icon": "chart-waterfall",
+                    "pages": [
+                      "api-reference/agents/metrics/list-metrics",
+                      "api-reference/agents/metrics/get-metric",
+                      "api-reference/agents/metrics/create-metric",
+                      "api-reference/agents/metrics/list-metric-results",
+                      "api-reference/agents/metrics/export-metric-results",
+                      "api-reference/agents/metrics/add-metric-to-agent",
+                      "api-reference/agents/metrics/remove-metric-from-agent"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Voices",
+                "pages": [
+                  "api-reference/voices/list",
+                  "api-reference/voices/clone",
+                  "api-reference/voices/delete",
+                  "api-reference/voices/update",
+                  "api-reference/voices/get",
+                  "api-reference/voices/localize"
+                ]
+              },
+              {
+                "group": "Voice Changer",
+                "pages": [
+                  "api-reference/voice-changer/bytes",
+                  "api-reference/voice-changer/sse"
+                ]
+              },
+              {
+                "group": "Auth",
+                "pages": [
+                  "api-reference/auth/access-token"
+                ]
+              },
+              {
+                "group": "Datasets",
+                "pages": [
+                  "api-reference/datasets/list",
+                  "api-reference/datasets/create",
+                  "api-reference/datasets/get",
+                  "api-reference/datasets/update",
+                  "api-reference/datasets/delete",
+                  "api-reference/datasets/list-files",
+                  "api-reference/datasets/upload-file",
+                  "api-reference/datasets/delete-file"
+                ]
+              },
+              {
+                "group": "Fine Tunes",
+                "pages": [
+                  "api-reference/fine-tunes/list",
+                  "api-reference/fine-tunes/create",
+                  "api-reference/fine-tunes/get",
+                  "api-reference/fine-tunes/delete",
+                  "api-reference/fine-tunes/list-voices"
+                ]
+              },
+              {
+                "group": "Infill",
+                "pages": [
+                  "api-reference/infill/bytes"
+                ]
+              },
+              {
+                "group": "Pronunciation Dicts",
+                "pages": [
+                  "api-reference/pronunciation-dicts/list",
+                  "api-reference/pronunciation-dicts/create",
+                  "api-reference/pronunciation-dicts/get",
+                  "api-reference/pronunciation-dicts/update",
+                  "api-reference/pronunciation-dicts/delete",
+                  "api-reference/pronunciation-dicts/pin",
+                  "api-reference/pronunciation-dicts/unpin"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "version": "2024-11-13",
+        "tabs": [
+          {
+            "tab": "Models",
+            "icon": "file-lines",
+            "pages": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "2024-11-13/get-started/overview",
+                  "2024-11-13/get-started/make-an-api-request"
+                ]
+              },
+              {
+                "group": "Use an SDK",
+                "pages": [
+                  "2024-11-13/use-an-sdk/javascript-typescript",
+                  "2024-11-13/use-an-sdk/python"
+                ]
+              },
+              {
+                "group": "Build with Cartesia",
+                "pages": [
+                  {
+                    "group": "Models",
+                    "icon": "microchip",
+                    "pages": [
+                      "2024-11-13/build-with-cartesia/models/tts",
+                      "2024-11-13/build-with-cartesia/models/stt"
+                    ]
+                  },
+                  {
+                    "group": "Capability Guides",
+                    "icon": "cubes",
+                    "pages": [
+                      "2024-11-13/build-with-cartesia/capability-guides/clone-voices",
+                      "2024-11-13/build-with-cartesia/capability-guides/specify-custom-pronunciations",
+                      "2024-11-13/build-with-cartesia/capability-guides/control-speed-and-emotion",
+                      "2024-11-13/build-with-cartesia/capability-guides/stream-inputs-using-continuations",
+                      "2024-11-13/build-with-cartesia/capability-guides/localize-voices"
+                    ]
+                  },
+                  {
+                    "group": "Formatting Text for Sonic-2",
+                    "icon": "text-size",
+                    "pages": [
+                      "2024-11-13/build-with-cartesia/formatting-text-for-sonic-2/best-practices",
+                      "2024-11-13/build-with-cartesia/formatting-text-for-sonic-2/inserting-breaks-pauses",
+                      "2024-11-13/build-with-cartesia/formatting-text-for-sonic-2/spelling-out-input-text"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Integrations",
+                "pages": [
+                  "2024-11-13/integrations/mcp",
+                  "2024-11-13/integrations/live-kit",
+                  "2024-11-13/integrations/pipecat",
+                  "2024-11-13/integrations/rasa",
+                  "2024-11-13/integrations/thoughtly",
+                  "2024-11-13/integrations/twilio"
+                ]
+              },
+              {
+                "group": "Enterprise",
+                "pages": [
+                  "2024-11-13/enterprise/set-up-sso",
+                  "2024-11-13/enterprise/set-up-an-organization"
+                ]
+              },
+              {
+                "group": "Peek Behind the Scenes",
+                "pages": [
+                  "2024-11-13/peek-behind-the-scenes/embeddings-and-voice-mixing"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "icon": "code",
+            "pages": [
+              {
+                "group": "Use the API",
+                "pages": [
+                  "2024-11-13/use-the-api/api-conventions",
+                  "2024-11-13/use-the-api/concurrency-limits-and-timeouts"
+                ]
+              },
+              {
+                "group": "API Status",
+                "pages": [
+                  "2024-11-13/api-reference/api-status/get"
+                ]
+              },
+              {
+                "group": "TTS",
+                "pages": [
+                  "2024-11-13/api-reference/tts/compare-tts-endpoints",
+                  "2024-11-13/api-reference/tts/bytes",
+                  "2024-11-13/api-reference/tts/sse",
+                  "2024-11-13/api-reference/tts/tts",
+                  {
+                    "group": "Working with WebSockets",
+                    "icon": "plug",
+                    "pages": [
+                      "2024-11-13/api-reference/tts/working-with-web-sockets/contexts",
+                      "2024-11-13/api-reference/tts/working-with-web-sockets/context-flushing-and-flush-i-ds"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "STT",
+                "pages": [
+                  "2024-11-13/api-reference/stt/transcribe",
+                  "2024-11-13/api-reference/stt/stt",
+                  "2024-11-13/api-reference/stt/migrate-from-open-ai"
+                ]
+              },
+              {
+                "group": "Voices",
+                "pages": [
+                  "2024-11-13/api-reference/voices/list",
+                  "2024-11-13/api-reference/voices/clone",
+                  "2024-11-13/api-reference/voices/delete",
+                  "2024-11-13/api-reference/voices/update",
+                  "2024-11-13/api-reference/voices/get",
+                  "2024-11-13/api-reference/voices/localize",
+                  "2024-11-13/api-reference/voices/mix",
+                  "2024-11-13/api-reference/voices/create"
+                ]
+              },
+              {
+                "group": "Voice Changer",
+                "pages": [
+                  "2024-11-13/api-reference/voice-changer/bytes",
+                  "2024-11-13/api-reference/voice-changer/sse"
+                ]
+              },
+              {
+                "group": "Auth",
+                "pages": [
+                  "2024-11-13/api-reference/auth/access-token"
+                ]
+              },
+              {
+                "group": "Infill",
+                "pages": [
+                  "2024-11-13/api-reference/infill/bytes"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "version": "2024-06-10",
+        "tabs": [
+          {
+            "tab": "Models",
+            "icon": "file-lines",
+            "pages": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "2024-06-10/get-started/overview",
+                  "2024-06-10/get-started/make-an-api-request"
+                ]
+              },
+              {
+                "group": "Use an SDK",
+                "pages": [
+                  "2024-06-10/use-an-sdk/javascript-typescript",
+                  "2024-06-10/use-an-sdk/python"
+                ]
+              },
+              {
+                "group": "Build with Cartesia",
+                "pages": [
+                  {
+                    "group": "Models",
+                    "icon": "microchip",
+                    "pages": [
+                      "2024-06-10/build-with-cartesia/models/tts",
+                      "2024-06-10/build-with-cartesia/models/stt"
+                    ]
+                  },
+                  {
+                    "group": "Capability Guides",
+                    "icon": "cubes",
+                    "pages": [
+                      "2024-06-10/build-with-cartesia/capability-guides/clone-voices",
+                      "2024-06-10/build-with-cartesia/capability-guides/specify-custom-pronunciations",
+                      "2024-06-10/build-with-cartesia/capability-guides/control-speed-and-emotion",
+                      "2024-06-10/build-with-cartesia/capability-guides/stream-inputs-using-continuations",
+                      "2024-06-10/build-with-cartesia/capability-guides/localize-voices"
+                    ]
+                  },
+                  {
+                    "group": "Formatting Text for Sonic-2",
+                    "icon": "text-size",
+                    "pages": [
+                      "2024-06-10/build-with-cartesia/formatting-text-for-sonic-2/best-practices",
+                      "2024-06-10/build-with-cartesia/formatting-text-for-sonic-2/inserting-breaks-pauses",
+                      "2024-06-10/build-with-cartesia/formatting-text-for-sonic-2/spelling-out-input-text"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Integrations",
+                "pages": [
+                  "2024-06-10/integrations/live-kit",
+                  "2024-06-10/integrations/pipecat",
+                  "2024-06-10/integrations/rasa",
+                  "2024-06-10/integrations/thoughtly",
+                  "2024-06-10/integrations/twilio"
+                ]
+              },
+              {
+                "group": "Enterprise",
+                "pages": [
+                  "2024-06-10/enterprise/set-up-sso",
+                  "2024-06-10/enterprise/set-up-an-organization"
+                ]
+              },
+              {
+                "group": "Peek Behind the Scenes",
+                "pages": [
+                  "2024-06-10/peek-behind-the-scenes/embeddings-and-voice-mixing"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "icon": "code",
+            "pages": [
+              {
+                "group": "Use the API",
+                "pages": [
+                  "2024-06-10/use-the-api/api-conventions",
+                  "2024-06-10/use-the-api/concurrency-limits-and-timeouts"
+                ]
+              },
+              {
+                "group": "API Status",
+                "pages": [
+                  "2024-06-10/api-reference/api-status/get"
+                ]
+              },
+              {
+                "group": "TTS",
+                "pages": [
+                  "2024-06-10/api-reference/tts/compare-tts-endpoints",
+                  "2024-06-10/api-reference/tts/bytes",
+                  "2024-06-10/api-reference/tts/sse",
+                  "2024-06-10/api-reference/tts/tts",
+                  {
+                    "group": "Working with WebSockets",
+                    "icon": "plug",
+                    "pages": [
+                      "2024-06-10/api-reference/tts/working-with-web-sockets/contexts",
+                      "2024-06-10/api-reference/tts/working-with-web-sockets/context-flushing-and-flush-i-ds"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "STT",
+                "pages": [
+                  "2024-06-10/api-reference/stt/transcribe",
+                  "2024-06-10/api-reference/stt/stt",
+                  "2024-06-10/api-reference/stt/migrate-from-open-ai"
+                ]
+              },
+              {
+                "group": "Voices",
+                "pages": [
+                  "2024-06-10/api-reference/voices/list",
+                  "2024-06-10/api-reference/voices/clone",
+                  "2024-06-10/api-reference/voices/delete",
+                  "2024-06-10/api-reference/voices/update",
+                  "2024-06-10/api-reference/voices/get",
+                  "2024-06-10/api-reference/voices/localize",
+                  "2024-06-10/api-reference/voices/mix",
+                  "2024-06-10/api-reference/voices/create"
+                ]
+              },
+              {
+                "group": "Voice Changer",
+                "pages": [
+                  "2024-06-10/api-reference/voice-changer/bytes",
+                  "2024-06-10/api-reference/voice-changer/sse"
+                ]
+              },
+              {
+                "group": "Auth",
+                "pages": [
+                  "2024-06-10/api-reference/auth/access-token"
+                ]
+              },
+              {
+                "group": "Infill",
+                "pages": [
+                  "2024-06-10/api-reference/infill/bytes"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "primary": {
+      "href": "https://play.cartesia.ai/",
+      "type": "button",
+      "label": "Playground"
+    },
+    "links": [
+      {
+        "href": "https://cartesia.ai/",
+        "label": "Homepage"
+      },
+      {
+        "href": "https://discord.gg/cartesia",
+        "label": "Discord"
+      }
+    ]
+  },
+  "footer": {}
+}

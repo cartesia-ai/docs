@@ -1,0 +1,272 @@
+---
+title: Talk to your first agent
+icon: phone
+---
+
+import { ListCard } from "/snippets/ListCard.jsx";
+
+Create a new voice agent, deploy it and talk to it in under 5 minutes. Then, learn how to make a quick change to customize an agent.
+
+<ListCard 
+  title="Already created an agent in the Playground?"
+  description="Other guides might be a better starting point for you."
+  color="#3b82f6"
+  items={[
+    { text: 'If you used <strong>Text to Agent</strong>, try <a href="../text-to-agent">this</a> quickstart.' },
+    { text: 'If you used <strong>Build From a Template</strong>, try <a href="../templates">this</a> quickstart.' }
+  ]} 
+/>
+
+
+
+## Deploy and call your first agent
+
+<ListCard 
+  title="Prerequisites" 
+  items={[
+    { text: 'A free Cartesia account, sign up <a href="https://play.cartesia.ai">here</a>.' },
+    { text: 'Access to a terminal on your local machine.' }
+  ]} 
+/>
+
+<Steps>
+  <Step title="Install the CLI">
+    ```zsh lines
+    curl -fsSL https://cartesia.sh | sh
+    ```
+  </Step>
+
+  <Step title="Connect to Cartesia">
+    Authenticate with your Cartesia account. This will prompt you to add an API key from your playground.
+
+    ```zsh lines
+    cartesia auth login
+    ```
+    
+    Verify authentication succeeded.
+    ```zsh lines
+    cartesia auth status
+    ```
+  </Step>
+
+  <Step title="Clone a Line template locally">
+    Clone a simple chat template using the CLI.
+
+    ```zsh lines
+    cartesia create simple-chat-example
+    # Choose "Basic Chat" when prompted by `cartesia create`.
+    cd simple-chat-example
+    ```
+
+    <Template
+      data={{ 
+        CREATE_COMMAND: "cartesia create"
+      }}
+      tooltips={{
+        CREATE_COMMAND: (<p>
+          You can use <code>cartesia create</code> to clone any Line template from <a href="https://github.com/cartesia-ai/line">GitHub</a>.
+          <br /><br />
+          Browse available templates and choose the one that best fits your use case.
+        </p>)
+      }}
+    >
+    ```zsh lines
+    {{CREATE_COMMAND}} simple-chat-example
+    # Choose "Basic Chat" when prompted by `cartesia create`.
+    cd simple-chat-example
+    ```
+    </Template>
+  </Step>
+
+  <Step title="Initialize your agent">
+    Link your local template to a Cartesia agent.
+
+    ```zsh lines
+    cartesia init
+    # Choose "Create new", and name the agent "first-agent".
+    ```
+
+    You'll see a success message with a link to your agent in the playground.
+
+    ```zsh lines
+    ✓ Agent 'first-agent' created successfully
+    
+    View agent:
+    https://play.cartesia.ai/agents/agent_xxxxxxxxxxxxxxxxxx
+    ```
+  </Step>
+
+  <Step title="Deploy your agent">
+    Deploy your agent to make it available in the playground.
+
+    ```zsh lines
+    cartesia deploy
+    ```
+
+    You'll see deployment progress with a status command to track it.
+
+    ```zsh lines
+    Deploying cli-test
+    
+    ✓ File uploaded (ID: file_xxxxxxxxxxxxxxxxxx)
+    ✓ Deployment created successfully!
+    
+    Check deployment progress:
+    cartesia status ad_xxxxxxxxxxxxxxxxxx
+    ```
+  </Step>
+
+  <Step title="Talk to your agent">
+    Your agent should deploy in < 1 minute. Use the CLI to have your agent call your phone number.
+
+    ```zsh lines
+    cartesia call +1XXXXXXXXXX
+    ```
+
+    Or visit the [Playground](https://play.cartesia.ai/agents) to call your agent from the web interface.
+  </Step>
+</Steps>
+
+This first agent should only give you canned responses. Next, we'll enable it to give intelligent responses.
+
+## Setup local agent development
+
+Now let's set up your local environment to iterate on your agent.
+
+<ListCard 
+  title="Additional Prerequisites" 
+  items={[
+    { text: 'Python 3.9+ installed on your machine.' },
+    { text: 'A Gemini API key (recommended for intelligent responses).', optional: true }
+  ]} 
+/>
+
+<Steps>
+  <Step title="Install dependencies">
+    Choose your preferred Python package manager.
+
+    <CodeGroup>
+        ```zsh lines uv
+        uv venv --python 3.11
+        uv pip install .
+        ```
+        ```zsh lines pip
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install .
+        ```
+        ```zsh lines conda
+        conda create -n line-quickstart python=3.11
+        conda activate line-quickstart
+        pip install .
+        ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="(Optional) Setup your LLM API key">
+    Set your Gemini API key to connect a language model.
+
+    <Info>
+    Line supports integrations with any LLM provider of your choice.
+    </Info>
+
+    ```zsh lines
+    export GEMINI_API_KEY=YOUR_GEMINI_KEY
+    ```
+    If you choose to skip this step, your agent will continue to give canned answers.
+  </Step>
+
+  <Step title="Chat locally with your template">
+    Open two terminals. In the first, start the server.
+
+    <CodeGroup>
+        ```zsh lines uv
+        uv run python main.py
+        ```
+        ```zsh lines pip/conda
+        python main.py
+        ```
+    </CodeGroup>
+
+    In the second terminal, chat with your agent.
+
+    ```zsh lines
+    cartesia chat 8000
+    ```
+
+    <Frame>
+    <img src="/assets/images/agents/cli-chat.png" alt="Chat with your agent."/>
+    </Frame>
+
+    This is a nifty way to test your agent's reasoning and responses locally.
+  </Step>
+</Steps>
+
+## Customize and redeploy your agent
+
+Let's customize your agent's personality and voice to make it truly unique.
+
+<Steps>
+  <Step title="Customize your agent">
+    Open `config.py` and modify `SYSTEM_PROMPT` to set your agent's personality.
+
+    ```python title="config.py" maxLines=10 lines
+    SYSTEM_PROMPT = """\
+    You are Chef Pierre, a passionate French chef from Lyon who just opened your first bistro. 
+    You're excited to share cooking tips and French recipes. 
+    Speak with warmth and enthusiasm about food. 
+    Keep responses to 1-2 sentences under 35 words since you're on the phone.\
+    """
+    ```
+
+    Update the initial message in `main.py` in the `handle_new_call` function.
+
+    ```python title="main.py" maxLines=10 lines
+    await system.send_initial_message("Bonjour! I'm Chef Pierre.")
+    ```
+  </Step>
+
+  <Step title="(Optional) Set remote environment variables">
+    If you set a Gemini API key earlier, make it available to your deployed agent. Your prompt change will have no effect without this key.
+
+    <Warning>
+      Make sure to run this command in the same terminal where you previously set the `GEMINI_API_KEY` environment variable.
+    </Warning>
+
+    ```zsh lines
+    cartesia env set GEMINI_API_KEY=$GEMINI_API_KEY
+    ```
+  </Step>
+
+  <Step title="Redeploy your changes">
+    Verify that you're in the `simple-chat-example` folder and redeploy your changes.
+    ```zsh lines
+    cartesia deploy
+    ```
+  </Step>
+
+  <Step title="Check deployment status">
+    Check that your deployment is ready and get your agent URL.
+
+    ```zsh lines
+    cartesia status
+    ```
+
+    Visit your agent page in the [Playground](https://play.cartesia.ai/agents) using the URL from the status command.
+  </Step>
+
+  <Step title="Update voice in the Playground">
+    On your agent page, go to Configuration. Change the voice to "Stern French Man" to match your chef personality.
+
+    <Frame>
+    <img src="/assets/images/agents/playground-voice-config.png" alt="Update voice in the Configuration tab on the Playground."/>
+    </Frame>
+  </Step>
+
+  <Step title="Call your custom agent">
+    ```zsh lines
+    cartesia call +1XXXXXXXXXX
+    ```
+  </Step>
+</Steps>
+

@@ -1,0 +1,109 @@
+html {
+	font-feature-settings: "cv01", "cv02", "cv03", "cv04", "cv11", "ss08";
+}
+
+.fern-web-socket-trigger {
+	transition-duration: 0.01s !important;
+}
+
+.fern-sidebar-link-container[data-state="active"] .fern-sidebar-link {
+	background: var(--gray-3);
+	color: rgba(var(--accent));
+}
+
+.fern-sidebar-link-container[data-state="active"] .fern-sidebar-link-text {
+	font-weight: 500;
+}
+
+.fern-sidebar-link-container:not([data-state="active"])
+	.fern-sidebar-link:hover {
+	background: transparent;
+	color: rgba(var(--body-text));
+}
+
+.fern-page-heading,
+.fern-prose h1,
+.fern-prose h2,
+.fern-prose h3 {
+	font-weight: 600;
+}
+
+.fern-card .t-default {
+	font-family: var(--typography-heading-font-family);
+}
+
+.fern-sidebar-container {
+	font-family: var(--typography-heading-font-family);
+}
+
+.fern-sidebar-heading .fern-sidebar-heading-content,
+.fern-breadcrumb-item {
+	font-family: var(--typography-code-font-family);
+	font-weight: 400;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--gray-12);
+	font-size: 0.8rem;
+	text-decoration: none;
+}
+
+.fern-header-tab-button {
+	font-family: var(--typography-heading-font-family);
+}
+
+.fern-breadcrumb {
+	margin-bottom: 0.5rem;
+}
+
+.prose a,
+.fern-mdx-link {
+	font-weight: 500;
+	text-decoration-color: rgba(var(--accent));
+	text-underline-offset: 2px;
+}
+
+.prose a:hover,
+.fern-mdx-link:hover {
+	text-decoration-thickness: 1px;
+}
+
+.external-link-icon {
+	display: none !important;
+}
+
+.fern-sidebar-icon {
+	width: 2.5rem !important;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.fern-prose blockquote, .prose-base blockquote {
+	font-style: normal;
+	font-weight: normal;
+}
+
+.fern-prose .language-bash code, .prose-base .language-bash code {
+	white-space: pre-wrap;
+}
+
+.prose-base {
+	line-height: 1.75;
+}
+
+.fern-layout-toc {
+	font-family: var(--typography-code-font-family);
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+.fern-layout-toc div + ul {
+	font-family: var(--typography-heading-font-family);
+	font-weight: 400;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+.fern-logo-container {
+	max-width: 150px !important;
+}

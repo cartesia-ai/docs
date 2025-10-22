@@ -1,0 +1,58 @@
+---
+title: Agent Configuration
+description: Configure your agent to work seamlessly in your application
+icon: gear
+---
+
+import { AudioPlayer } from '/snippets/AudioPlayer.jsx';
+
+## Voice
+
+You can set your Agent's voice directly in the playground. Note that if you make changes to your Agent's voice settings
+in your code, this will override the settings from the playground when a call is made.
+
+<Frame>
+  <img src="/assets/images/agents/voice-settings.png" alt="Voice Settings"/>
+</Frame>
+
+## Background Audio
+
+You can set your Agent's background audio directly in the playground. You can also use this page to upload, delete & 
+preview your background sound files. Note that if you make changes to your Agent's background sound settings in your code, 
+this will override the settings from the playground when a call is made.
+
+<Frame>
+  <img src="/assets/images/agents/background-sound-example.gif" alt="Background Sound Settings GIF"/>
+</Frame>
+
+### Audio Comparison
+
+Listen to the difference between an agent with and without background sound:
+
+<Columns cols={2}>
+<div>
+#### With Background Sound
+
+<AudioPlayer src="/assets/audio/agents/agent_with_background_sound_sample.mp3" >
+  Your browser does not support the audio element.
+</AudioPlayer>
+</div>
+<div>
+#### Without Background Sound
+
+<AudioPlayer src="/assets/audio/agents/agent_without_background_sound_sample.wav">
+  Your browser does not support the audio element.
+</AudioPlayer>
+</div>
+</Columns>
+
+
+## Environment Variables
+
+Environment variables are securely added via the console per Agent so you don't need to upload them in your code base.
+
+<Frame>
+  <img src="/assets/images/agents/environment-variables.png" alt="Sample Environment Variables"/>
+</Frame>
+
+

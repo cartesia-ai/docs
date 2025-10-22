@@ -1,0 +1,903 @@
+asyncapi: 3.0.0
+info:
+  title: Cartesia WebSocket API
+  version: 2025-04-16
+  description: ""
+
+servers:
+  production:
+    host: api.cartesia.ai
+    protocol: wss
+    description: Production WebSocket server
+    security:
+      - $ref: '#/components/securitySchemes/apiKey'
+      - $ref: '#/components/securitySchemes/apiKeyQuery'
+
+channels:
+  /tts/websocket:
+    address: /tts/websocket
+    description: |
+      This endpoint creates a bidirectional WebSocket connection. The connection supports multiplexing, so you can send multiple requests and receive the corresponding responses in parallel.
+
+      The WebSocket API is built around contexts:
+
+      - When you send a generation request, you pass a `context_id`. Further inputs on the same `context_id` will [continue the generation](/2024-11-13/build-with-cartesia/capability-guides/stream-inputs-using-continuations), maintaining prosody.
+      - Responses for a context contain the `context_id` you passed in so that you can match requests and responses.
+
+      Read the guide [on working with contexts](/2024-11-13/api-reference/tts/working-with-web-sockets/contexts) to learn more.
+
+      For the best performance, we recommend the following usage pattern:
+
+      1. **Do many generations over a single WebSocket**. Just use a separate context for each generation. The WebSocket scales up to dozens of concurrent generations.
+      2. **Set up the WebSocket before the first generation**. This ensures you don’t incur latency when you start generating speech.
+      3. **Include necessary spaces and punctuation**: This allows Sonic to generate speech more accurately and with better prosody.
+      4. Use `max_buffer_delay_ms` to let the model intelligently manage buffering up to the specified maximum delay.
+
+      For conversational agent use cases, we recommend the following usage pattern:
+
+      1. **Each turn in a conversation should correspond to a context**: For example, if you are using Sonic to power a voice agent, each turn in the conversation should be a new context.
+      2. **Start a new context for interruptions**: If the user interrupts the agent, start a new context for the agent’s response.
+
+      To learn more about managing concurrent generations and WebSocket connection limits, see the [concurrency limits and timeouts](/2024-11-13/use-the-api/concurrency-limits-and-timeouts) page.
+    messages:
+      generationRequest:
+        $ref: '#/components/messages/generationRequest'
+      cancelRequest:
+        $ref: '#/components/messages/cancelRequest'
+      chunkResponse:
+        $ref: '#/components/messages/chunkResponse'
+      flushDoneResponse:
+        $ref: '#/components/messages/flushDoneResponse'
+      doneResponse:
+        $ref: '#/components/messages/doneResponse'
+      timestampsResponse:
+        $ref: '#/components/messages/timestampsResponse'
+      errorResponse:
+        $ref: '#/components/messages/errorResponse'
+      phonemeTimestampsResponse:
+        $ref: '#/components/messages/phonemeTimestampsResponse'
+    parameters:
+      cartesia_version:
+        description: API version. You can specify this instead of the Cartesia-Version header. This is particularly useful for use in the browser, where WebSockets do not support headers. You do not need to specify this if you are passing the header.
+        location: $message.header#/cartesia_version
+      api_key:
+        description: API key. You can specify this instead of the X-API-Key header. This is particularly useful for use in the browser, where WebSockets do not support headers. You do not need to specify this if you are passing the header.
+        location: $message.header#/api_key
+  
+  /stt/websocket:
+    address: /stt/websocket
+    description: |
+      This endpoint creates a bidirectional WebSocket connection for real-time speech transcription.
+
+      Our STT endpoint enables sending in a stream of audio as bytes, and provides transcription results as they become available.
+
+      **Usage Pattern**:
+
+      1. Connect to the WebSocket with appropriate query parameters
+      2. Send audio chunks as **binary WebSocket messages** in the specified encoding format
+      3. Receive transcription messages as JSON with word-level timestamps
+      4. Send `finalize` as a text message to flush any remaining audio (receives `flush_done` acknowledgment)
+      5. Send `done` as a text message to close the session cleanly (receives `done` acknowledgment and closes)
+
+      **Performance Recommendation**: For best performance, it is recommended to resample audio before streaming and send audio chunks in `pcm_s16le` format at 16kHz sample rate.
+
+      **Pricing**: Speech-to-text streaming is priced at **1 credit per 1 second** of audio streamed in.
+
+      **Concurrency**: STT has a dedicated concurrency limit, which determines the maximum number of active WebSocket connections you can have at any time. If you exceed your concurrency limit, new connections will be rejected with a 429 error. Idle WebSocket connections are automatically closed after 20 seconds of inactivity (no audio being streamed).
+    messages:
+      sttAudioData:
+        $ref: '#/components/messages/sttAudioData'
+      sttFinalizeCommand:
+        $ref: '#/components/messages/sttFinalizeCommand'
+      sttDoneCommand:
+        $ref: '#/components/messages/sttDoneCommand'
+      sttTranscriptResponse:
+        $ref: '#/components/messages/sttTranscriptResponse'
+      sttFlushDoneResponse:
+        $ref: '#/components/messages/sttFlushDoneResponse'
+      sttDoneResponse:
+        $ref: '#/components/messages/sttDoneResponse'
+      sttErrorResponse:
+        $ref: '#/components/messages/sttErrorResponse'
+    parameters:
+      model:
+        description: ID of the model to use for transcription. Use 'ink-whisper' for the latest Cartesia Whisper model.
+        location: $message.header#/model
+      language:
+        description: |
+          The language of the input audio in ISO-639-1 format. Defaults to en.
+          
+          Supported languages: en, zh, de, es, ru, ko, fr, ja, pt, tr, pl, ca, nl, ar, sv, it, id, hi, fi, vi, he, uk, el, ms, cs, ro, da, hu, ta, no, th, ur, hr, bg, lt, la, mi, ml, cy, sk, te, fa, lv, bn, sr, az, sl, kn, et, mk, br, eu, is, hy, ne, mn, bs, kk, sq, sw, gl, mr, pa, si, km, sn, yo, so, af, oc, ka, be, tg, sd, gu, am, yi, lo, uz, fo, ht, ps, tk, nn, mt, sa, lb, my, bo, tl, mg, as, tt, haw, ln, ha, ba, jw, su, yue
+        location: $message.header#/language
+      encoding:
+        description: |
+          The encoding format of the audio data. This determines how the server interprets the raw binary audio data you send.
+          
+          Required field - you must specify the encoding format that matches your audio data. We recommend using pcm_s16le for best performance.
+        location: $message.header#/encoding
+      sample_rate:
+        description: |
+          The sample rate of the audio in Hz.
+          
+          Required field - must match the actual sample rate of your audio data. We recommend using 16000 for best performance.
+        location: $message.header#/sample_rate
+      min_volume:
+        description: |
+          Volume threshold for voice activity detection. Audio below this threshold will be considered silence.
+          Range: 0.0-1.0. Higher values = more aggressive filtering of quiet speech.
+        location: $message.header#/min_volume
+      max_silence_duration_secs:
+        description: |
+          Maximum duration of silence (in seconds) before the system considers the utterance complete and triggers endpointing.
+          Higher values allow for longer pauses within utterances.
+        location: $message.header#/max_silence_duration_secs
+      api_key:
+        description: You can specify this instead of the X-API-Key header. This is particularly useful for use in the browser, where WebSockets do not support headers. You do not need to specify this if you are passing the header.
+        location: $message.header#/api_key
+
+operations:
+  sendTTSGeneration:
+    action: receive
+    channel:
+      $ref: '#/channels/~1tts~1websocket'
+    messages:
+      - $ref: '#/channels/~1tts~1websocket/messages/generationRequest'
+      - $ref: '#/channels/~1tts~1websocket/messages/cancelRequest'
+  
+  receiveTTSAudio:
+    action: send
+    description: The server will send you back a stream of messages with the same `context_id` as your request. The messages can be of type `chunk`, `timestamps`, `phoneme_timestamps``,` `error`, or `done`.
+    channel:
+      $ref: '#/channels/~1tts~1websocket'
+    messages:
+      - $ref: '#/channels/~1tts~1websocket/messages/chunkResponse'
+      - $ref: '#/channels/~1tts~1websocket/messages/flushDoneResponse'
+      - $ref: '#/channels/~1tts~1websocket/messages/doneResponse'
+      - $ref: '#/channels/~1tts~1websocket/messages/timestampsResponse'
+      - $ref: '#/channels/~1tts~1websocket/messages/errorResponse'
+      - $ref: '#/channels/~1tts~1websocket/messages/phonemeTimestampsResponse'
+  
+  sendSTTAudio:
+    action: receive
+    channel:
+      $ref: '#/channels/~1stt~1websocket'
+    messages:
+      - $ref: '#/channels/~1stt~1websocket/messages/sttAudioData'
+      - $ref: '#/channels/~1stt~1websocket/messages/sttFinalizeCommand'
+      - $ref: '#/channels/~1stt~1websocket/messages/sttDoneCommand'
+  
+  receiveSTTTranscription:
+    action: send
+    description: The server will send transcription results as they become available. Messages can be of type `transcript`, `flush_done`, `done`, or `error`. Each transcript response includes word-level timestamps.
+    channel:
+      $ref: '#/channels/~1stt~1websocket'
+    messages:
+      - $ref: '#/channels/~1stt~1websocket/messages/sttTranscriptResponse'
+      - $ref: '#/channels/~1stt~1websocket/messages/sttFlushDoneResponse'
+      - $ref: '#/channels/~1stt~1websocket/messages/sttDoneResponse'
+      - $ref: '#/channels/~1stt~1websocket/messages/sttErrorResponse'
+
+components:
+  messages:
+    generationRequest:
+      name: GenerationRequest
+      title: Generation Request
+      summary: Use this to generate speech for a transcript.
+      payload:
+        $ref: '#/components/schemas/GenerationRequest'
+      examples:
+        - name: basicGeneration
+          summary: Basic generation
+          payload:
+            model_id: sonic-2
+            transcript: "Hello, world! I'm generating audio on Cartesia!"
+            voice:
+              mode: id
+              id: a0e99841-438c-4a64-b679-ae501e7d6091
+            language: en
+            context_id: happy-monkeys-fly
+            output_format:
+              container: raw
+              encoding: pcm_s16le
+              sample_rate: 8000
+            add_timestamps: true
+            continue: false
+        - name: continuation
+          summary: Continue previous generation
+          payload:
+            model_id: sonic-2
+            transcript: "Look, we did a continuation!"
+            voice:
+              mode: id
+              id: a0e99841-438c-4a64-b679-ae501e7d6091
+            language: en
+            context_id: happy-monkeys-fly
+            output_format:
+              container: raw
+              encoding: pcm_s16le
+              sample_rate: 8000
+            add_timestamps: true
+            continue: true
+    
+    cancelRequest:
+      name: CancelRequest
+      title: Cancel Context Request
+      summary: Use this to cancel a context, so that no more messages are generated for that context.
+      payload:
+        $ref: '#/components/schemas/CancelRequest'
+      examples:
+        - name: cancelContext
+          summary: Cancel context
+          payload:
+            context_id: happy-monkeys-fly
+            cancel: true
+    
+    chunkResponse:
+      name: ChunkResponse
+      title: Audio Chunk Response
+      summary: Audio data chunk
+      payload:
+        $ref: '#/components/schemas/ChunkResponse'
+      examples:
+        - name: audioChunk
+          summary: Audio chunk
+          payload:
+            type: chunk
+            data: aSDinaTvuI8gbWludGxpZnk=
+            done: false
+            status_code: 206
+            step_time: 123
+            context_id: happy-monkeys-fly
+    
+    timestampsResponse:
+      name: TimestampsResponse
+      title: Word Timestamps Response
+      summary: Word-level timing information
+      payload:
+        $ref: '#/components/schemas/TimestampsResponse'
+      examples:
+        - name: wordTimestamps
+          summary: Word timestamps
+          payload:
+            type: timestamps
+            done: false
+            status_code: 206
+            context_id: happy-monkeys-fly
+            word_timestamps:
+              words: ["Hello", "world"]
+              start: [0, 0.5]
+              end: [0.4, 0.9]
+    
+    phonemeTimestampsResponse:
+      name: PhonemeTimestampsResponse
+      title: Phoneme Timestamps Response
+      summary: Phoneme-level timing information
+      payload:
+        $ref: '#/components/schemas/PhonemeTimestampsResponse'
+    
+    flushDoneResponse:
+      name: FlushDoneResponse
+      title: Flush Done Response
+      summary: Acknowledgment that flush command was received
+      payload:
+        $ref: '#/components/schemas/FlushDoneResponse'
+      examples:
+        - name: flushComplete
+          summary: Flush complete
+          payload:
+            type: flush_done
+            done: false
+            flush_done: true
+            flush_id: 1
+            status_code: 206
+            context_id: happy-monkeys-fly
+    
+    doneResponse:
+      name: DoneResponse
+      title: Done Response
+      summary: Generation completion signal
+      payload:
+        $ref: '#/components/schemas/DoneResponse'
+      examples:
+        - name: completion
+          summary: Completion
+          payload:
+            type: done
+            done: true
+            status_code: 206
+            context_id: happy-monkeys-fly
+    
+    errorResponse:
+      name: ErrorResponse
+      title: Error Response
+      summary: Error information
+      payload:
+        $ref: '#/components/schemas/ErrorResponse'
+    
+    sttAudioData:
+      name: STTAudioData
+      title: Send Audio Data or Commands
+      summary: |
+        In Practice:
+        - Send binary WebSocket messages containing raw audio data in the format specified by encoding parameter
+        - Send text WebSocket messages with commands: finalize (flush any remaining audio and receive flush_done acknowledgment) or done (flush remaining audio, close session, and receive done acknowledgment)
+        
+        Timeout Behavior:
+        - If no audio data is sent for 20 seconds, the WebSocket will automatically disconnect
+        - The timeout resets with each message (audio data or text command) sent to the server
+        
+        Audio Requirements:
+        - Send audio in small chunks (e.g., 100ms intervals) for optimal latency
+        - Audio format must match the encoding and sample_rate parameters
+      payload:
+        type: string
+        format: binary
+        description: Raw audio data in the format specified by encoding parameter. Send in small chunks (e.g., 100ms intervals) for optimal latency.
+    
+    sttFinalizeCommand:
+      name: STTFinalizeCommand
+      title: Finalize Command
+      summary: Send 'finalize' as a text message to flush any remaining audio and receive flush_done acknowledgment
+      payload:
+        type: string
+        enum: [finalize]
+        description: Send 'finalize' as a text message to flush any remaining audio
+    
+    sttDoneCommand:
+      name: STTDoneCommand
+      title: Done Command
+      summary: Send 'done' as a text message to flush remaining audio, close session, and receive done acknowledgment
+      payload:
+        type: string
+        enum: [done]
+        description: Send 'done' as a text message to flush remaining audio and close the session
+    
+    sttTranscriptResponse:
+      name: STTTranscriptResponse
+      title: Receive Transcription
+      summary: The server will send transcription results as they become available. Messages can be of type transcript, flush_done, done, or error. Each transcript response includes word-level timestamps.
+      payload:
+        $ref: '#/components/schemas/STTTranscriptResponse'
+      examples:
+        - name: partialTranscript
+          summary: Partial transcription
+          payload:
+            type: transcript
+            is_final: false
+            request_id: 58dfa4d4-91c5-410c-8529-6824c8f7aedc
+            text: "How are you doing today?"
+            duration: 0.5
+            language: en
+            words:
+              - word: How
+                start: 0.0
+                end: 0.12
+              - word: are
+                start: 0.15
+                end: 0.25
+              - word: you
+                start: 0.28
+                end: 0.35
+              - word: doing
+                start: 0.38
+                end: 0.55
+              - word: today?
+                start: 0.58
+                end: 0.78
+        - name: finalTranscript
+          summary: Final transcription
+          payload:
+            type: transcript
+            is_final: true
+            request_id: b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8
+            text: "How are you doing today? I'm planning to visit the museum this weekend."
+            duration: 2.5
+            language: en
+            words:
+              - word: How
+                start: 0.0
+                end: 0.12
+              - word: are
+                start: 0.15
+                end: 0.25
+              - word: you
+                start: 0.28
+                end: 0.35
+              - word: doing
+                start: 0.38
+                end: 0.55
+              - word: today?
+                start: 0.58
+                end: 0.78
+              - word: I'm
+                start: 0.8
+                end: 0.92
+              - word: planning
+                start: 0.95
+                end: 1.25
+              - word: to
+                start: 1.28
+                end: 1.35
+              - word: visit
+                start: 1.38
+                end: 1.58
+              - word: the
+                start: 1.61
+                end: 1.68
+              - word: museum
+                start: 1.71
+                end: 1.98
+              - word: this
+                start: 2.01
+                end: 2.15
+              - word: weekend.
+                start: 2.18
+                end: 2.45
+    
+    sttFlushDoneResponse:
+      name: STTFlushDoneResponse
+      title: Flush Done Response
+      summary: Acknowledgment that finalize command was received
+      payload:
+        $ref: '#/components/schemas/STTFlushDoneResponse'
+      examples:
+        - name: flushAck
+          summary: Flush acknowledgment
+          payload:
+            type: flush_done
+            request_id: b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8
+    
+    sttDoneResponse:
+      name: STTDoneResponse
+      title: Done Response
+      summary: Acknowledgment that session is closing
+      payload:
+        $ref: '#/components/schemas/STTDoneResponse'
+      examples:
+        - name: doneAck
+          summary: Done acknowledgment
+          payload:
+            type: done
+            request_id: b67e1c5d-2f4c-4c3d-9f82-96eb4d2f12a8
+    
+    sttErrorResponse:
+      name: STTErrorResponse
+      title: STT Error Response
+      summary: Error information for STT
+      payload:
+        $ref: '#/components/schemas/STTErrorResponse'
+
+  schemas:
+    GenerationRequest:
+      type: object
+      required:
+        - model_id
+        - transcript
+        - voice
+        - output_format
+      properties:
+        model_id:
+          type: string
+          description: The ID of the model to use for the generation. See Models for available models.
+        transcript:
+          type: string
+          description: The transcript to generate speech for.
+        voice:
+          type: object
+          description: Voice configuration
+          required:
+            - mode
+            - id
+          properties:
+            mode:
+              type: string
+              enum: [id]
+              description: Voice selection mode
+              default: id
+            id:
+              type: string
+              description: The ID of the voice.
+        output_format:
+          type: object
+          description: Audio output format configuration
+          required:
+            - container
+            - encoding
+            - sample_rate
+          properties:
+            container:
+              type: string
+              enum: [raw]
+              description: Audio container format
+              default: raw
+            encoding:
+              type: string
+              enum: [pcm_f32le, pcm_s16le, pcm_mulaw, pcm_alaw]
+              description: Audio encoding format
+            sample_rate:
+              type: integer
+              description: The sample rate of the audio in Hz. Supported sample rates are 8000, 16000, 22050, 24000, 44100, 48000.
+        language:
+          type: string
+          description: |
+            The language that the given voice should speak the transcript in.
+            
+            Options: English (en), French (fr), German (de), Spanish (es), Portuguese (pt), Chinese (zh), Japanese (ja), Hindi (hi), Italian (it), Korean (ko), Dutch (nl), Polish (pl), Russian (ru), Swedish (sv), Turkish (tr).
+          enum: [en, fr, de, es, pt, zh, ja, hi, it, ko, nl, pl, ru, sv, tr]
+        duration:
+          type: number
+          description: The maximum duration of the audio in seconds. You do not usually need to specify this. If the duration is not appropriate for the length of the transcript, the output audio may be truncated.
+        speed:
+          type: string
+          description: |
+            Speed setting for the model. Defaults to normal.
+            
+            This feature is experimental and may not work for all voices.
+            
+            Influences the speed of the generated speech. Faster speeds may reduce hallucination rate.
+          enum: [slow, normal, fast]
+          default: normal
+        context_id:
+          type: string
+          description: |
+            A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
+            
+            Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
+        continue:
+          type: boolean
+          description: Whether this input may be followed by more inputs. If not specified, this defaults to false.
+          default: false
+        max_buffer_delay_ms:
+          type: integer
+          description: |
+            The maximum time in milliseconds to buffer text before starting generation. Values between [0, 1000]ms are supported. Defaults to 0 (no buffering).
+            
+            When set, the model will buffer incoming text chunks until it's confident it has enough context to generate high-quality speech, or the buffer delay elapses, whichever comes first. Without this option set, the model will kick off generations immediately, ceding control of buffering to the user.
+            
+            Use this to balance responsiveness with higher quality speech generation, which often benefits from having more context.
+          minimum: 0
+          maximum: 1000
+          default: 0
+        flush:
+          type: boolean
+          description: Whether to flush the context.
+        add_timestamps:
+          type: boolean
+          description: |
+            Whether to return word-level timestamps. If false (default), no word timestamps will be produced at all. If true, the server will return timestamp events containing word-level timing information.
+          default: false
+        add_phoneme_timestamps:
+          type: boolean
+          description: |
+            Whether to return phoneme-level timestamps. If false (default), no phoneme timestamps will be produced. If true, the server will return timestamp events containing phoneme-level timing information.
+          default: false
+        use_normalized_timestamps:
+          type: boolean
+          description: Whether to use normalized timestamps (True) or original timestamps (False).
+        pronunciation_dict_id:
+          type: string
+          description: A pronunciation dict ID to use for the generation. This will be applied to this TTS generation only.
+    
+    CancelRequest:
+      type: object
+      required:
+        - context_id
+        - cancel
+      properties:
+        context_id:
+          type: string
+          description: The ID of the context to cancel.
+        cancel:
+          type: boolean
+          enum: [true]
+          description: Whether to cancel the context, so that no more messages are generated for that context.
+    
+    ChunkResponse:
+      type: object
+      required:
+        - type
+        - data
+        - done
+        - status_code
+        - step_time
+      properties:
+        type:
+          type: string
+          enum: [chunk]
+          description: Response type identifier
+        data:
+          type: string
+          format: byte
+          description: Base64-encoded audio data
+        done:
+          type: boolean
+          description: Whether this is the final chunk for this context
+        status_code:
+          type: integer
+          description: HTTP-style status code
+        step_time:
+          type: number
+          description: Processing time for this chunk
+        context_id:
+          type: string
+          description: |
+            A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
+            
+            Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
+    
+    FlushDoneResponse:
+      type: object
+      required:
+        - type
+        - done
+        - flush_done
+        - flush_id
+        - status_code
+      properties:
+        type:
+          type: string
+          enum: [flush_done]
+          description: Response type identifier
+        done:
+          type: boolean
+          description: Whether generation is complete
+        flush_done:
+          type: boolean
+          description: Whether the flush is complete
+        flush_id:
+          type: integer
+          description: An identifier corresponding to the number of flush commands that have been sent for this context. Starts at 1. This can be used to map chunks of audio to certain transcript submissions.
+        status_code:
+          type: integer
+          description: HTTP-style status code
+        context_id:
+          type: string
+          description: |
+            A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
+            
+            Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
+    
+    TimestampsResponse:
+      type: object
+      required:
+        - type
+        - done
+        - status_code
+      properties:
+        type:
+          type: string
+          enum: [timestamps]
+          description: Response type identifier
+        done:
+          type: boolean
+          description: Whether generation is complete
+        status_code:
+          type: integer
+          description: HTTP-style status code
+        context_id:
+          type: string
+          description: |
+            A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
+            
+            Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
+        word_timestamps:
+          type: object
+          description: Word-level timing information
+          properties:
+            words:
+              type: array
+              items:
+                type: string
+              description: List of words in order
+            start:
+              type: array
+              items:
+                type: number
+              description: Start times in seconds for each word
+            end:
+              type: array
+              items:
+                type: number
+              description: End times in seconds for each word
+    
+    PhonemeTimestampsResponse:
+      type: object
+      required:
+        - type
+        - done
+        - status_code
+      properties:
+        type:
+          type: string
+          enum: [phoneme_timestamps]
+          description: Response type identifier
+        done:
+          type: boolean
+          description: Whether generation is complete
+        status_code:
+          type: integer
+          description: HTTP-style status code
+        context_id:
+          type: string
+          description: |
+            A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
+            
+            Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
+        phoneme_timestamps:
+          type: object
+          description: Phoneme-level timing information
+          properties:
+            phonemes:
+              type: array
+              items:
+                type: string
+              description: List of phonemes in order
+            start:
+              type: array
+              items:
+                type: number
+              description: Start times in seconds for each phoneme
+            end:
+              type: array
+              items:
+                type: number
+              description: End times in seconds for each phoneme
+    
+    DoneResponse:
+      type: object
+      required:
+        - type
+        - done
+        - status_code
+      properties:
+        type:
+          type: string
+          enum: [done]
+          description: Response type identifier
+        done:
+          type: boolean
+          description: Whether generation is complete
+        status_code:
+          type: integer
+          description: HTTP-style status code
+        context_id:
+          type: string
+          description: |
+            A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
+            
+            Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
+    
+    ErrorResponse:
+      type: object
+      required:
+        - type
+        - done
+        - error
+        - status_code
+      properties:
+        type:
+          type: string
+          enum: [error]
+          description: Response type identifier
+        done:
+          type: boolean
+          description: Whether generation is complete
+        error:
+          type: string
+          description: Error message describing what went wrong
+        status_code:
+          type: integer
+          description: HTTP-style status code
+        context_id:
+          type: string
+          description: |
+            A unique identifier for the context. You can use any unique identifier, like a UUID or human ID.
+            
+            Some customers use unique identifiers from their own systems (such as conversation IDs) as context IDs.
+    
+    STTTranscriptResponse:
+      type: object
+      required:
+        - type
+        - is_final
+        - request_id
+        - text
+        - duration
+        - language
+      properties:
+        type:
+          type: string
+          enum: [transcript]
+          description: Response type identifier
+        is_final:
+          type: boolean
+          description: Whether this is the final transcription result
+        request_id:
+          type: string
+          description: Unique identifier for this transcription request
+        text:
+          type: string
+          description: Transcribed text
+        duration:
+          type: number
+          description: Duration of the audio in seconds
+        language:
+          type: string
+          description: Detected or specified language code
+        words:
+          type: array
+          description: Word-level timestamps
+          items:
+            type: object
+            required:
+              - word
+              - start
+              - end
+            properties:
+              word:
+                type: string
+                description: The transcribed word
+              start:
+                type: number
+                description: Start time in seconds
+              end:
+                type: number
+                description: End time in seconds
+    
+    STTFlushDoneResponse:
+      type: object
+      required:
+        - type
+        - request_id
+      properties:
+        type:
+          type: string
+          enum: [flush_done]
+          description: Response type identifier
+        request_id:
+          type: string
+          description: Unique identifier for the request
+    
+    STTDoneResponse:
+      type: object
+      required:
+        - type
+        - request_id
+      properties:
+        type:
+          type: string
+          enum: [done]
+          description: Response type identifier
+        request_id:
+          type: string
+          description: Unique identifier for the request
+    
+    STTErrorResponse:
+      type: object
+      required:
+        - type
+        - error
+        - request_id
+      properties:
+        type:
+          type: string
+          enum: [error]
+          description: Response type identifier
+        error:
+          type: string
+          description: Error message describing what went wrong
+        request_id:
+          type: string
+          description: Unique identifier for the request
+
+  securitySchemes:
+    apiKey:
+      type: httpApiKey
+      name: X-API-Key
+      in: header
+      description: API key passed in header
+    apiKeyQuery:
+      type: httpApiKey
+      name: api_key
+      in: query
+      description: API key passed as query parameter (useful for browser WebSockets)

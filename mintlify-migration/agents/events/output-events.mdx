@@ -1,0 +1,61 @@
+Output events are how your code communicates back to the platform, controlling the agent's behavior and responses. Here are the main output event types:
+
+### Config Changes
+
+Dynamically update TTS or STT settings, such as voice, audio format, VAD (Voice Activity Detection), or background audio parameters.
+
+```json
+{
+  "type": "config",
+  "tts": {
+    "voice_id": "string",
+    "format": "ulaw_8000 | mulaw_8000 | pcm_16000 | pcm_24000 | pcm_44100"
+  },
+  "stt": {
+    "format": "ulaw_8000 | mulaw_8000 | pcm_16000 | pcm_24000 | pcm_44100",
+    "vad": "true|false"
+  },
+  "vad": {
+    "confidence": 0.0,
+    "start_secs": 0.0,
+    "stop_secs": 0.0,
+    "min_volume": 0.0
+  }
+  "background_audio": {
+    "sound_file": "file_id",
+    "volume": 0.0           
+  }
+}
+```
+
+### Speech Response
+
+Send a message for the agent to speak to the user.
+
+```json
+{
+  "type": "message",
+  "content": "{What the agent should say}"
+}
+```
+
+### Call Transfer
+
+Transfer the call to another phone number.
+
+```json
+{
+  "type": "transfer",
+  "target_phone_number": "18883456789"
+}
+```
+
+### Call End
+
+End the call (hang up).
+
+```json
+{
+  "type": "end_call"
+}
+```

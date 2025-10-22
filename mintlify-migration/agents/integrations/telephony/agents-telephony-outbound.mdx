@@ -1,0 +1,53 @@
+---
+title: Outbound
+icon: phone
+---
+Agents can make outbound dials with an API request. Simply specify a set of target phone numbers and your agent ID
+to place your dial.
+
+<Warning title="Compliance" icon="triangle-exclamation">
+    You are solely responsible for remaining complaint with relevant local regulations for dialing including the Telephone
+    Consumer Protection Act (TCPA).
+
+    See Cartesia's [Acceptable Use Policy](https://cartesia.ai/legal/acceptable-use.html) for more detail.
+</Warning>
+
+<CodeBlocks>
+      ```bash
+    curl -X POST "https://agents-preview.cartesia.ai/twilio/call/outbound" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer $CARTESIA_API_KEY" \
+      -H "Cartesia-Version: 2025-04-16" \
+      -d '{
+        "target_numbers": ["YOUR_PHONE_NUMBER"],
+        "agent_id": "YOUR_AGEDNT_ID"
+      }'
+  ```
+
+    ```python
+    import requests
+
+    url = "https://agents-preview.cartesia.ai/twilio/call/outbound"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer YOUR_CARTESIA_API_KEY",
+        "Cartesia-Version": "2025-04-16"
+    }
+
+    payload = {
+        "target_numbers": ["YOUR_PHONE_NUMBER"],
+        "agent_id": "YOUR_AGENT_ID"
+    }
+
+    response = requests.post(url, headers=headers, json=payload)
+
+    print("Status Code:", response.status_code)
+    print("Response:", response.json())
+  ```
+</CodeBlocks>
+
+<Note>You are limited to one outbound dial placed per second, any requests faster than one dial per second will be queued. </Note>
+
+
+

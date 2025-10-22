@@ -1,0 +1,2086 @@
+openapi: 3.0.1
+info:
+  title: Cartesia API
+  version: '2024-06-10'
+paths:
+  /:
+    get:
+      operationId: apiStatus_get
+      tags:
+        - ApiStatus
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIInfo'
+      summary: API Status and Version
+  /access-token:
+    post:
+      description: >-
+        Generates a new Access Token for the client. These tokens are
+        short-lived and should be used to make requests to the API from
+        authenticated clients.
+      operationId: auth_access-token
+      tags:
+        - Auth
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+      summary: Generate a New Access Token
+      security: &ref_0
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+  /infill/bytes:
+    post:
+      description: >-
+        Generate audio that smoothly connects two existing audio segments. This
+        is useful for inserting new speech between existing speech segments
+        while maintaining natural transitions.
+
+
+        **The cost is 1 credit per character of the infill text plus a fixed
+        cost of 300 credits.**
+
+
+        Infilling is only available on `sonic-2` at this time.
+
+
+        At least one of `left_audio` or `right_audio` must be provided.
+
+
+        As with all generative models, there's some inherent variability, but
+        here's some tips we recommend to get the best results from infill:
+
+        - Use longer infill transcripts
+          - This gives the model more flexibility to adapt to the rest of the audio
+        - Target natural pauses in the audio when deciding where to clip
+          - This means you don't need word-level timestamps to be as precise
+        - Clip right up to the start and end of the audio segment you want
+        infilled, keeping as much silence in the left/right audio segments as
+        possible
+          - This helps the model generate more natural transitions
+      operationId: infill_bytes
+      tags:
+        - Infill
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '204':
+          description: ''
+      summary: Infill (Bytes)
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                left_audio:
+                  type: string
+                  format: binary
+                right_audio:
+                  type: string
+                  format: binary
+                model_id:
+                  description: The ID of the model to use for generating audio
+                  type: string
+                language:
+                  description: The language of the transcript
+                  type: string
+                transcript:
+                  description: The infill text to generate
+                  type: string
+                voice_id:
+                  description: The ID of the voice to use for generating audio
+                  type: string
+                output_format[container]:
+                  description: The format of the output audio
+                  $ref: '#/components/schemas/OutputFormatContainer'
+                output_format[sample_rate]:
+                  description: >-
+                    The sample rate of the output audio in Hz. Supported sample
+                    rates are 8000, 16000, 22050, 24000, 44100, 48000.
+                  type: integer
+                output_format[encoding]:
+                  description: Required for `raw` and `wav` containers.
+                  $ref: '#/components/schemas/RawEncoding'
+                  nullable: true
+                output_format[bit_rate]:
+                  description: Required for `mp3` containers.
+                  type: integer
+                  nullable: true
+                voice[__experimental_controls][speed]:
+                  description: >-
+                    Either a number between -1.0 and 1.0 or a natural language
+                    description of speed.
+
+
+                    If you specify a number, 0.0 is the default speed, -1.0 is
+                    the slowest speed, and 1.0 is the fastest speed.
+                  $ref: '#/components/schemas/Speed'
+                  nullable: true
+                voice[__experimental_controls][emotion][]:
+                  description: >-
+                    An array of emotion:level tags.
+
+
+                    Supported emotions are: anger, positivity, surprise,
+                    sadness, and curiosity.
+
+
+                    Supported levels are: lowest, low, (omit), high, highest.
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Emotion'
+                  nullable: true
+  /stt:
+    post:
+      description: >-
+        Transcribes audio files into text using Cartesia's Speech-to-Text API.
+
+
+        Upload an audio file and receive a complete transcription response.
+        Supports arbitrarily long audio files with automatic intelligent
+        chunking for longer audio.
+
+
+        **Supported audio formats:** flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg,
+        wav, webm
+
+
+        **Response format:** Returns JSON with transcribed text, duration, and
+        language. Include `timestamp_granularities: ["word"]` to get word-level
+        timestamps.
+         
+        **Pricing:** Batch transcription is priced at **1 credit per 2 seconds**
+        of audio processed.
+
+
+        <Note>
+
+        For migrating from the OpenAI SDK, see our [OpenAI Whisper to Cartesia
+        Ink Migration Guide](/api-reference/stt/migrate-from-open-ai).
+
+        </Note>
+      operationId: stt_transcribe
+      tags:
+        - Stt
+      parameters:
+        - name: encoding
+          in: query
+          description: >-
+            The encoding format to process the audio as. If not specified, the
+            audio file will be decoded automatically.
+
+
+            **Supported formats:**
+
+            - `pcm_s16le` - 16-bit signed integer PCM, little-endian
+            (recommended for best performance)
+
+            - `pcm_s32le` - 32-bit signed integer PCM, little-endian
+
+            - `pcm_f16le` - 16-bit floating point PCM, little-endian
+
+            - `pcm_f32le` - 32-bit floating point PCM, little-endian
+
+            - `pcm_mulaw` - 8-bit μ-law encoded PCM
+
+            - `pcm_alaw` - 8-bit A-law encoded PCM
+          required: false
+          schema:
+            $ref: '#/components/schemas/STTEncoding'
+            nullable: true
+        - name: sample_rate
+          in: query
+          description: 'The sample rate of the audio in Hz. '
+          required: false
+          schema:
+            type: integer
+            nullable: true
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranscriptionResponse'
+      summary: Speech-to-Text (Batch)
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                model:
+                  description: >-
+                    ID of the model to use for transcription. Use `ink-whisper`
+                    for the latest Cartesia Whisper model.
+                  type: string
+                language:
+                  description: >-
+                    The language of the input audio in ISO-639-1 format.
+                    Defaults to `en`.
+                  type: string
+                  nullable: true
+                  enum:
+                      - en
+                      - zh
+                      - de
+                      - es
+                      - ru
+                      - ko
+                      - fr
+                      - ja
+                      - pt
+                      - tr
+                      - pl
+                      - ca
+                      - nl
+                      - ar
+                      - sv
+                      - it
+                      - id
+                      - hi
+                      - fi
+                      - vi
+                      - he
+                      - uk
+                      - el
+                      - ms
+                      - cs
+                      - ro
+                      - da
+                      - hu
+                      - ta
+                      - no
+                      - th
+                      - ur
+                      - hr
+                      - bg
+                      - lt
+                      - la
+                      - mi
+                      - ml
+                      - cy
+                      - sk
+                      - te
+                      - fa
+                      - lv
+                      - bn
+                      - sr
+                      - az
+                      - sl
+                      - kn
+                      - et
+                      - mk
+                      - br
+                      - eu
+                      - is
+                      - hy
+                      - ne
+                      - mn
+                      - bs
+                      - kk
+                      - sq
+                      - sw
+                      - gl
+                      - mr
+                      - pa
+                      - si
+                      - km
+                      - sn
+                      - yo
+                      - so
+                      - af
+                      - oc
+                      - ka
+                      - be
+                      - tg
+                      - sd
+                      - gu
+                      - am
+                      - yi
+                      - lo
+                      - uz
+                      - fo
+                      - ht
+                      - ps
+                      - tk
+                      - nn
+                      - mt
+                      - sa
+                      - lb
+                      - my
+                      - bo
+                      - tl
+                      - mg
+                      - as
+                      - tt
+                      - ha
+                      - ln
+                      - ha
+                      - ba
+                      - jw
+                      - su
+                      - yu
+                timestamp_granularities[]:
+                  description: >-
+                    The timestamp granularities to populate for this
+                    transcription. Currently only `word` level timestamps are
+                    supported.
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TimestampGranularity'
+                  nullable: true
+  /tts/bytes:
+    post:
+      operationId: tts_bytes
+      tags:
+        - Tts
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '204':
+          description: ''
+      summary: Text to Speech (Bytes)
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TTSRequest'
+  /tts/sse:
+    post:
+      operationId: tts_sse
+      tags:
+        - Tts
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '204':
+          description: ''
+      summary: Text to Speech (SSE)
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TTSSSERequest'
+  /voice-changer/bytes:
+    post:
+      description: >-
+        Takes an audio file of speech, and returns an audio file of speech
+        spoken with the same intonation, but with a different voice.
+
+
+        This endpoint is priced at 15 characters per second of input audio.
+      operationId: voiceChanger_bytes
+      tags:
+        - VoiceChanger
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '204':
+          description: ''
+      summary: Voice Changer (Bytes)
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                clip:
+                  type: string
+                  format: binary
+                voice[id]:
+                  type: string
+                output_format[container]:
+                  $ref: '#/components/schemas/OutputFormatContainer'
+                output_format[sample_rate]:
+                  description: >-
+                    The sample rate of the output audio in Hz. Supported sample
+                    rates are 8000, 16000, 22050, 24000, 44100, 48000.
+                  type: integer
+                output_format[encoding]:
+                  description: Required for `raw` and `wav` containers.
+                  $ref: '#/components/schemas/RawEncoding'
+                  nullable: true
+                output_format[bit_rate]:
+                  description: Required for `mp3` containers.
+                  type: integer
+                  nullable: true
+  /voice-changer/sse:
+    post:
+      operationId: voiceChanger_sse
+      tags:
+        - VoiceChanger
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '204':
+          description: ''
+      summary: Voice Changer (SSE)
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                clip:
+                  type: string
+                  format: binary
+                voice[id]:
+                  type: string
+                output_format[container]:
+                  $ref: '#/components/schemas/OutputFormatContainer'
+                output_format[sample_rate]:
+                  description: >-
+                    The sample rate of the audio in Hz. Supported sample rates
+                    are 8000, 16000, 22050, 24000, 44100, 48000.
+                  type: integer
+                output_format[encoding]:
+                  description: Required for `raw` and `wav` containers.
+                  $ref: '#/components/schemas/RawEncoding'
+                  nullable: true
+                output_format[bit_rate]:
+                  description: Required for `mp3` containers.
+                  type: integer
+                  nullable: true
+  /voices:
+    get:
+      operationId: voices_list
+      tags:
+        - Voices
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Voice'
+      summary: List Voices
+      security: *ref_0
+    post:
+      description: >-
+        Create voice from raw features. If you'd like to clone a voice from an
+        audio file, please use Clone Voice instead.
+      operationId: voices_create
+      tags:
+        - Voices
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoiceMetadata'
+      summary: Create Voice
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVoiceRequest'
+  /voices/clone:
+    post:
+      description: >-
+        Clone a voice from an audio clip. This endpoint has two modes, stability
+        and similarity.
+
+
+        Similarity mode clones are more similar to the source clip, but may
+        reproduce background noise. For these, use an audio clip about 5 seconds
+        long.
+
+
+        Stability mode clones are more stable, but may not sound as similar to
+        the source clip. For these, use an audio clip 10-20 seconds long.
+      operationId: voices_clone
+      tags:
+        - Voices
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoiceMetadata'
+      summary: Clone Voice
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                clip:
+                  type: string
+                  format: binary
+                name:
+                  description: The name of the voice.
+                  type: string
+                description:
+                  description: A description for the voice.
+                  type: string
+                  nullable: true
+                language:
+                  description: The language of the voice.
+                  $ref: '#/components/schemas/SupportedLanguage'
+                mode:
+                  description: >-
+                    Tradeoff between similarity and stability. Similarity clones
+                    sound more like the source clip, but may reproduce
+                    background noise. Stability clones always sound like a
+                    studio recording, but may not sound as similar to the source
+                    clip.
+                  $ref: '#/components/schemas/CloneMode'
+                enhance:
+                  description: >-
+                    Whether to apply AI enhancements to the clip to reduce
+                    background noise. This leads to cleaner generated speech at
+                    the cost of reduced similarity to the source clip.
+                  type: boolean
+                  nullable: true
+                base_voice_id:
+                  description: >-
+                    Optional base voice ID that the cloned voice is derived
+                    from.
+                  $ref: '#/components/schemas/VoiceId'
+                  nullable: true
+  /voices/{id}:
+    delete:
+      operationId: voices_delete
+      tags:
+        - Voices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/VoiceId'
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+
+      responses:
+        '204':
+          description: ''
+      summary: Delete Voice
+      security: *ref_0
+    patch:
+      operationId: voices_update
+      tags:
+        - Voices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/VoiceId'
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Voice'
+      summary: Update Voice
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVoiceRequest'
+    get:
+      operationId: voices_get
+      tags:
+        - Voices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/VoiceId'
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Voice'
+      summary: Get Voice
+      security: *ref_0
+  /voices/localize:
+    post:
+      description: >-
+        Create a new voice from an existing voice localized to a new language
+        and dialect.
+      operationId: voices_localize
+      tags:
+        - Voices
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoiceMetadata'
+      summary: Localize Voice
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocalizeVoiceRequest'
+  /voices/mix:
+    post:
+      operationId: voices_mix
+      tags:
+        - Voices
+      parameters:
+        - $ref: '#/components/parameters/CartesiaVersionHeader'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbeddingResponse'
+      summary: Mix Voices
+      security: *ref_0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MixVoicesRequest'
+components:
+  schemas:
+    APIInfo:
+      title: APIInfo
+      type: object
+      properties:
+        ok:
+          type: boolean
+        version:
+          type: string
+      required:
+        - ok
+        - version
+    TokenGrant:
+      title: TokenGrant
+      type: object
+      properties:
+        tts:
+          type: boolean
+          nullable: true
+          description: >-
+            The `tts` grant allows the token to be used to access any TTS
+            endpoint.
+        stt:
+          type: boolean
+          nullable: true
+          description: >-
+            The `stt` grant allows the token to be used to access any STT
+            endpoint.
+    TokenRequest:
+      title: TokenRequest
+      type: object
+      properties:
+        grants:
+          $ref: '#/components/schemas/TokenGrant'
+          nullable: true
+          description: >-
+            The permissions to be granted via the token. Both TTS and STT grants
+            are optional - specify only the capabilities you need.
+        expires_in:
+          type: integer
+          nullable: true
+          description: >-
+            The number of seconds the token will be valid for since the time of
+            generation. The maximum is 1 hour (3600 seconds).
+    TokenResponse:
+      title: TokenResponse
+      type: object
+      properties:
+        token:
+          type: string
+          description: The generated Access Token.
+      required:
+        - token
+    Embedding:
+      title: Embedding
+      type: array
+      items:
+        type: number
+        format: double
+      description: >-
+        A 192-dimensional vector (i.e. a list of 192 numbers) that represents
+        the voice.
+    TimestampGranularity:
+      title: TimestampGranularity
+      type: string
+      enum:
+        - word
+      description: >-
+        The granularity of timestamps to include in the response.
+
+
+        Currently only `word` level timestamps are supported, providing start
+        and end times for each word.
+    TranscriptionWord:
+      title: TranscriptionWord
+      type: object
+      properties:
+        word:
+          type: string
+          description: The transcribed word.
+        start:
+          type: number
+          format: double
+          description: Start time of the word in seconds.
+        end:
+          type: number
+          format: double
+          description: End time of the word in seconds.
+      required:
+        - word
+        - start
+        - end
+    TranscriptionResponse:
+      title: TranscriptionResponse
+      type: object
+      properties:
+        text:
+          type: string
+          description: The transcribed text.
+        language:
+          type: string
+          nullable: true
+          description: The specified language of the input audio.
+        duration:
+          type: number
+          format: double
+          nullable: true
+          description: The duration of the input audio in seconds.
+        words:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranscriptionWord'
+          nullable: true
+          description: >-
+            Word-level timestamps showing the start and end time of each word.
+            Only included when `[word]` is passed into
+            `timestamp_granularities[]`.
+      required:
+        - text
+    StreamingTranscriptionResponse:
+      title: StreamingTranscriptionResponse
+      oneOf:
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - transcript
+            - $ref: '#/components/schemas/TranscriptMessage'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - flush_done
+            - $ref: '#/components/schemas/FlushDoneMessage'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - done
+            - $ref: '#/components/schemas/DoneMessage'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - error
+            - $ref: '#/components/schemas/ErrorMessage'
+          required:
+            - type
+      description: >-
+        The server sends transcription results, control messages, or error
+        messages. Each message has a `type` field to distinguish between
+        different message types.
+    TranscriptMessage:
+      title: TranscriptMessage
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Unique identifier for this transcription session.
+        text:
+          type: string
+          description: >-
+            The transcribed text. May be partial or final depending on is_final.
+
+
+            **Note**: Text may be empty in initial responses while the system
+            accumulates sufficient audio for transcription. This is normal
+            behavior - wait for responses with non-empty text or monitor
+            is_final for completion status.
+        is_final:
+          type: boolean
+          description: Whether this is a final transcription result or an interim result.
+        duration:
+          type: number
+          format: double
+          nullable: true
+          description: The duration of the audio transcribed so far, in seconds.
+        language:
+          type: string
+          nullable: true
+          description: The specified language of the input audio.
+        words:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranscriptionWord'
+          nullable: true
+          description: >-
+            Word-level timestamps showing the start and end time of each word in
+            seconds. Always included in streaming responses.
+      required:
+        - request_id
+        - text
+        - is_final
+    FlushDoneMessage:
+      title: FlushDoneMessage
+      type: object
+      description: >-
+        Acknowledgment message sent in response to a `finalize` command,
+        indicating that all buffered audio has been flushed and processed.
+      properties:
+        request_id:
+          type: string
+          description: Unique identifier for this transcription session.
+      required:
+        - request_id
+    DoneMessage:
+      title: DoneMessage
+      type: object
+      description: >-
+        Acknowledgment message sent in response to a `done` command, indicating
+        that the session is complete and the WebSocket will close.
+      properties:
+        request_id:
+          type: string
+          description: Unique identifier for this transcription session.
+      required:
+        - request_id
+    ErrorMessage:
+      title: ErrorMessage
+      type: object
+      properties:
+        request_id:
+          type: string
+          nullable: true
+          description: The request ID associated with the error, if applicable.
+        message:
+          type: string
+          description: Human-readable error message describing what went wrong.
+      required:
+        - message
+    STTEncoding:
+      title: STTEncoding
+      type: string
+      enum:
+        - pcm_s16le
+        - pcm_s32le
+        - pcm_f16le
+        - pcm_f32le
+        - pcm_mulaw
+        - pcm_alaw
+      description: The encoding format for audio data sent to the STT WebSocket.
+    ContextID:
+      title: ContextID
+      type: string
+      description: >-
+        A unique identifier for the context. You can use any unique identifier,
+        like a UUID or human ID.
+
+
+        Some customers use unique identifiers from their own systems (such as
+        conversation IDs) as context IDs.
+    FlushID:
+      title: FlushID
+      type: integer
+      description: >-
+        An identifier corresponding to the number of flush commands that have
+        been sent for this context. Starts at 1.
+
+
+        This can be used to map chunks of audio to certain transcript
+        submissions.
+    ModelSpeed:
+      title: ModelSpeed
+      type: string
+      enum:
+        - slow
+        - normal
+        - fast
+      description: >-
+        > This feature is experimental and may not work for all voices.
+
+
+        Speed setting for the model. Defaults to `normal`.
+
+
+        Influences the speed of the generated speech. Faster speeds may reduce
+        hallucination rate.
+    WebSocketBaseResponse:
+      title: WebSocketBaseResponse
+      type: object
+      properties:
+        context_id:
+          $ref: '#/components/schemas/ContextID'
+          nullable: true
+        status_code:
+          type: integer
+        done:
+          type: boolean
+      required:
+        - status_code
+        - done
+    WebSocketResponse:
+      title: WebSocketResponse
+      oneOf:
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - chunk
+            - $ref: '#/components/schemas/WebSocketChunkResponse'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - flush_done
+            - $ref: '#/components/schemas/WebSocketFlushDoneResponse'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - done
+            - $ref: '#/components/schemas/WebSocketDoneResponse'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - timestamps
+            - $ref: '#/components/schemas/WebSocketTimestampsResponse'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - error
+            - $ref: '#/components/schemas/WebSocketErrorResponse'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - phoneme_timestamps
+            - $ref: '#/components/schemas/WebSocketPhonemeTimestampsResponse'
+          required:
+            - type
+    WebSocketErrorResponse:
+      title: WebSocketErrorResponse
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+      allOf:
+        - $ref: '#/components/schemas/WebSocketBaseResponse'
+    WebSocketChunkResponse:
+      title: WebSocketChunkResponse
+      type: object
+      properties:
+        data:
+          type: string
+          format: byte
+        step_time:
+          type: number
+          format: double
+      required:
+        - data
+        - step_time
+      allOf:
+        - $ref: '#/components/schemas/WebSocketBaseResponse'
+    WebSocketTimestampsResponse:
+      title: WebSocketTimestampsResponse
+      type: object
+      properties:
+        word_timestamps:
+          $ref: '#/components/schemas/WordTimestamps'
+          nullable: true
+      allOf:
+        - $ref: '#/components/schemas/WebSocketBaseResponse'
+    WebSocketPhonemeTimestampsResponse:
+      title: WebSocketPhonemeTimestampsResponse
+      type: object
+      properties:
+        phoneme_timestamps:
+          $ref: '#/components/schemas/PhonemeTimestamps'
+          nullable: true
+      allOf:
+        - $ref: '#/components/schemas/WebSocketBaseResponse'
+    WebSocketTTSOutput:
+      title: WebSocketTTSOutput
+      type: object
+      properties:
+        word_timestamps:
+          $ref: '#/components/schemas/WordTimestamps'
+          nullable: true
+        phoneme_timestamps:
+          $ref: '#/components/schemas/PhonemeTimestamps'
+          nullable: true
+        audio:
+          nullable: true
+        context_id:
+          $ref: '#/components/schemas/ContextID'
+          nullable: true
+        flush_id:
+          $ref: '#/components/schemas/FlushID'
+          nullable: true
+        flush_done:
+          type: boolean
+          nullable: true
+    WebSocketStreamOptions:
+      title: WebSocketStreamOptions
+      type: object
+      properties:
+        timeout:
+          type: number
+          format: double
+          nullable: true
+    WordTimestamps:
+      title: WordTimestamps
+      type: object
+      properties:
+        words:
+          type: array
+          items:
+            type: string
+        start:
+          type: array
+          items:
+            type: number
+            format: double
+        end:
+          type: array
+          items:
+            type: number
+            format: double
+      required:
+        - words
+        - start
+        - end
+    PhonemeTimestamps:
+      title: PhonemeTimestamps
+      type: object
+      properties:
+        phonemes:
+          type: array
+          items:
+            type: string
+        start:
+          type: array
+          items:
+            type: number
+            format: double
+        end:
+          type: array
+          items:
+            type: number
+            format: double
+      required:
+        - phonemes
+        - start
+        - end
+    WebSocketDoneResponse:
+      title: WebSocketDoneResponse
+      type: object
+      properties: {}
+      allOf:
+        - $ref: '#/components/schemas/WebSocketBaseResponse'
+    WebSocketFlushDoneResponse:
+      title: WebSocketFlushDoneResponse
+      type: object
+      properties:
+        flush_id:
+          $ref: '#/components/schemas/FlushID'
+        flush_done:
+          type: boolean
+      required:
+        - flush_id
+        - flush_done
+      allOf:
+        - $ref: '#/components/schemas/WebSocketBaseResponse'
+    CancelContextRequest:
+      title: CancelContextRequest
+      type: object
+      properties:
+        context_id:
+          $ref: '#/components/schemas/ContextID'
+          description: The ID of the context to cancel.
+        cancel:
+          type: boolean
+          enum:
+            - true
+          description: >-
+            Whether to cancel the context, so that no more messages are
+            generated for that context.
+      required:
+        - context_id
+        - cancel
+    GenerationRequest:
+      title: GenerationRequest
+      type: object
+      properties:
+        model_id:
+          type: string
+          description: >-
+            The ID of the model to use for the generation. See
+            [Models](/build-with-cartesia/models) for available models.
+        transcript:
+          description: >-
+            The transcript to generate speech for. This can be a string or an
+            iterator over strings.
+        voice:
+          $ref: '#/components/schemas/TTSRequestVoiceSpecifier'
+        language:
+          $ref: '#/components/schemas/SupportedLanguage'
+          nullable: true
+        output_format:
+          $ref: '#/components/schemas/WebSocketRawOutputFormat'
+        duration:
+          type: number
+          format: double
+          nullable: true
+          description: >-
+            The maximum duration of the audio in seconds. You do not usually
+            need to specify this.
+
+            If the duration is not appropriate for the length of the transcript,
+            the output audio may be truncated.
+        speed:
+          $ref: '#/components/schemas/ModelSpeed'
+          nullable: true
+        context_id:
+          $ref: '#/components/schemas/ContextID'
+          nullable: true
+        continue:
+          type: boolean
+          nullable: true
+          description: |-
+            Whether this input may be followed by more inputs.
+            If not specified, this defaults to `false`.
+        max_buffer_delay_ms:
+          type: integer
+          nullable: true
+          description: >-
+            The maximum time in milliseconds to buffer text before starting
+            generation. Values between [0, 1000]ms are supported. Defaults to 0
+            (no buffering).
+
+
+            When set, the model will buffer incoming text chunks until it's
+            confident it has enough context to generate high-quality speech, or
+            the buffer delay elapses, whichever comes first. Without this option
+            set, the model will kick off generations immediately, ceding control
+            of buffering to the user.
+
+
+            Use this to balance responsiveness with higher quality speech
+            generation, which often benefits from having more context.
+        flush:
+          type: boolean
+          nullable: true
+          description: Whether to flush the context.
+        add_timestamps:
+          type: boolean
+          nullable: true
+          description: >-
+            Whether to return word-level timestamps. If `false` (default), no
+            word timestamps will be produced at all. If `true`, the server will
+            return timestamp events containing word-level timing information.
+        add_phoneme_timestamps:
+          type: boolean
+          nullable: true
+          description: >-
+            Whether to return phoneme-level timestamps. If `false` (default), no
+            phoneme timestamps will be produced. If `true`, the server will
+            return timestamp events containing phoneme-level timing information.
+        use_normalized_timestamps:
+          type: boolean
+          nullable: true
+          description: >-
+            Whether to use normalized timestamps (True) or original timestamps
+            (False).
+      required:
+        - model_id
+        - transcript
+        - voice
+        - output_format
+    WebSocketRawOutputFormat:
+      title: WebSocketRawOutputFormat
+      type: object
+      properties:
+        container:
+          type: string
+          enum:
+            - raw
+        encoding:
+          $ref: '#/components/schemas/RawEncoding'
+        sample_rate:
+          type: integer
+          description: >-
+            The sample rate of the audio in Hz. Supported sample rates are 8000,
+            16000, 22050, 24000, 44100, 48000.
+      required:
+        - container
+        - encoding
+        - sample_rate
+    WebSocketRequest:
+      title: WebSocketRequest
+      oneOf:
+        - description: Use this to generate speech for a transcript.
+          $ref: '#/components/schemas/GenerationRequest'
+        - description: >-
+            Use this to cancel a context, so that no more messages are generated
+            for that context.
+          $ref: '#/components/schemas/CancelContextRequest'
+    WebSocketTTSRequest:
+      title: WebSocketTTSRequest
+      type: object
+      properties:
+        model_id:
+          type: string
+          description: >-
+            The ID of the model to use for the generation. See
+            [Models](/build-with-cartesia/models) for available models.
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+          nullable: true
+        transcript:
+          type: string
+          nullable: true
+        voice:
+          $ref: '#/components/schemas/TTSRequestVoiceSpecifier'
+        duration:
+          type: integer
+          nullable: true
+        language:
+          type: string
+          nullable: true
+        add_timestamps:
+          type: boolean
+          nullable: true
+          description: >-
+            Whether to return word-level timestamps. If `false` (default), no
+            word timestamps will be produced at all. If `true`, the server will
+            return timestamp events containing word-level timing information.
+        add_phoneme_timestamps:
+          type: boolean
+          nullable: true
+          description: >-
+            Whether to return phoneme-level timestamps. If `false` (default), no
+            phoneme timestamps will be produced - if `add_timestamps` is `true`,
+            the produced timestamps will be word timestamps instead. If `true`,
+            the server will return timestamp events containing phoneme-level
+            timing information.
+        use_normalized_timestamps:
+          type: boolean
+          nullable: true
+        continue:
+          type: boolean
+          nullable: true
+        context_id:
+          type: string
+          nullable: true
+        max_buffer_delay_ms:
+          type: integer
+          nullable: true
+        speed:
+          $ref: '#/components/schemas/ModelSpeed'
+          nullable: true
+      required:
+        - model_id
+        - voice
+    TTSRequest:
+      title: TTSRequest
+      type: object
+      properties:
+        model_id:
+          type: string
+          description: >-
+            The ID of the model to use for the generation. See
+            [Models](/build-with-cartesia/models) for available models.
+        transcript:
+          type: string
+        voice:
+          $ref: '#/components/schemas/TTSRequestVoiceSpecifier'
+        language:
+          $ref: '#/components/schemas/SupportedLanguage'
+          nullable: true
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+        duration:
+          type: number
+          format: double
+          nullable: true
+          description: >-
+            The maximum duration of the audio in seconds. You do not usually
+            need to specify this.
+
+            If the duration is not appropriate for the length of the transcript,
+            the output audio may be truncated.
+        speed:
+          $ref: '#/components/schemas/ModelSpeed'
+          nullable: true
+      required:
+        - model_id
+        - transcript
+        - voice
+        - output_format
+    TTSSSERequest:
+      title: TTSSSERequest
+      type: object
+      properties:
+        model_id:
+          type: string
+          description: >-
+            The ID of the model to use for the generation. See
+            [Models](/build-with-cartesia/models) for available models.
+        transcript:
+          type: string
+        voice:
+          $ref: '#/components/schemas/TTSRequestVoiceSpecifier'
+        language:
+          $ref: '#/components/schemas/SupportedLanguage'
+          nullable: true
+        output_format:
+          $ref: '#/components/schemas/SSEOutputFormat'
+        duration:
+          type: number
+          format: double
+          nullable: true
+          description: >-
+            The maximum duration of the audio in seconds. You do not usually
+            need to specify this.
+
+            If the duration is not appropriate for the length of the transcript,
+            the output audio may be truncated.
+        speed:
+          $ref: '#/components/schemas/ModelSpeed'
+          nullable: true
+        add_timestamps:
+          type: boolean
+          nullable: true
+          description: >-
+            Whether to return word-level timestamps. If `false` (default), no
+            word timestamps will be produced at all. If `true`, the server will
+            return timestamp events containing word-level timing information.
+        add_phoneme_timestamps:
+          type: boolean
+          nullable: true
+          description: >-
+            Whether to return phoneme-level timestamps. If `false` (default), no
+            phoneme timestamps will be produced - if `add_timestamps` is `true`,
+            the produced timestamps will be word timestamps instead. If `true`,
+            the server will return timestamp events containing phoneme-level
+            timing information.
+        use_normalized_timestamps:
+          type: boolean
+          nullable: true
+          description: >-
+            Whether to use normalized timestamps (True) or original timestamps
+            (False).
+        context_id:
+          $ref: '#/components/schemas/ContextID'
+          nullable: true
+          description: Optional context ID for this request.
+      required:
+        - model_id
+        - transcript
+        - voice
+        - output_format
+    SupportedLanguage:
+      title: SupportedLanguage
+      type: string
+      enum:
+        - en
+        - fr
+        - de
+        - es
+        - pt
+        - zh
+        - ja
+        - hi
+        - it
+        - ko
+        - nl
+        - pl
+        - ru
+        - sv
+        - tr
+      description: >-
+        The language that the given voice should speak the transcript in.
+
+
+        Options: English (en), French (fr), German (de), Spanish (es),
+        Portuguese (pt), Chinese (zh), Japanese (ja), Hindi (hi), Italian (it),
+        Korean (ko), Dutch (nl), Polish (pl), Russian (ru), Swedish (sv),
+        Turkish (tr).
+    OutputFormat:
+      title: OutputFormat
+      oneOf:
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                container:
+                  type: string
+                  enum:
+                    - raw
+            - $ref: '#/components/schemas/RawOutputFormat'
+          required:
+            - container
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                container:
+                  type: string
+                  enum:
+                    - wav
+            - $ref: '#/components/schemas/WAVOutputFormat'
+          required:
+            - container
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                container:
+                  type: string
+                  enum:
+                    - mp3
+            - $ref: '#/components/schemas/MP3OutputFormat'
+          required:
+            - container
+    RawOutputFormat:
+      title: RawOutputFormat
+      type: object
+      properties:
+        encoding:
+          $ref: '#/components/schemas/RawEncoding'
+        sample_rate:
+          type: integer
+          description: >-
+            The sample rate of the audio in Hz. Supported sample rates are 8000,
+            16000, 22050, 24000, 44100, 48000.
+        bit_rate:
+          type: integer
+          nullable: true
+      required:
+        - encoding
+        - sample_rate
+    SSEOutputFormat:
+      title: SSEOutputFormat
+      type: object
+      properties:
+        container:
+          type: string
+          enum:
+            - raw
+        encoding:
+          $ref: '#/components/schemas/RawEncoding'
+        sample_rate:
+          type: integer
+          description: >-
+            The sample rate of the audio in Hz. Supported sample rates are 8000,
+            16000, 22050, 24000, 44100, 48000.
+      required:
+        - container
+        - encoding
+        - sample_rate
+    RawEncoding:
+      title: RawEncoding
+      type: string
+      enum:
+        - pcm_f32le
+        - pcm_s16le
+        - pcm_mulaw
+        - pcm_alaw
+    WAVOutputFormat:
+      title: WAVOutputFormat
+      type: object
+      properties: {}
+      allOf:
+        - $ref: '#/components/schemas/RawOutputFormat'
+    MP3OutputFormat:
+      title: MP3OutputFormat
+      type: object
+      properties:
+        sample_rate:
+          type: integer
+          description: >-
+            The sample rate of the audio in Hz. Supported sample rates are 8000,
+            16000, 22050, 24000, 44100, 48000.
+        bit_rate:
+          type: integer
+          description: >-
+            The bit rate of the audio in bits per second. Supported bit rates
+            are 32000, 64000, 96000, 128000, 192000.
+      required:
+        - sample_rate
+        - bit_rate
+    TTSRequestVoiceSpecifier:
+      title: TTSRequestVoiceSpecifier
+      oneOf:
+        - $ref: '#/components/schemas/TTSRequestIdSpecifier'
+        - $ref: '#/components/schemas/TTSRequestEmbeddingSpecifier'
+    TTSRequestIdSpecifier:
+      title: TTSRequestIdSpecifier
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+            - id
+        id:
+          $ref: '#/components/schemas/VoiceId'
+        __experimental_controls:
+          $ref: '#/components/schemas/Controls'
+          nullable: true
+      required:
+        - mode
+        - id
+    TTSRequestEmbeddingSpecifier:
+      title: TTSRequestEmbeddingSpecifier
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+            - embedding
+        embedding:
+          $ref: '#/components/schemas/Embedding'
+        __experimental_controls:
+          $ref: '#/components/schemas/Controls'
+          nullable: true
+      required:
+        - mode
+        - embedding
+    Controls:
+      title: Controls
+      type: object
+      properties:
+        speed:
+          $ref: '#/components/schemas/Speed'
+        emotion:
+          type: array
+          items:
+            $ref: '#/components/schemas/Emotion'
+      required:
+        - speed
+        - emotion
+    Speed:
+      title: Speed
+      oneOf:
+        - $ref: '#/components/schemas/NumericalSpecifier'
+        - $ref: '#/components/schemas/NaturalSpecifier'
+      description: >-
+        Either a number between -1.0 and 1.0 or a natural language description
+        of speed.
+
+
+        If you specify a number, 0.0 is the default speed, -1.0 is the slowest
+        speed, and 1.0 is the fastest speed.
+    NumericalSpecifier:
+      title: NumericalSpecifier
+      type: number
+      format: double
+    NaturalSpecifier:
+      title: NaturalSpecifier
+      type: string
+      enum:
+        - slowest
+        - slow
+        - normal
+        - fast
+        - fastest
+    Emotion:
+      title: Emotion
+      type: string
+      enum:
+        - anger:lowest
+        - anger:low
+        - anger
+        - anger:high
+        - anger:highest
+        - positivity:lowest
+        - positivity:low
+        - positivity
+        - positivity:high
+        - positivity:highest
+        - surprise:lowest
+        - surprise:low
+        - surprise
+        - surprise:high
+        - surprise:highest
+        - sadness:lowest
+        - sadness:low
+        - sadness
+        - sadness:high
+        - sadness:highest
+        - curiosity:lowest
+        - curiosity:low
+        - curiosity
+        - curiosity:high
+        - curiosity:highest
+      description: >-
+        An array of emotion:level tags.
+
+
+        Supported emotions are: anger, positivity, surprise, sadness, and
+        curiosity.
+
+
+        Supported levels are: lowest, low, (omit), high, highest.
+    OutputFormatContainer:
+      title: OutputFormatContainer
+      type: string
+      enum:
+        - raw
+        - wav
+        - mp3
+    StreamingResponse:
+      title: StreamingResponse
+      oneOf:
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - chunk
+            - $ref: '#/components/schemas/WebSocketChunkResponse'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - done
+            - $ref: '#/components/schemas/WebSocketDoneResponse'
+          required:
+            - type
+        - type: object
+          allOf:
+            - type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - error
+            - $ref: '#/components/schemas/WebSocketErrorResponse'
+          required:
+            - type
+    VoiceId:
+      title: VoiceId
+      type: string
+      description: The ID of the voice.
+    BaseVoiceId:
+      title: BaseVoiceId
+      $ref: '#/components/schemas/VoiceId'
+      description: Pull in features from a base voice, used for features like voice mixing.
+    Voice:
+      title: Voice
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/VoiceId'
+        user_id:
+          type: string
+          nullable: true
+          description: The ID of the user who owns the voice.
+        is_public:
+          type: boolean
+          description: Whether the voice is publicly accessible.
+        name:
+          type: string
+          description: The name of the voice.
+        description:
+          type: string
+          description: The description of the voice.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the voice was created.
+        embedding:
+          $ref: '#/components/schemas/Embedding'
+        language:
+          $ref: '#/components/schemas/SupportedLanguage'
+      required:
+        - id
+        - is_public
+        - name
+        - description
+        - created_at
+        - embedding
+        - language
+    VoiceMetadata:
+      title: VoiceMetadata
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/VoiceId'
+        user_id:
+          type: string
+          description: The ID of the user who owns the voice.
+        is_public:
+          type: boolean
+          description: Whether the voice is publicly accessible.
+        name:
+          type: string
+          description: The name of the voice.
+        description:
+          type: string
+          description: The description of the voice.
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the voice was created.
+        language:
+          $ref: '#/components/schemas/SupportedLanguage'
+      required:
+        - id
+        - user_id
+        - is_public
+        - name
+        - description
+        - created_at
+        - language
+    CreateVoiceRequest:
+      title: CreateVoiceRequest
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the voice.
+        description:
+          type: string
+          description: The description of the voice.
+        embedding:
+          $ref: '#/components/schemas/Embedding'
+        language:
+          $ref: '#/components/schemas/SupportedLanguage'
+          nullable: true
+        base_voice_id:
+          $ref: '#/components/schemas/BaseVoiceId'
+          nullable: true
+      required:
+        - name
+        - description
+        - embedding
+    UpdateVoiceRequest:
+      title: UpdateVoiceRequest
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the voice.
+        description:
+          type: string
+          description: The description of the voice.
+      required:
+        - name
+        - description
+    LocalizeTargetLanguage:
+      title: LocalizeTargetLanguage
+      type: string
+      enum:
+        - en
+        - de
+        - es
+        - fr
+        - ja
+        - pt
+        - zh
+        - hi
+        - it
+        - ko
+        - nl
+        - pl
+        - ru
+        - sv
+        - tr
+      description: >-
+        Target language to localize the voice to.
+
+
+        Options: English (en), German (de), Spanish (es), French (fr), Japanese
+        (ja), Portuguese (pt), Chinese (zh), Hindi (hi), Italian (it), Korean
+        (ko), Dutch (nl), Polish (pl), Russian (ru), Swedish (sv), Turkish (tr).
+    LocalizeEnglishDialect:
+      title: LocalizeEnglishDialect
+      type: string
+      enum:
+        - au
+        - in
+        - so
+        - uk
+        - us
+    LocalizeFrenchDialect:
+      title: LocalizeFrenchDialect
+      type: string
+      enum:
+        - eu
+        - ca
+    LocalizeSpanishDialect:
+      title: LocalizeSpanishDialect
+      type: string
+      enum:
+        - mx
+        - pe
+    LocalizePortugueseDialect:
+      title: LocalizePortugueseDialect
+      type: string
+      enum:
+        - br
+        - eu
+    LocalizeDialect:
+      title: LocalizeDialect
+      oneOf:
+        - description: >-
+            Only available when language is set to English (`en`). Options:
+            Australian (`au`), Indian (`in`), Southern (`so`), British (`uk`),
+            or American (`us`).
+          $ref: '#/components/schemas/LocalizeEnglishDialect'
+        - description: >-
+            Only available when language is set to Spanish (`es`). Options:
+            Latin American (`mx`) and Peninsular (`pe`).
+          $ref: '#/components/schemas/LocalizeSpanishDialect'
+        - description: >-
+            Only available when language is set to Portuguese (`pt`). Options:
+            Brazilian (`br`) and European Portuguese (`eu`).
+          $ref: '#/components/schemas/LocalizePortugueseDialect'
+        - description: >-
+            Only available when language is set to French (`fr`). Options:
+            Standard Parisian/Metropolitan (`eu`) and Canadian (`ca`).
+          $ref: '#/components/schemas/LocalizeFrenchDialect'
+      description: >-
+        The dialect to localize to. Only supported for English (`en`), Spanish
+        (`es`), Portuguese (`pt`), and French (`fr`).
+    Gender:
+      title: Gender
+      type: string
+      enum:
+        - male
+        - female
+    LocalizeVoiceRequest:
+      title: LocalizeVoiceRequest
+      type: object
+      properties:
+        voice_id:
+          type: string
+          description: The ID of the voice to localize.
+        name:
+          type: string
+          description: The name of the new localized voice.
+        description:
+          type: string
+          description: The description of the new localized voice.
+        language:
+          $ref: '#/components/schemas/LocalizeTargetLanguage'
+        original_speaker_gender:
+          $ref: '#/components/schemas/Gender'
+        dialect:
+          $ref: '#/components/schemas/LocalizeDialect'
+          nullable: true
+      required:
+        - voice_id
+        - name
+        - description
+        - language
+        - original_speaker_gender
+    EmbeddingResponse:
+      title: EmbeddingResponse
+      type: object
+      properties:
+        embedding:
+          $ref: '#/components/schemas/Embedding'
+      required:
+        - embedding
+    MixVoicesRequest:
+      title: MixVoicesRequest
+      type: object
+      properties:
+        voices:
+          type: array
+          items:
+            $ref: '#/components/schemas/MixVoiceSpecifier'
+      required:
+        - voices
+    Weight:
+      title: Weight
+      type: number
+      format: double
+      description: >-
+        The weight of the voice or embedding in the mix. If weights do not sum
+        to 1, they will be normalized.
+    IdSpecifier:
+      title: IdSpecifier
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/VoiceId'
+        weight:
+          $ref: '#/components/schemas/Weight'
+      required:
+        - id
+        - weight
+    EmbeddingSpecifier:
+      title: EmbeddingSpecifier
+      type: object
+      properties:
+        embedding:
+          $ref: '#/components/schemas/Embedding'
+        weight:
+          $ref: '#/components/schemas/Weight'
+      required:
+        - embedding
+        - weight
+    MixVoiceSpecifier:
+      title: MixVoiceSpecifier
+      oneOf:
+        - $ref: '#/components/schemas/IdSpecifier'
+        - $ref: '#/components/schemas/EmbeddingSpecifier'
+    CloneMode:
+      title: CloneMode
+      type: string
+      enum:
+        - similarity
+        - stability
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  parameters:
+    CartesiaVersionHeader:
+      name: Cartesia-Version
+      in: header
+      description: "API version header. Must be set to the API version, e.g. '2024-06-10'."
+      required: true
+      schema:
+        type: string
+        example: '2024-06-10'
+        enum:
+        - "2024-06-10"
+        - "2024-11-13"
+        - "2025-04-16"
+servers:
+  - url: https://api.cartesia.ai
+    description: Production

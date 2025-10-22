@@ -1,0 +1,203 @@
+---
+title: CLI documentation
+sidebarTitle: CLI
+icon: terminal
+---
+# Overview
+
+Cartesia's CLI enables developers to create, deploy and manage their Voice Agents through the command line.
+
+# Installation
+
+<Warning>By running the quick install commands, you are accepting Cartesia's [Terms of Service (TOS)](https://cartesia.ai/legal/terms.html). Please make sure to review the full TOS here before proceeding.</Warning>
+
+Install and download from our servers:
+
+```zsh lines
+curl -fsSL https://cartesia.sh | sh
+```
+
+And ask the CLI to self update:
+```zsh lines
+cartesia update
+```
+
+# Quick Start
+
+<Steps>
+  <Step title="Login with API key">
+    Authenticate with your Cartesia API key.
+    To make an API key, go to [play.cartesia.ai/keys](https://play.cartesia.ai/keys) and select your organization.
+
+    ```zsh lines
+    cartesia auth login  # paste your API key when prompted
+    ```
+  </Step>
+
+  <Step title="Create an agent">
+    Create a new agent from a template.
+
+    ```zsh lines
+    cartesia create my-agent
+    # Choose any template you like.
+    cd my-agent
+    ```
+
+    <Template
+      data={{ 
+        CREATE_COMMAND: "cartesia create"
+      }}
+      tooltips={{
+        CREATE_COMMAND: (<p>
+          You can use <code>cartesia create</code> to clone any Line template from <a href="https://github.com/cartesia-ai/line">GitHub</a>.
+          <br /><br />
+          Browse available templates and choose the one that best fits your use case.
+        </p>)
+      }}
+    >
+
+    ```zsh lines
+    {{CREATE_COMMAND}} my-agent
+    # Choose any template you like.
+    cd my-agent
+    ```
+    </Template>
+  </Step>
+
+  <Step title="Initialize your agent">
+    Give your agent a name and link it to your organization.
+
+    ```zsh lines
+    cartesia init
+    ```
+  </Step>
+
+  <Step title="Deploy your agent">
+    Deploy your agent to make it available in the playground.
+
+    ```zsh lines
+    cartesia deploy
+    ```
+  </Step>
+</Steps>
+
+
+# Features
+
+## Initialize a Project
+Link any directory to a new or existing Cartesia agent:
+
+```zsh lines
+cartesia init
+```
+
+Create a project from a template:
+
+```zsh lines
+cartesia create
+```
+
+<Tip>
+    When are you working inside a project directory, the CLI will automatically detect the agent.
+    You can skip passing `--agent-id` argument.
+
+    
+    Run `cartesia status` to see the current agent id.
+</Tip>
+
+## Chat with Your Agent
+Test the text reasoning logic for your voice agent locally.
+
+Terminal 1. Run your text logic fastapi server:
+```zsh lines
+PORT=8000 uv run python main.py
+```
+
+Terminal 2. Run the CLI to chat with your agent:
+```zsh lines
+cartesia chat 8000
+```
+
+
+# Commands 
+## Authentication
+
+To get an API key, go to [play.cartesia.ai/keys](https://play.cartesia.ai/keys), select your organization, and generate a new key.
+
+```zsh lines
+cartesia auth login
+```
+
+To validate the existing API key:
+```zsh lines
+cartesia auth status
+```
+
+To logout (clears cached credentials):
+
+```zsh lines
+cartesia auth logout
+```
+
+## Voice Agents
+
+Deploy your agent to Cartesia cloud.
+
+```zsh lines
+cartesia deploy
+```
+
+List out all the agents in your organization:
+
+```zsh lines
+cartesia agents ls
+```
+
+### Deployments
+Deployments are versions of your agent running on Cartesia's cloud.
+When we receive a new deployment, cartesia servers will rebuild the virtual environment, instantiate your project, and perform a health check to ensure it is ready to receive calls.
+
+To see all of your deployments:
+```zsh lines
+cartesia deployments ls
+```
+
+Check the status of a deployment:
+```zsh lines
+cartesia status [<deployment-id> or <agent-id>]
+```
+
+## Environment Variables
+Create, list, and remove environment variables for your agent.
+
+Set environment variables for your agent:
+```zsh lines
+cartesia env set API_KEY=FOOBAR MY_CONFIG=FOOBAZ
+```
+
+<Warning icon="lock">
+    Environment variables are encrypted for storage and can only be accessed by your code.
+</Warning>
+
+Port environment variables from a `.env` file:
+```zsh lines
+cartesia env set --from .env
+```
+
+```zsh lines
+cat .env
+API_KEY=FOOBAR
+MY_CONFIG=FOOBAZ
+```
+
+Remove an environment variable:
+```zsh lines
+cartesia env rm <env-var-name>
+```
+
+## Help Menu
+For more details on any command:
+
+```zsh lines
+cartesia --help
+```

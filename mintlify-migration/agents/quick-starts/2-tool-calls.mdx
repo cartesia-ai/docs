@@ -1,0 +1,499 @@
+---
+title: Add a tool call to your agent
+---
+Now let's empower our agent with external system integrations with a tool call. Tool calls allow your voice agent to
+perform actions beyond just conversation. When the language model determines it needs to execute a function 
+like checking the time, looking up information, or performing calculations, it generates a tool call. Your agent will then:
+
+1. Receives the tool call request
+2. Executes the tool logic
+3. Returns the result to continue the conversation
+
+
+<Steps>
+  <Step title="Creating a Simple Tool">
+
+Let's start by creating a tool that gets the current time. Create a new file `time_tool.py`:
+
+```python
+"""
+Time tool - Gets the current time in a specified timezone
+"""
+
+from datetime import datetime
+from typing import Dict, Any
+from zoneinfo import ZoneInfo
+from pydantic import BaseModel, Field
+
+from google.genai import types as gemini_types
+from line.tools import ToolDefinition
+
+
+class GetTimeArgs(BaseModel):
+    """Arguments for the get_current_time tool"""
+    timezone: str = Field(
+        default="UTC",
+        description="Timezone name (e.g., 'America/New_York', 'Europe/London', 'UTC')"
+    )
+
+
+class GetTimeTool(ToolDefinition):
+    """Tool for getting the current time in a specified timezone"""
+
+    @classmethod
+    def name(cls) -> str:
+        return "get_current_time"
+
+    @classmethod
+    def description(cls) -> str:
+        return (
+            "Get the current time in a specified timezone. "
+            "Useful when users ask 'what time is it?' or need time information."
+        )
+
+    @classmethod
+    def to_gemini_tool(cls) -> gemini_types.Tool:
+        """Convert to Gemini tool format"""
+        return gemini_types.Tool(
+            function_declarations=[
+                gemini_types.FunctionDeclaration(
+                    name=cls.name(),
+                    description=cls.description(),
+                    parameters={
+                        "type": "object",
+                        "properties": {
+                            "timezone": {
+                                "type": "string",
+                                "description": "Timezone name (e.g., 'America/New_York', 'Europe/London', 'UTC')",
+                                "default": "UTC"
+                            }
+                        },
+                        "required": []
+                    }
+                )
+            ]
+        )
+
+    @classmethod
+    def to_openai_tool(cls) -> Dict[str, object]:
+        """Convert to OpenAI tool format"""
+        return {
+            "type": "function",
+            "name": cls.name(),
+            "description": cls.description(),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "timezone": {
+                        "type": "string",
+                        "description": "Timezone name (e.g., 'America/New_York', 'Europe/London', 'UTC')",
+                        "default": "UTC"
+                    }
+                },
+                "required": [],
+                "additionalProperties": False,
+            },
+            "strict": True,
+        }
+
+    @classmethod
+    async def execute(cls, args: GetTimeArgs) -> Dict[str, Any]:
+        """Execute the tool and return the result"""
+        try:
+            # Get current time in the specified timezone
+            tz = ZoneInfo(args.timezone)
+            current_time = datetime.now(tz)
+
+            # Format the time nicely
+            time_str = current_time.strftime("%I:%M %p")
+            date_str = current_time.strftime("%A, %B %d, %Y")
+
+            return {
+                "success": True,
+                "time": time_str,
+                "date": date_str,
+                "timezone": args.timezone,
+                "full_datetime": current_time.isoformat()
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Failed to get time for timezone '{args.timezone}': {str(e)}"
+            }
+```
+  </Step>
+
+  <Step title="Updating the Chat Node with Tool Support">
+
+Now let's update our `chat_node.py` to support tool calls. We'll modify the class to include our time tool:
+
+```python
+"""
+ChatNode with Tool Calling - Extends our basic chat with tool capabilities
+"""
+
+from typing import AsyncGenerator
+
+from google.genai import types as gemini_types
+from loguru import logger
+
+from line import ConversationContext, ReasoningNode
+from line.events import AgentResponse, ToolCall, ToolResult
+from line.tools.system_tools import EndCallTool
+from line.utils.gemini_utils import convert_messages_to_gemini
+
+# Import our time tool
+from time_tool import GetTimeTool, GetTimeArgs
+
+# Same system prompt as before, but mention the time capability
+SYSTEM_PROMPT = """You are a warm, personable, intelligent assistant having a real-time
+voice conversation with a user. Keep your responses brief and conversational - aim for
+1-2 sentences, under 35 words. After answering, ask a brief follow-up question to keep
+the conversation flowing naturally.
+
+You can help users with the current time in any timezone when they ask.
+
+Be yourself - warm, engaging, and genuinely interested in helping. If you don't understand
+something, just ask for clarification in a natural way."""
+
+
+class ChatNodeWithTools(ReasoningNode):
+    """
+    Enhanced chat node that can use tools like getting the current time.
+    """
+
+    def __init__(
+        self,
+        gemini_client,
+        system_prompt: str = SYSTEM_PROMPT,
+        model_id: str = "gemini-2.5-flash",
+        temperature: float = 0.7,
+    ):
+        super().__init__(system_prompt=system_prompt)
+
+        self.client = gemini_client
+        self.model_id = model_id
+        self.temperature = temperature
+
+        # Initialize our tools
+        self.time_tool = GetTimeTool()
+        self.end_call_tool = EndCallTool()
+
+        logger.info(f"ChatNodeWithTools initialized with time capabilities")
+
+    async def process_context(
+        self, context: ConversationContext
+    ) -> AsyncGenerator[AgentResponse | ToolCall | ToolResult, None]:
+        """
+        Process conversation with tool calling support.
+        """
+        messages = convert_messages_to_gemini(context.events)
+
+        user_message = context.get_latest_user_transcript_message()
+        if user_message:
+            logger.info(f'User said: "{user_message}"')
+
+        # Configure generation with our tools
+        generation_config = gemini_types.GenerateContentConfig(
+            system_instruction=self.system_prompt,
+            temperature=self.temperature,
+            tools=[
+                self.time_tool.to_gemini_tool(),
+                self.end_call_tool.to_gemini_tool()
+            ],
+        )
+
+        # Stream the response
+        full_response = ""
+        stream = await self.client.aio.models.generate_content_stream(
+            model=self.model_id,
+            contents=messages,
+            config=generation_config,
+        )
+
+        async for chunk in stream:
+            # Handle text responses
+            if chunk.text:
+                full_response += chunk.text
+                yield AgentResponse(content=chunk.text)
+
+            # Handle tool calls
+            if chunk.function_calls:
+                for function_call in chunk.function_calls:
+                    logger.info(f"Tool called: {function_call.name}")
+
+                    if function_call.name == self.time_tool.name():
+                        # Handle time tool call
+                        async for event in self._handle_time_tool(function_call):
+                            yield event
+
+                    elif function_call.name == self.end_call_tool.name():
+                        # Handle end call tool
+                        goodbye_message = function_call.args.get(
+                            "goodbye_message",
+                            "Goodbye! Have a great day!"
+                        )
+                        yield AgentResponse(content=goodbye_message)
+
+                        # Yield tool result for observability
+                        yield ToolResult(
+                            tool_name=self.end_call_tool.name(),
+                            result={"message": goodbye_message}
+                        )
+
+                        # End the call
+                        from line.events import EndCall
+                        yield EndCall()
+
+        if full_response:
+            logger.info(f'Agent said: "{full_response}"')
+
+    async def _handle_time_tool(self, function_call) -> AsyncGenerator[ToolCall | ToolResult | AgentResponse, None]:
+        """Handle the get_current_time tool call"""
+        # Extract and validate arguments
+        timezone = function_call.args.get("timezone", "UTC")
+        args = GetTimeArgs(timezone=timezone)
+
+        # Yield ToolCall event for observability
+        yield ToolCall(
+            tool_name=self.time_tool.name(),
+            tool_args={"timezone": timezone}
+        )
+
+        # Execute the tool
+        result = await self.time_tool.execute(args)
+
+        # Yield ToolResult event
+        yield ToolResult(
+            tool_name=self.time_tool.name(),
+            tool_args={"timezone": timezone},
+            result=result,
+            error=None if result["success"] else result.get("error")
+        )
+
+        # Generate a natural response with the time information
+        if result["success"]:
+            response = (
+                f"It's {result['time']} on {result['date']} "
+                f"in {result['timezone'].replace('_', ' ')}."
+            )
+        else:
+            response = "I couldn't get the time for that timezone. Can you try another one?"
+
+        yield AgentResponse(content=response)
+```
+
+  </Step>
+
+  <Step title="Understanding the Tool Call Flow">
+
+
+Let's break down what happens when a user asks "What time is it?":
+
+1. **User speaks**: "What time is it in Tokyo?"
+
+2. **LLM processes**: Gemini recognizes this needs the `get_current_time` tool
+
+3. **Tool call generated**: The LLM yields a function_call with:
+   ```python
+   {
+       "name": "get_current_time",
+       "args": {"timezone": "Asia/Tokyo"}
+   }
+   ```
+
+4. **Your node handles the tool call**:
+   - Yields a `ToolCall` event (for observability)
+   - Executes the tool logic
+   - Yields a `ToolResult` event (for debugging/logging)
+   - Yields an `AgentResponse` with the formatted result
+
+5. **User hears**: "It's 3:45 PM on Tuesday, December 10, 2024 in Asia Tokyo."
+
+</Step>
+
+<Step title="Tool Call Best Practices">
+
+### 1. Validate Arguments
+
+Use Pydantic models to ensure type safety:
+
+```python
+class CalculatorArgs(BaseModel):
+    operation: Literal["add", "subtract", "multiply", "divide"]
+    a: float = Field(description="First number")
+    b: float = Field(description="Second number")
+
+    @validator('b')
+    def prevent_division_by_zero(cls, v, values):
+        if values.get('operation') == 'divide' and v == 0:
+            raise ValueError('Cannot divide by zero')
+        return v
+```
+
+### 2. Handle Errors Gracefully
+
+Remember, this is a voice agent, and the user is on a call. Graceful error handling should feel
+natural, because it is spoken:
+
+```python
+async def _handle_calculator_tool(self, function_call):
+    try:
+        args = CalculatorArgs(**function_call.args)
+        result = self._calculate(args)
+
+        yield ToolResult(
+            tool_name="calculator",
+            result={"answer": result},
+            error=None
+        )
+        yield AgentResponse(content=f"The answer is {result}")
+
+    except ValueError as e:
+        yield ToolResult(
+            tool_name="calculator",
+            error=str(e)
+        )
+        yield AgentResponse(content="I couldn't calculate that. Could you check the numbers?")
+```
+
+### 3. Keep Tools Focused
+
+Each tool should do one thing well:
+
+```python
+# Good: Specific tool with clear purpose
+class GetWeatherTool(ToolDefinition):
+    """Get current weather for a specific location"""
+
+# Bad: Tool that does too much
+class GeneralInfoTool(ToolDefinition):
+    """Get weather, news, stocks, and sports scores"""
+```
+
+### 4. Provide Clear Descriptions
+
+Help the LLM understand when to use your tool:
+
+```python
+@classmethod
+def description(cls) -> str:
+    return (
+        "Calculate currency exchange rates between two currencies. "
+        "Use when users ask about currency conversion, exchange rates, "
+        "or how much money is worth in another currency. "
+        "Example: 'How much is 100 USD in euros?'"
+    )
+```
+
+</Step>
+
+<Step title="Advanced Tool Patterns">
+
+### Stateful Tools
+
+Some tools need to maintain state across calls:
+
+```python
+class ShoppingCartTool(ToolDefinition):
+    def __init__(self):
+        self.cart_items = []
+
+    async def add_item(self, args: AddItemArgs):
+        self.cart_items.append({
+            "name": args.item_name,
+            "quantity": args.quantity,
+            "price": args.price
+        })
+        return {"success": True, "total_items": len(self.cart_items)}
+```
+
+### Tools that Call External APIs
+
+```python
+class WeatherTool(ToolDefinition):
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.base_url = "https://api.weather.com/v1"
+
+    async def execute(self, args: WeatherArgs) -> Dict[str, Any]:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                f"{self.base_url}/current",
+                params={"location": args.location, "key": self.api_key}
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return {
+                        "success": True,
+                        "temperature": data["temp"],
+                        "conditions": data["conditions"]
+                    }
+                else:
+                    return {
+                        "success": False,
+                        "error": f"Weather API error: {response.status}"
+                    }
+```
+
+### Tools with Streaming Responses
+
+For tools that generate long responses:
+
+```python
+async def _handle_story_tool(self, function_call):
+    """Generate a story with streaming"""
+    args = StoryArgs(**function_call.args)
+
+    yield ToolCall(tool_name="generate_story", tool_args=args.dict())
+
+    # Stream the story in chunks
+    story_chunks = await self.story_generator.generate(args.prompt)
+
+    async for chunk in story_chunks:
+        yield AgentResponse(content=chunk)
+
+    yield ToolResult(
+        tool_name="generate_story",
+        result={"status": "complete"}
+    )
+```
+
+</Step>
+
+<Step title="Testing Your Tools">
+
+Update your `main.py` to use the new node with tools:
+
+```python
+from chat_node import ChatNodeWithTools  # Import the enhanced node
+
+async def handle_new_call(system: VoiceAgentSystem, call_request: CallRequest):
+    # Use the enhanced node with tool support
+    chat_node = ChatNodeWithTools(gemini_client)
+
+    # Rest of the setup remains the same...
+```
+
+Test your agent with tool-related queries:
+- "What time is it?"
+- "What's the time in London?"
+- "Can you tell me the current time in Tokyo?"
+
+</Step>
+
+</Steps>
+
+## What's Next?
+
+Now that you can add tools to your agent, consider:
+
+1. **Multiple Tools**: Add weather, calculations, or API lookups
+2. **Tool Composition**: Tools that use results from other tools
+3. **External Services**: Integrate with databases or web APIs
+4. **MCP Integration**: Use the Model Context Protocol for external tool servers
+5. **Custom Tool Patterns**: Create domain-specific tools for your use case
+
+Tools transform your voice agent from a conversationalist into a capable assistant that can take actions and provide real-world information. The event-driven architecture makes it easy to add new capabilities while maintaining clean, testable code.
+
+Happy building! 🛠️

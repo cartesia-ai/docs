@@ -1,0 +1,480 @@
+---
+title: Implementing Node Handoffs
+---
+In this tutorial, we'll learn how to implement handoffs between multiple nodes. This allows you to create specialized nodes that can transfer control to each other based on the conversation context.
+
+
+## What are Node Handoffs?
+
+Node handoffs allow you to:
+
+- Create specialized agents for different domains
+- Transfer conversation control between agents seamlessly
+- Maintain conversation context across handoffs
+- Provide better user experiences with domain experts
+
+In this tutorial, we'll create two agents - a helpful assistant and a pirate - and implement handoffs between them.
+
+## Step 1: Create the Base Agents
+
+First, let's create our two specialized agents. Create a file called `specialized_agents.py`:
+
+```python
+"""
+Specialized agents - A helpful assistant and a pirate
+"""
+
+from typing import AsyncGenerator
+from loguru import logger
+
+from google.genai import types as gemini_types
+from line import ConversationContext, ReasoningNode
+from line.events import AgentResponse, ToolCall, ToolResult
+from line.utils.gemini_utils import convert_messages_to_gemini
+
+
+# Base system prompts for our agents
+ASSISTANT_PROMPT = """You are a helpful, friendly assistant having a voice conversation.
+Keep responses brief (1-2 sentences). If someone asks to speak to a pirate,
+use the handoff_to_pirate tool."""
+
+PIRATE_PROMPT = """Ahoy! Ye be speakin' to a jolly pirate now! Talk like a true buccaneer
+of the seven seas. Keep yer responses brief (1-2 sentences) and full of pirate speak!
+If someone wants to go back to the regular assistant, use the handoff_to_assistant tool."""
+
+
+class AssistantAgent(ReasoningNode):
+    """A helpful assistant that can hand off to a pirate"""
+
+    def __init__(self, gemini_client):
+        super().__init__(system_prompt=ASSISTANT_PROMPT)
+        self.client = gemini_client
+        self.model_id = "gemini-2.5-flash"
+
+    async def process_context(
+        self, context: ConversationContext
+    ) -> AsyncGenerator[AgentResponse | ToolCall | ToolResult, None]:
+        """Process with handoff capability"""
+
+        messages = convert_messages_to_gemini(context.events)
+
+        # Define handoff tool
+        handoff_tool = gemini_types.Tool(
+            function_declarations=[
+                gemini_types.FunctionDeclaration(
+                    name="handoff_to_pirate",
+                    description="Transfer the conversation to a pirate when requested",
+                    parameters={"type": "object", "properties": {}, "required": []}
+                )
+            ]
+        )
+
+        generation_config = gemini_types.GenerateContentConfig(
+            system_instruction=self.system_prompt,
+            temperature=0.7,
+            tools=[handoff_tool],
+        )
+
+        stream = await self.client.aio.models.generate_content_stream(
+            model=self.model_id,
+            contents=messages,
+            config=generation_config,
+        )
+
+        async for chunk in stream:
+            if chunk.text:
+                yield AgentResponse(content=chunk.text)
+
+            if chunk.function_calls:
+                for function_call in chunk.function_calls:
+                    if function_call.name == "handoff_to_pirate":
+                        logger.info("Assistant initiating handoff to pirate")
+                        yield ToolCall(
+                            tool_name="handoff_to_pirate",
+                            tool_args={}
+                        )
+
+
+class PirateAgent(ReasoningNode):
+    """A pirate that speaks in pirate dialect"""
+
+    def __init__(self, gemini_client):
+        super().__init__(system_prompt=PIRATE_PROMPT)
+        self.client = gemini_client
+        self.model_id = "gemini-2.5-flash"
+
+    async def process_context(
+        self, context: ConversationContext
+    ) -> AsyncGenerator[AgentResponse | ToolCall | ToolResult, None]:
+        """Process with pirate speak and handoff capability"""
+
+        messages = convert_messages_to_gemini(context.events)
+
+        # Define handoff tool
+        handoff_tool = gemini_types.Tool(
+            function_declarations=[
+                gemini_types.FunctionDeclaration(
+                    name="handoff_to_assistant",
+                    description="Transfer back to the regular assistant when requested",
+                    parameters={"type": "object", "properties": {}, "required": []}
+                )
+            ]
+        )
+
+        generation_config = gemini_types.GenerateContentConfig(
+            system_instruction=self.system_prompt,
+            temperature=0.7,
+            tools=[handoff_tool],
+        )
+
+        stream = await self.client.aio.models.generate_content_stream(
+            model=self.model_id,
+            contents=messages,
+            config=generation_config,
+        )
+
+        async for chunk in stream:
+            if chunk.text:
+                yield AgentResponse(content=chunk.text)
+
+            if chunk.function_calls:
+                for function_call in chunk.function_calls:
+                    if function_call.name == "handoff_to_assistant":
+                        logger.info("Pirate initiating handoff to assistant")
+                        yield ToolCall(
+                            tool_name="handoff_to_assistant",
+                            tool_args={}
+                        )
+```
+
+## Step 2: Create the Coordinator Node
+
+The key to handoffs is having a coordinator that manages the active agent. Create `coordinator_node.py`:
+
+```python
+"""
+Coordinator Node - Manages handoffs between agents
+"""
+
+from enum import Enum
+from typing import AsyncGenerator
+
+from loguru import logger
+from line import ConversationContext, ReasoningNode
+from line.events import (
+    AgentResponse,
+    ToolCall,
+    ToolResult,
+    AgentGenerationComplete
+)
+
+from specialized_agents import AssistantAgent, PirateAgent
+
+
+class ActiveAgent(Enum):
+    """Track which agent is currently active"""
+    ASSISTANT = "assistant"
+    PIRATE = "pirate"
+
+
+class CoordinatorNode(ReasoningNode):
+    """
+    Coordinator that manages handoffs between specialized agents.
+
+    This node:
+    1. Maintains the currently active agent
+    2. Intercepts handoff tool calls
+    3. Switches control between agents
+    4. Preserves conversation context
+    """
+
+    def __init__(self, gemini_client):
+        # Coordinator doesn't need its own prompt
+        super().__init__(system_prompt="Coordinator")
+
+        # Initialize our agents
+        self.agents = {
+            ActiveAgent.ASSISTANT: AssistantAgent(gemini_client),
+            ActiveAgent.PIRATE: PirateAgent(gemini_client)
+        }
+
+        # Start with the assistant
+        self.active_agent = ActiveAgent.ASSISTANT
+
+        logger.info("Coordinator initialized with assistant and pirate agents")
+
+    async def process_context(
+        self, context: ConversationContext
+    ) -> AsyncGenerator[AgentResponse | ToolCall | ToolResult, None]:
+        """
+        Process context by delegating to the active agent and handling handoffs.
+        """
+
+        current_agent = self.agents[self.active_agent]
+        logger.info(f"Processing with {self.active_agent.value} agent")
+
+        # Process with the current agent
+        async for event in current_agent.process_context(context):
+
+            # Check for handoff requests
+            if isinstance(event, ToolCall) and event.tool_name.startswith("handoff_to_"):
+                # Handle the handoff
+                handoff_result = await self._handle_handoff(event)
+
+                # Yield the tool result
+                yield ToolResult(
+                    tool_name=event.tool_name,
+                    result={"status": "handoff_complete", "new_agent": self.active_agent.value}
+                )
+
+                # Generate transition message
+                if handoff_result:
+                    yield AgentResponse(content=handoff_result)
+
+            else:
+                # Pass through all other events
+                yield event
+
+        yield AgentGenerationComplete()
+
+    async def _handle_handoff(self, tool_call: ToolCall) -> str:
+        """
+        Handle agent handoff based on tool call.
+
+        Returns:
+            Transition message for the handoff
+        """
+        old_agent = self.active_agent
+
+        if tool_call.tool_name == "handoff_to_pirate":
+            self.active_agent = ActiveAgent.PIRATE
+            logger.info("Handoff: Assistant → Pirate")
+            return "Ahoy matey! Ye be speakin' to a pirate now!"
+
+        elif tool_call.tool_name == "handoff_to_assistant":
+            self.active_agent = ActiveAgent.ASSISTANT
+            logger.info("Handoff: Pirate → Assistant")
+            return "Welcome back! I'm your helpful assistant again. How can I help?"
+
+        else:
+            logger.warning(f"Unknown handoff tool: {tool_call.tool_name}")
+            return ""
+
+    def add_event(self, event):
+        """Override to add events to all agents"""
+        # Add to parent's conversation history
+        super().add_event(event)
+
+        # Also add to all sub-agents to maintain context
+        for agent in self.agents.values():
+            agent.add_event(event)
+```
+
+## Step 3: Understanding the Handoff Flow
+
+Let's trace through what happens during a handoff:
+
+1. **User Request**: "I want to talk to a pirate"
+
+2. **Assistant Processes**:
+   - Recognizes the request
+   - Yields `ToolCall(tool_name="handoff_to_pirate")`
+
+3. **Coordinator Intercepts**:
+   - Detects the handoff tool call
+   - Updates `self.active_agent = ActiveAgent.PIRATE`
+   - Yields `ToolResult` to acknowledge the handoff
+   - Yields transition message: "Ahoy matey!"
+
+4. **Next Interaction**:
+   - User's next message goes to the Pirate agent
+   - Pirate responds in character
+
+5. **Context Preservation**:
+   - The `add_event` override ensures all agents see all events
+   - Conversation history is maintained across handoffs
+
+## Step 4: Wire Everything Together
+
+Update your `main.py` to use the coordinator:
+
+```python
+import os
+from dotenv import load_dotenv
+import google.genai as genai
+
+from line import (
+    Bridge,
+    CallRequest,
+    VoiceAgentApp,
+    VoiceAgentSystem,
+)
+from line.events import (
+    UserStartedSpeaking,
+    UserStoppedSpeaking,
+    UserTranscriptionReceived,
+)
+
+from coordinator_node import CoordinatorNode
+
+load_dotenv()
+
+gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+async def handle_new_call(system: VoiceAgentSystem, call_request: CallRequest):
+    """Set up voice agent with handoff capabilities"""
+
+    # Create the coordinator node
+    coordinator = CoordinatorNode(gemini_client)
+
+    # Create bridge for routing
+    bridge = Bridge(coordinator)
+
+    # Set up routing
+    bridge.on(UserTranscriptionReceived).map(coordinator.add_event)
+
+    (
+        bridge.on(UserStoppedSpeaking)
+        .interrupt_on(UserStartedSpeaking, handler=coordinator.on_interrupt_generate)
+        .stream(coordinator.generate)
+        .broadcast()
+    )
+
+    # Register as speaking node
+    system.with_speaking_node(coordinator, bridge)
+
+    # Start system
+    await system.start()
+
+    # Initial greeting
+    await system.send_initial_message(
+        "Hello! I'm your helpful assistant. If you'd like to speak to a pirate, just ask!"
+    )
+
+    await system.wait_for_shutdown()
+
+
+app = VoiceAgentApp(handle_new_call)
+
+if __name__ == "__main__":
+    app.run()
+```
+
+## Step 5: Testing Handoffs
+
+Test your agent with these interactions:
+
+1. **Basic conversation**: Chat normally with the assistant
+2. **Request handoff**: "Can I talk to a pirate?"
+3. **Verify handoff**: The pirate should respond in character
+4. **Return handoff**: "I want to go back to the assistant"
+5. **Context check**: Ask about something from earlier in the conversation
+
+## Key Concepts for Handoffs
+
+### 1. Coordinator Pattern
+
+The coordinator pattern centralizes handoff logic:
+- Single node manages all agents
+- Intercepts handoff requests
+- Maintains active agent state
+- Preserves conversation context
+
+### 2. Handoff Tool Convention
+
+Use `handoff_to_*` naming convention:
+- Makes handoffs discoverable
+- Allows pattern matching
+- Provides clear intent
+
+### 3. Context Preservation
+
+Override `add_event` to share context:
+```python
+def add_event(self, event):
+    super().add_event(event)  # Coordinator's history
+    for agent in self.agents.values():
+        agent.add_event(event)  # Each agent's history
+```
+
+### 4. Transition Messages
+
+Provide clear transitions:
+- Acknowledge the handoff
+- Set user expectations
+- Maintain conversational flow
+
+## Advanced Handoff Patterns
+
+### Hub and Spoke Architecture
+
+For more complex scenarios with many agents:
+
+```python
+class HubCoordinator(ReasoningNode):
+    """Central hub that routes to many specialized agents"""
+
+    def __init__(self, agents: Dict[str, ReasoningNode]):
+        self.agents = agents
+        self.routing_rules = self._build_routing_rules()
+
+    def _build_routing_rules(self):
+        """Define when to route to which agent"""
+        return {
+            "billing": ["invoice", "payment", "charge"],
+            "technical": ["bug", "error", "broken"],
+            "sales": ["pricing", "upgrade", "plan"]
+        }
+```
+
+### Contextual Handoffs
+
+Pass context during handoffs:
+
+```python
+yield ToolCall(
+    tool_name="handoff_to_specialist",
+    tool_args={
+        "reason": "Customer needs technical support",
+        "priority": "high",
+        "context": "Database connection issues"
+    }
+)
+```
+
+### Multi-Step Handoffs
+
+Chain multiple agents:
+
+```python
+# Authentication → Verification → Transaction
+if not self.authenticated:
+    yield ToolCall(tool_name="handoff_to_auth")
+elif not self.verified:
+    yield ToolCall(tool_name="handoff_to_verification")
+else:
+    # Process transaction
+```
+
+## Best Practices
+
+1. **Clear Handoff Triggers**: Make it obvious when handoffs should occur
+2. **Preserve Context**: Ensure conversation history follows the user
+3. **Graceful Transitions**: Provide smooth handoff messages
+4. **Fallback Handling**: Have a default agent for unknown requests
+5. **State Management**: Track handoff history and reasons
+
+## What's Next?
+
+Now that you understand handoffs, you can:
+
+1. **Add More Agents**: Create specialists for different domains
+2. **Smart Routing**: Use NLP to automatically route conversations
+3. **Handoff Analytics**: Track handoff patterns and optimize
+4. **Complex Workflows**: Build multi-step processes with handoffs
+5. **External Integrations**: Hand off to human agents or external systems
+
+Handoffs transform your voice agent from a single assistant into a team of specialists, each optimized for their domain while maintaining a seamless user experience.
+
+Happy building! 🚀
