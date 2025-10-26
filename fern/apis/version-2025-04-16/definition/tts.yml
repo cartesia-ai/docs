@@ -360,6 +360,7 @@ types:
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
       output_format: WebSocketRawOutputFormat
+      generation_config: optional<GenerationConfig>
       duration:
         type: optional<double>
         docs: |
@@ -424,6 +425,7 @@ types:
         docs: |
           The ID of the model to use for the generation. See [Models](/build-with-cartesia/tts-models) for available models.
       output_format: optional<OutputFormat>
+      generation_config: optional<GenerationConfig>
       transcript: optional<string>
       voice: TTSRequestVoiceSpecifier
       duration: optional<integer>
@@ -456,6 +458,7 @@ types:
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
       output_format: OutputFormat
+      generation_config: optional<GenerationConfig>
       duration:
         type: optional<double>
         docs: |
@@ -481,6 +484,7 @@ types:
       voice: TTSRequestVoiceSpecifier
       language: optional<SupportedLanguage>
       output_format: SSEOutputFormat
+      generation_config: optional<GenerationConfig>
       duration:
         type: optional<double>
         docs: |
@@ -536,6 +540,28 @@ types:
       raw: RawOutputFormat
       wav: WAVOutputFormat
       mp3: MP3OutputFormat
+
+  GenerationConfig:
+    docs: |
+      Configure the various attributes of the generated speech. These controls only for `sonic-3` and have no effect on earlier models.
+    properties:
+      volume:
+        type: optional<double>
+        docs: |
+          Adjust the volume of the generated speech between 0.5x and 2.0x the original volume (default is 1.0x). Valid values are between 0.5 and 2.0 inclusive.
+      speed:
+        type: optional<double>
+        docs: |
+          Adjust the speed of the generated speech between 0.6x and 1.5x the original speed (default is 1.0x). Valid values are between 0.6 and 1.5 inclusive.
+      emotion:
+        type: optional<Emotion>
+        docs: |
+          Guide the emotion of the generated speech.
+
+  Emotion:
+    docs: |
+      Guide the emotion of the generated speech.
+    type: string
 
   RawOutputFormat:
     properties:
