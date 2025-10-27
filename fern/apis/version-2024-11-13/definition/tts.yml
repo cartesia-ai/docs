@@ -580,7 +580,7 @@ types:
   Controls:
     properties:
       speed: Speed
-      emotion: list<Emotion>
+      emotion: list<EmotionDeprecated>
 
   Speed:
     docs: |
@@ -603,7 +603,7 @@ types:
       - fast
       - fastest
 
-  Emotion:
+  EmotionDeprecated:
     docs: |
       An array of emotion:level tags.
 
